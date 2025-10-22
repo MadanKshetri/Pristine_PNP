@@ -1,4 +1,4 @@
-import { Input } from '@/src/components/ui';
+import { Input, ScreenHeader } from '@/src/components/ui';
 import { format, isSameDay, parseISO, startOfDay } from 'date-fns';
 import { useRouter } from 'expo-router';
 import { Clock, MapPin } from 'lucide-react-native';
@@ -117,14 +117,12 @@ export const JobListWithCalendar: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Jobs Calendar</Text>
-        <Text style={styles.headerSubtitle}>
-          {selectedDate
-            ? `Jobs for ${formatDate(selectedDate)}`
-            : `${jobs.length} total jobs`}
-        </Text>
-      </View>
+      <ScreenHeader
+        title="Jobs Calendar"
+        subtitle={selectedDate
+          ? `Jobs for ${formatDate(selectedDate)}`
+          : `${jobs.length} total jobs`}
+      />
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.searchContainer}>

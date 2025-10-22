@@ -1,8 +1,8 @@
-import { Button, Card } from '@/src/components/ui';
+import { Button, Card, ScreenHeader } from '@/src/components/ui';
 import { useAuth } from '@/src/features/auth';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { Alert, ScrollView, Text, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -30,13 +30,15 @@ export default function ProfileScreen() {
   };
 
   return (
-    <ScrollView className="flex-1 bg-gray-50">
+    <ScrollView style={styles.container}>
+      <ScreenHeader title="Profile" />
+      
       <View className="px-6 py-8">
         {/* User Info Card */}
         <Card variant="elevated" padding="lg" className="mb-6">
           <View className="items-center mb-6">
             {/* Avatar */}
-            <View className="w-24 h-24 bg-blue-100 rounded-full items-center justify-center mb-4">
+            <View className="w-24 h-24 bg-blue-100 rounded-full items-center justify-center mb-4 mt-4">
               <Ionicons name="person" size={48} color="#3B82F6" />
             </View>
 
@@ -110,3 +112,10 @@ export default function ProfileScreen() {
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f9fafb',
+  },
+});

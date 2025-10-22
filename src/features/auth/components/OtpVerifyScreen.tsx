@@ -99,8 +99,9 @@ export const OtpVerifyScreen = () => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       className="flex-1 bg-white"
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
     >
       <View className="flex-1 px-6 justify-center py-8">
         {/* Header */}
@@ -119,7 +120,7 @@ export const OtpVerifyScreen = () => {
           </Text>
         </View>
 
-        {/* OTP Input - Horizontal */}
+        {/* OTP Input */}
         <View className="mb-10">
           <Text className="text-xs font-semibold text-gray-500 text-center mb-4 tracking-wider">
             ENTER CODE
@@ -140,6 +141,7 @@ export const OtpVerifyScreen = () => {
                   borderRadius: 16,
                   textAlign: 'center',
                   fontSize: 24,
+                  marginBottom: 24,
                   fontWeight: '700',
                   color: '#111827',
                   shadowColor: otp[index] ? '#3B82F6' : '#000',
