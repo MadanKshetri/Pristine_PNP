@@ -9,9 +9,9 @@ const Index = () => {
   const router = useRouter();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
-  // Redirect authenticated users to tabs
+  // Redirect authenticated users to home
   if (isAuthenticated) {
-    return <Redirect href="/(tabs)/jobs" />;
+    return <Redirect href="/(tabs)/home" />;
   }
 
   return (

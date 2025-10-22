@@ -26,6 +26,17 @@ export default function TabsLayout() {
         },
       }}
     >
+      {/* Home Tab - Available for both roles */}
+      <Tabs.Screen
+        name="home"
+        options={{
+          title: 'Home',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home-outline" size={size} color={color} />
+          ),
+        }}
+      />
+
       {/* Jobs Tab - Available for both roles */}
       <Tabs.Screen
         name="jobs"

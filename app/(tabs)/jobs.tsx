@@ -1,5 +1,5 @@
-import { JobListScreen } from '@/src/features/jobs';
+import { JobListWithCalendar } from '@/src/features/jobs';
 
 export default function JobsScreen() {
-  return <JobListScreen />;
+  return <JobListWithCalendar />;
 }

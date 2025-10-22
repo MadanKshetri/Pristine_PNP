@@ -19,7 +19,7 @@ export default function RootLayout() {
       router.replace('/(auth)/login');
     } else if (isAuthenticated && inAuthGroup) {
       // User is authenticated but on auth screens
-      router.replace('/(tabs)/jobs');
+      router.replace('/(tabs)/home');
     }
   }, [isAuthenticated, segments, router]);
 
