@@ -10,8 +10,8 @@ export const useJobActions = () => {
     try {
       // Request location permission
       const { status } = await Location.requestForegroundPermissionsAsync();
-      
-      if (status !== 'granted') {
+
+      if (status !== Location.PermissionStatus.GRANTED) {
         Alert.alert(
           'Permission Required',
           'Location permission is needed to start a job.'
