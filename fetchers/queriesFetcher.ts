@@ -1,7 +1,7 @@
 import { useAuthStore } from "@/src/lib/store/authStore";
 import type { QueriesContext } from "./queriesContext";
 
-const baseUrl =  "https://cmsapi.centralindia.cloudapp.azure.com"; // TODO add your baseUrl
+const baseUrl =  "https://cmsapi.poudelsudeep.com.np"; // TODO add your baseUrl
 
 // Function to get the current auth token
 const getAuthToken = (): string | null => {

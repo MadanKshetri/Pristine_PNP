@@ -5,14 +5,14 @@ import type { JobFilters } from '../types';
 export const useJobs = () => {
   const [filters, setFilters] = useState<JobFilters>({
     status: 'all',
-    page: 1,
-    take: 20,
+    page: 0,
+    take: 25,
   });
 
   const queryVariables = useMemo(() => {
     const queryParams: Record<string, any> = {
-      page: filters.page || 1,
-      take: filters.take || 20,
+      page: filters.page || 0,
+      take: filters.take || 25,
     };
 
     if (filters.search) {
@@ -45,8 +45,8 @@ export const useJobs = () => {
   const resetFilters = () => {
     setFilters({
       status: 'all',
-      page: 1,
-      take: 20,
+      page: 0,
+      take: 25,
     });
   };
 
