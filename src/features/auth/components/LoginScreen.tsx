@@ -1,5 +1,5 @@
+import { useAuthControllerManagerLogin, useAuthControllerStaffLogin } from '@/fetchers/queriesComponents';
 import { Button, Input } from '@/src/components/ui';
-import { useAuth } from '@/src/features/auth/hooks/useAuth';
 import type { UserRole } from '@/src/lib/store/authStore';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -8,7 +8,8 @@ import { Alert, KeyboardAvoidingView, Platform, ScrollView, Text, TouchableOpaci
 
 export const LoginScreen = () => {
   const router = useRouter();
-  const { sendOtp, isSendingOtp } = useAuth();
+  const {mutateAsync: staffLogin, isPending: isStaffLoginPending} = useAuthControllerStaffLogin({});
+  const {mutateAsync: managerLogin , isPending: isManagerLoginPending} = useAuthControllerManagerLogin({});
   
   const [email, setEmail] = useState('');
   const [selectedRole, setSelectedRole] = useState<UserRole>('general');
@@ -19,17 +20,34 @@ export const LoginScreen = () => {
       return;
     }
 
-    const result = await sendOtp(email, selectedRole);
-
-    if (result.success) {
-      // Navigate to OTP screen
-      router.push({
-        pathname: '/(auth)/otp-verify',
-        params: { email, role: selectedRole },
+    if( selectedRole === 'general') {
+      await staffLogin({ body: { email } }, {
+        onSuccess:  () => {
+          router.push({
+            pathname: '/(auth)/otp-verify',
+            params: { email, role: selectedRole },
+          });
+        },
+        onError: (error) => {
+          Alert.alert('Error', (error as any)?.message || 'Failed to send OTP');
+        }
       });
-    } else {
-      Alert.alert('Error', result.message || 'Failed to send OTP');
     }
+    if( selectedRole === 'manager') {
+      await managerLogin({ body: { email } }, {
+        onSuccess:  () => {
+          router.push({
+            pathname: '/(auth)/otp-verify',
+            params: { email, role: selectedRole },
+          });
+        },
+        onError: (error) => {
+          Alert.alert('Error', (error as any)?.message || 'Failed to send OTP');
+        }
+      });
+    }
+
+
   };
 
   const roleOptions: { value: UserRole; label: string; icon: string }[] = [
@@ -145,8 +163,8 @@ export const LoginScreen = () => {
           {/* Login Button */}
           <Button
             onPress={handleLogin}
-            isLoading={isSendingOtp}
-            disabled={isSendingOtp}
+            isLoading={ isStaffLoginPending || isManagerLoginPending }
+            disabled={ isStaffLoginPending || isManagerLoginPending }
             fullWidth
             size="lg"
             className="shadow-xl mb-6"

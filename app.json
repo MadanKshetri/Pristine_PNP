@@ -1,5 +1,6 @@
 {
   "expo": {
+    "jsEngine": "hermes",
     "name": "pristine_PNP",
     "slug": "pristine_PNP",
     "version": "1.0.0",

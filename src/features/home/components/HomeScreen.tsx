@@ -1,6 +1,5 @@
-import { useJobs } from '@/src/features/jobs/hooks';
-import type { Job } from '@/src/features/jobs/types';
-import { useAuthStore } from '@/src/lib/store/authStore';
+import { ListJobDto } from '@/fetchers/queriesSchemas';
+import { User } from '@/src/lib/store/authStore';
 import { format } from 'date-fns';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -11,23 +10,60 @@ import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from
 const { width } = Dimensions.get('window');
 const cardWidth = (width - 48) / 2;
 
-export const HomeScreen: React.FC = () => {
+// export const HomeScreen: React.FC = () => {
+//   const user = useAuthStore((state) => state.user);
+//   // const { jobs, isLoading } = useJobs();
+
+//   console.log('User in HomeScreen:', user);
+//   const customerId = user?.customerId;
+//   const {
+//     data: managerJobsData,
+//     isLoading,
+//   } = useCustomerJobControllerJobs(
+//     {
+//       queryParams: {
+//         customerId: customerId || '',
+//       }
+//     },
+//     {
+//       enabled: !!customerId,
+//     }
+//   )
+
+//   const { data: cleanerJobsData } = useJobControllerJobs({
+//     queryParams: {
+//       staffId: user?.id,
+//     }
+//   },{
+//     enabled: user?.role && user.role === 'general',
+//   });
+//   console.log(managerJobsData?.data.length);
+
+//   const managerJobList = managerJobsData?.data || [];
+//   const cleanerJobData = cleanerJobsData?.data || [];
+
+//   return (
+//     user?.customerId ?
+//     <HomeScreenData jobs={managerJobList} isLoading={isLoading} user={user} /> :
+//     <HomeScreenData jobs={cleanerJobData} isLoading={isLoading} user={user!} />
+//   )
+
+
+// };
+
+export const HomeScreen = ({ jobs , isLoading , user }: { jobs: ListJobDto[] , isLoading: boolean, user:User }) => {
   const router = useRouter();
-  const user = useAuthStore((state) => state.user);
-  const { jobs, isLoading } = useJobs();
-
-  // Calculate statistics
   const totalJobs = jobs.length;
-  const completedJobs = jobs.filter((job: Job) => job.startAt !== null).length;
-  const pendingJobs = jobs.filter((job: Job) => job.startAt === null).length;
-  const inProgressJobs = jobs.filter((job: Job) => job.startAt !== null).length;
+  console.log(jobs.map((job) => job.status));
+  const completedJobs = jobs.filter((job) => job.status === 'Completed').length;
+  const pendingJobs = jobs.filter((job) => job.status === 'scheduled').length;
+  const inProgressJobs = jobs.filter((job) => job.status === 'In Progress').length;
 
-  // Get current and upcoming jobs
-  const currentJobs = jobs.filter((job: Job) => job.startAt !== null).slice(0, 3);
-  const upcomingJobs = jobs.filter((job: Job) => job.startAt === null).slice(0, 3);
+  const currentJobs = jobs.filter((job) => job.status === 'In Progress').slice(0, 3);
+  const upcomingJobs = jobs.filter((job) => job.status === 'scheduled').slice(0, 3);
 
   const handleJobPress = (jobId: string) => {
-    router.push(`/job/${jobId}` as any);
+    router.push(`/job/${jobId}`);
   };
 
   const analyticsData = [
@@ -196,7 +232,7 @@ export const HomeScreen: React.FC = () => {
       <View style={styles.bottomPadding} />
     </ScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {

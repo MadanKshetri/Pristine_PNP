@@ -62,7 +62,7 @@ export const OtpVerifyScreen = () => {
       return;
     }
 
-    const result = await verifyOtp(params.email, code);
+    const result = await verifyOtp(params.email, code, params.role as UserRole);
 
     if (result.success) {
       // Navigate to main app after successful verification

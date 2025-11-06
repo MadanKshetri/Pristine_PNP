@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 // Types based on your API schema
-export type UserRole = 'admin' | 'manager' | 'general';
+export type UserRole =  'manager' | 'general';
 
 export interface User {
   id: string;
@@ -15,6 +15,7 @@ export interface User {
     name: string;
     url: string;
   } | null;
+  customerId?: string;
 }
 
 interface AuthState {

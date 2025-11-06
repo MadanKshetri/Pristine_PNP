@@ -11,6 +11,7 @@ interface ChecklistItemProps {
   index: number;
   jobStarted: boolean;
   onUpdate: () => void;
+  isReadOnly?: boolean;
 }
 
 export const ChecklistItem: React.FC<ChecklistItemProps> = ({
@@ -18,6 +19,7 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
   index,
   jobStarted,
   onUpdate,
+  isReadOnly = false,
 }) => {
   const { updateChecklist, isUpdatingChecklist } = useJobActions();
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
@@ -130,9 +132,9 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
   };
 
   return (
-    <Card className="mb-4 p-5">
+    <Card className="">
       {/* Header */}
-      <View className="flex-row justify-between items-start mb-3">
+      <View className="flex-row justify-between items-start ">
         <View className="flex-1 pr-4">
           <View className="flex-row items-center mb-2">
             <View className="w-6 h-6 rounded-full bg-blue-100 items-center justify-center mr-2">
@@ -146,10 +148,10 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
 
         <TouchableOpacity
           onPress={showStatusMenu}
-          disabled={isUpdatingChecklist}
+          disabled={isUpdatingChecklist || isReadOnly}
           className={`px-3 py-1 rounded-full ${statusStyle.bg}`}
         >
-          <View className="flex-row items-center">
+          <View className="flex flex-row items-center mt-2 justify-center w-24">
             <Ionicons
               name={statusStyle.icon as any}
               size={14}
@@ -211,32 +213,34 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
       )}
 
       {/* Actions */}
-      <View className="flex-row gap-2 mt-3">
-        <TouchableOpacity
-          onPress={showPhotoOptions}
-          disabled={!jobStarted || isUpdatingChecklist}
-          className={`flex-1 flex-row items-center justify-center py-3 rounded-lg border-2 ${
-            jobStarted ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-100'
-          }`}
-        >
-          {isUpdatingChecklist ? (
-            <ActivityIndicator size="small" color="#3B82F6" />
-          ) : (
-            <>
-              <Ionicons 
-                name="camera" 
-                size={18} 
-                color={jobStarted ? '#3B82F6' : '#9CA3AF'} 
-              />
-              <Text className={`text-sm font-semibold ml-2 ${
-                jobStarted ? 'text-blue-600' : 'text-gray-400'
-              }`}>
-                Add Photo
-              </Text>
-            </>
-          )}
-        </TouchableOpacity>
-      </View>
+      {!isReadOnly && (
+        <View className="flex-row gap-2 mt-3">
+          <TouchableOpacity
+            onPress={showPhotoOptions}
+            disabled={!jobStarted || isUpdatingChecklist}
+            className={`flex-1 flex-row items-center justify-center py-3 rounded-lg border-2 ${
+              jobStarted ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-100'
+            }`}
+          >
+            {isUpdatingChecklist ? (
+              <ActivityIndicator size="small" color="#3B82F6" />
+            ) : (
+              <>
+                <Ionicons 
+                  name="camera" 
+                  size={18} 
+                  color={jobStarted ? '#3B82F6' : '#9CA3AF'} 
+                />
+                <Text className={`text-sm font-semibold ml-2 ${
+                  jobStarted ? 'text-blue-600' : 'text-gray-400'
+                }`}>
+                  Add Photo
+                </Text>
+              </>
+            )}
+          </TouchableOpacity>
+        </View>
+      )}
     </Card>
   );
 };

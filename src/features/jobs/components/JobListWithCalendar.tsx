@@ -1,19 +1,19 @@
 import { Input, ScreenHeader } from '@/src/components/ui';
+import { User } from '@/src/lib/store/authStore';
 import { format, isSameDay, parseISO, startOfDay } from 'date-fns';
 import { useRouter } from 'expo-router';
 import { Clock, MapPin } from 'lucide-react-native';
 import React, { useMemo, useState } from 'react';
 import {
-    ActivityIndicator,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
-import { useJobs } from '../hooks';
-import type { Job } from '../types';
+import type { Job, JobFilters } from '../types';
 
 interface MarkedDates {
   [date: string]: {
@@ -24,30 +24,83 @@ interface MarkedDates {
   };
 }
 
-export const JobListWithCalendar: React.FC = () => {
+// export const JobListWithCalendar: React.FC = () => {
+//   const user = useAuthStore((state) => state.user);
+//   const [filters, setFilters] = useState<{ search?: string }>({});
+
+//   const handleSearch = (text: string) => {
+//     setFilters((prev) => ({ ...prev, search: text }));
+//   };
+
+//   const {data: jobsData, error, isLoading, refetch} = useJobControllerJobs({
+//     queryParams: {
+//       page: 0,
+//       take: 25,
+//       ...(filters.search ? { search: filters.search } : {}),
+//     }
+//   },{
+//     enabled: !!(user?.role==='general'),
+//   }
+// )
+
+// //for manager
+// const {data: jobsDataManager, error: errorManager, isLoading: isLoadingManager, refetch: refetchManager} = useJobControllerJobs({
+//   queryParams: {
+//     page: 0,
+//     take: 25,
+//     ...(filters.search ? { search: filters.search } : {}),
+//   }
+// },{
+//   enabled: !!(user?.role==='manager'),
+// }
+// )
+
+//   const jobs = useMemo(() => jobsData?.data ?? [], [jobsData?.data]);
+
+// // Render JobsList for manager or general user and pass refetch + search props
+// if (user?.role === 'manager') {
+//   return (
+//     <JobsList
+//       jobs={jobsDataManager?.data ?? []}
+//       user={user!}
+//       handleSearch={handleSearch}
+//       error={errorManager}
+//       isLoading={isLoadingManager}
+//       refetch={refetchManager}
+//       search={filters.search}
+//     />
+//   );
+// }
+
+//   return (
+//     <JobsList
+//       jobs={jobs}
+//       user={user!}
+//       handleSearch={handleSearch}
+//       error={error}
+//       isLoading={isLoading}
+//       refetch={refetch}
+//       search={filters.search}
+//     />
+//   );
+// };
+
+//set the render component seperate to render conditionally for manager and general user
+
+export const JobListWithCalendar = ({jobs, user , handleSearch , error , isLoading, refetch, search}: {jobs: Job[], user: User, handleSearch: React.Dispatch<React.SetStateAction<JobFilters>>, error: any, isLoading: boolean, refetch: () => void, search?: string}) => {
+
   const router = useRouter();
-  const { jobs, isLoading, error, refetch, filters, updateFilters } = useJobs();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const handleJobPress = (jobId: string) => {
     router.push(`/job/${jobId}` as any);
   };
 
-  const handleSearch = (text: string) => {
-    updateFilters({ search: text, page: 1 });
-  };
 
-  // Create marked dates object for calendar
-  const markedDates = useMemo(() => {
+   const markedDates = useMemo(() => {
     const marked: MarkedDates = {};
     
     jobs.forEach((job: Job) => {
-      // Mark created date
-      const createdDate = format(parseISO(job.createdAt), 'yyyy-MM-dd');
-      marked[createdDate] = {
-        marked: true,
-        dotColor: '#3b82f6',
-      };
       
       // Mark start date if exists
       if (job.startAt) {
@@ -128,8 +181,8 @@ export const JobListWithCalendar: React.FC = () => {
         <View style={styles.searchContainer}>
           <Input
             placeholder="Search jobs..."
-            value={filters.search || ''}
-            onChangeText={handleSearch}
+            value={search || ''}
+            onChangeText={(text) => handleSearch({ search: text })}
           />
         </View>
 
@@ -159,14 +212,6 @@ export const JobListWithCalendar: React.FC = () => {
           />
         </View>
 
-        {selectedDate && (
-          <TouchableOpacity
-            style={styles.clearButton}
-            onPress={() => setSelectedDate(null)}>
-            <Text style={styles.clearButtonText}>View All Jobs</Text>
-          </TouchableOpacity>
-        )}
-
         <View style={styles.jobsContainer}>
           <View style={styles.jobsHeader}>
             <Text style={styles.jobsTitle}>
@@ -187,7 +232,7 @@ export const JobListWithCalendar: React.FC = () => {
               <Text style={styles.emptyText}>
                 {selectedDate
                   ? 'No jobs scheduled for this date'
-                  : filters.search
+                  : search
                   ? 'No matching jobs found'
                   : 'No jobs assigned'}
               </Text>
@@ -258,7 +303,8 @@ export const JobListWithCalendar: React.FC = () => {
       </ScrollView>
     </View>
   );
-};
+  
+}
 
 const styles = StyleSheet.create({
   container: {

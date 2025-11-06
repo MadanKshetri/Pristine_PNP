@@ -117,7 +117,6 @@ export type GetMeResponseDto = {
 };
 
 export type LoginUserRequestDto = {
-  loginFor: "admin" | "manager" | "general";
   email: string;
 };
 
@@ -147,6 +146,29 @@ export type LoginUserDto = {
 export type LoginUserResponseDto = {
   message: string;
   data: LoginUserDto;
+};
+
+export type LoginManagerManagerDto = {
+  /**
+   * @format uuid
+   */
+  id: string;
+  fullName: string;
+  email: string;
+  /**
+   * @format uuid
+   */
+  customerId: string;
+};
+
+export type LoginManagerDto = {
+  token: string;
+  user: LoginManagerManagerDto;
+};
+
+export type LoginManagerResponseDto = {
+  message: string;
+  data: LoginManagerDto;
 };
 
 export type ListSOWDto = {
@@ -201,6 +223,30 @@ export type ListSOWGroupResponseDto = {
   message: string;
   data: ListSOWGroupDto[];
   pagination: PaginationResponseDTO;
+};
+
+export type GetSOWGroupSow = {
+  description?: string | null;
+  /**
+   * @format uuid
+   */
+  id: string;
+  title: string;
+};
+
+export type GetSOWGroupDto = {
+  description?: string | null;
+  /**
+   * @format uuid
+   */
+  id: string;
+  title: string;
+  sows: GetSOWGroupSow[];
+};
+
+export type GetSOWGroupResponseDto = {
+  message: string;
+  data: GetSOWGroupDto;
 };
 
 export type CreateScopeOfWorkGroupRequestDto = {
@@ -315,6 +361,7 @@ export type GetJobSiteDto = {
 };
 
 export type ListJobDto = {
+  status: "scheduled" | "In Progress" | "Completed" | "Cancelled";
   /**
    * @format uuid
    */
@@ -340,10 +387,12 @@ export type GetJobChecklistDto = {
    */
   id: string;
   name: string;
+  remarks: string | null;
   attachments: AssetDto[];
 };
 
 export type GetJobDto = {
+  status: "scheduled" | "In Progress" | "Completed" | "Cancelled";
   /**
    * @format uuid
    */
@@ -414,6 +463,7 @@ export type ListCustomerDto = {
   email?: string | null;
   id: string;
   name: string;
+  createdBy: IdNameDto;
 };
 
 export type ListCustomerResponseDto = {
@@ -440,6 +490,7 @@ export type GetCustomerDto = {
   email?: string | null;
   id: string;
   name: string;
+  createdBy: IdNameDto;
   sites: GetCustomerSiteDto[];
 };
 

@@ -1,7 +1,9 @@
 import {
-    useAuthControllerGetMe,
-    useAuthControllerLogin,
-    useAuthControllerVerifyOtp,
+  useAuthControllerGetMe,
+  useAuthControllerManagerLogin,
+  useAuthControllerStaffLogin,
+  useAuthControllerVerifyManagerOtp,
+  useAuthControllerVerifyUserOtp,
 } from '@/fetchers/queriesComponents';
 import type { LoginUserRequestDto, VerrifyOtpDto } from '@/fetchers/queriesSchemas';
 import { useAuthStore, type User, type UserRole } from '@/src/lib/store/authStore';
@@ -9,15 +11,13 @@ import { useAuthStore, type User, type UserRole } from '@/src/lib/store/authStor
 export const useAuth = () => {
   const { user, token, isAuthenticated, setAuth, logout: storeLogout } = useAuthStore();
 
-  // Login mutation (send OTP)
-  const loginMutation = useAuthControllerLogin({});
+  const staffLoginMutation = useAuthControllerStaffLogin({});
+  const managerLoginMutation = useAuthControllerManagerLogin({});
 
-  // Verify OTP mutation
-  const verifyOtpMutation = useAuthControllerVerifyOtp({});
+  const verifyUserOtpMutation = useAuthControllerVerifyUserOtp({});
+  const verifyManagerOtpMutation = useAuthControllerVerifyManagerOtp({});
 
-  // Get current user query
   const {
-    data: userData,
     isLoading: isLoadingUser,
     refetch: refetchUser,
   } = useAuthControllerGetMe(
@@ -34,9 +34,10 @@ export const useAuth = () => {
     try {
       const payload: LoginUserRequestDto = {
         email,
-        loginFor: role,
       };
 
+      const loginMutation = role === 'manager' ? managerLoginMutation : staffLoginMutation;
+      
       const response = await loginMutation.mutateAsync({
         body: payload,
       });
@@ -53,26 +54,25 @@ export const useAuth = () => {
   /**
    * Verify OTP and login
    */
-  const verifyOtp = async (email: string, otp: string) => {
+  const verifyOtp = async (email: string, otp: string, role: UserRole) => {
     try {
       const payload: VerrifyOtpDto = {
         email,
         otp,
       };
 
-      const response = await verifyOtpMutation.mutateAsync({
+      if(role === 'manager'){
+      const response = await verifyManagerOtpMutation.mutateAsync({
         body: payload,
       });
 
       if (response.data) {
-        // Determine role from email/context (you might need to adjust this based on your API)
-        const userRole: UserRole = 'general'; // Default, should come from API
-
-        const user: User = {
+        const user = {
           id: response.data.user.id,
           email: response.data.user.email,
           fullName: response.data.user.fullName,
-          role: userRole,
+          customerId: response.data.user.customerId,
+          role: role, // Use the role passed from login screen
         };
 
         // Save to Zustand store
@@ -81,6 +81,28 @@ export const useAuth = () => {
         // Navigation will be handled by the component
         return { success: true };
       }
+    }
+
+    if(role === 'general'){
+      const response = await verifyUserOtpMutation.mutateAsync({
+        body: payload,
+      });
+
+      if (response.data) {
+        const user: User = {
+          id: response.data.user.id,
+          email: response.data.user.email,
+          fullName: response.data.user.fullName,
+          role: role, // Use the role passed from login screen
+        };
+
+        // Save to Zustand store
+        setAuth(user, response.data.token);
+
+        // Navigation will be handled by the component
+        return { success: true };
+      }
+    }
 
       return { success: false, message: 'Invalid OTP' };
     } catch (error: any) {
@@ -113,7 +135,7 @@ export const useAuth = () => {
     refetchUser,
 
     // Mutation states
-    isSendingOtp: loginMutation.isPending,
-    isVerifyingOtp: verifyOtpMutation.isPending,
+    isSendingOtp: staffLoginMutation.isPending || managerLoginMutation.isPending,
+    isVerifyingOtp: verifyUserOtpMutation.isPending || verifyManagerOtpMutation.isPending,
   };
 };

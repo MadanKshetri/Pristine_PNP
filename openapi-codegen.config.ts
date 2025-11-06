@@ -1,13 +1,16 @@
 import { defineConfig } from "@openapi-codegen/cli";
 import {
-    generateReactQueryComponents,
-    generateSchemaTypes,
+  generateReactQueryComponents,
+  generateSchemaTypes,
 } from "@openapi-codegen/typescript";
+
+const BACKEND_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:5000";
+console.log("Generating code from BACKEND_URL:", BACKEND_URL);
 export default defineConfig({
   api: {
     from: {
       source: "url",
-      url: "https://cmsapi.centralindia.cloudapp.azure.com/api-json",
+      url: `${BACKEND_URL}/api-json`,
       method: "get",
     },
     outputDir: "./fetchers",
