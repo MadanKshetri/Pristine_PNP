@@ -362,12 +362,12 @@ export type GetJobSiteDto = {
 
 export type ListJobDto = {
   status: "scheduled" | "In Progress" | "Completed" | "Cancelled";
+  description?: string | null;
   /**
    * @format uuid
    */
   id: string;
   title: string;
-  description: string | null;
   jobNumber: number;
   startAt: string | null;
   createdAt: string;
@@ -382,23 +382,23 @@ export type ListJobResponseDto = {
 
 export type GetJobChecklistDto = {
   status: "Pending" | "Ongoing" | "Completed" | "Cancelled";
+  remarks?: string | null;
   /**
    * @format uuid
    */
   id: string;
   name: string;
-  remarks: string | null;
   attachments: AssetDto[];
 };
 
 export type GetJobDto = {
+  description?: string | null;
   status: "scheduled" | "In Progress" | "Completed" | "Cancelled";
   /**
    * @format uuid
    */
   id: string;
   title: string;
-  description: string | null;
   jobNumber: number;
   startAt: string | null;
   createdAt: string;
@@ -420,8 +420,8 @@ export type CreateJobChecklistDto = {
 };
 
 export type CreateJobRequestDto = {
-  title: string;
   description?: string;
+  title: string;
   siteId: string;
   /**
    * @format date-time

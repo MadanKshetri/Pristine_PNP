@@ -1,9 +1,10 @@
 import {
-  useAuthControllerGetMe,
+  useAuthControllerGetMeCustomer,
+  useAuthControllerGetMeUser,
   useAuthControllerManagerLogin,
   useAuthControllerStaffLogin,
   useAuthControllerVerifyManagerOtp,
-  useAuthControllerVerifyUserOtp,
+  useAuthControllerVerifyUserOtp
 } from '@/fetchers/queriesComponents';
 import type { LoginUserRequestDto, VerrifyOtpDto } from '@/fetchers/queriesSchemas';
 import { useAuthStore, type User, type UserRole } from '@/src/lib/store/authStore';
@@ -16,14 +17,25 @@ export const useAuth = () => {
 
   const verifyUserOtpMutation = useAuthControllerVerifyUserOtp({});
   const verifyManagerOtpMutation = useAuthControllerVerifyManagerOtp({});
+  const isManager = user?.role==='manager';
 
   const {
     isLoading: isLoadingUser,
     refetch: refetchUser,
-  } = useAuthControllerGetMe(
+  } = useAuthControllerGetMeUser(
     {},
     {
-      enabled: isAuthenticated && !!token,
+      enabled: !isManager &&isAuthenticated && !!token,
+    }
+  );
+
+  const {
+    isLoading: isLoadingManager,
+    refetch: refetchManager,
+  } = useAuthControllerGetMeCustomer(
+    {},
+    {
+      enabled: isManager && isAuthenticated && !!token,
     }
   );
 
@@ -126,13 +138,13 @@ export const useAuth = () => {
     user,
     token,
     isAuthenticated,
-    isLoadingUser,
+    isLoadingUser: isLoadingUser || isLoadingManager,
 
     // Actions
     sendOtp,
     verifyOtp,
     logout,
-    refetchUser,
+    refetchUser : isManager ? refetchManager : refetchUser,
 
     // Mutation states
     isSendingOtp: staffLoginMutation.isPending || managerLoginMutation.isPending,

@@ -490,32 +490,32 @@ export const useUserControllerDeleteUser = (
   });
 };
 
-export type AuthControllerGetMeError = Fetcher.ErrorWrapper<undefined>;
+export type AuthControllerGetMeUserError = Fetcher.ErrorWrapper<undefined>;
 
-export type AuthControllerGetMeVariables = QueriesContext["fetcherOptions"];
+export type AuthControllerGetMeUserVariables = QueriesContext["fetcherOptions"];
 
-export const fetchAuthControllerGetMe = (
-  variables: AuthControllerGetMeVariables,
+export const fetchAuthControllerGetMeUser = (
+  variables: AuthControllerGetMeUserVariables,
   signal?: AbortSignal,
 ) =>
   queriesFetch<
     Schemas.GetMeResponseDto,
-    AuthControllerGetMeError,
+    AuthControllerGetMeUserError,
     undefined,
     {},
     {},
     {}
-  >({ url: "/auth/me", method: "get", ...variables, signal });
+  >({ url: "/auth/user/me", method: "get", ...variables, signal });
 
-export function authControllerGetMeQuery(
-  variables: AuthControllerGetMeVariables,
+export function authControllerGetMeUserQuery(
+  variables: AuthControllerGetMeUserVariables,
 ): {
   queryKey: reactQuery.QueryKey;
   queryFn: (options: QueryFnOptions) => Promise<Schemas.GetMeResponseDto>;
 };
 
-export function authControllerGetMeQuery(
-  variables: AuthControllerGetMeVariables | reactQuery.SkipToken,
+export function authControllerGetMeUserQuery(
+  variables: AuthControllerGetMeUserVariables | reactQuery.SkipToken,
 ): {
   queryKey: reactQuery.QueryKey;
   queryFn:
@@ -523,31 +523,31 @@ export function authControllerGetMeQuery(
     | reactQuery.SkipToken;
 };
 
-export function authControllerGetMeQuery(
-  variables: AuthControllerGetMeVariables | reactQuery.SkipToken,
+export function authControllerGetMeUserQuery(
+  variables: AuthControllerGetMeUserVariables | reactQuery.SkipToken,
 ) {
   return {
     queryKey: queryKeyFn({
-      path: "/auth/me",
-      operationId: "authControllerGetMe",
+      path: "/auth/user/me",
+      operationId: "authControllerGetMeUser",
       variables,
     }),
     queryFn:
       variables === reactQuery.skipToken
         ? reactQuery.skipToken
         : ({ signal }: QueryFnOptions) =>
-            fetchAuthControllerGetMe(variables, signal),
+            fetchAuthControllerGetMeUser(variables, signal),
   };
 }
 
-export const useSuspenseAuthControllerGetMe = <
+export const useSuspenseAuthControllerGetMeUser = <
   TData = Schemas.GetMeResponseDto,
 >(
-  variables: AuthControllerGetMeVariables,
+  variables: AuthControllerGetMeUserVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
       Schemas.GetMeResponseDto,
-      AuthControllerGetMeError,
+      AuthControllerGetMeUserError,
       TData
     >,
     "queryKey" | "queryFn" | "initialData"
@@ -556,21 +556,21 @@ export const useSuspenseAuthControllerGetMe = <
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useSuspenseQuery<
     Schemas.GetMeResponseDto,
-    AuthControllerGetMeError,
+    AuthControllerGetMeUserError,
     TData
   >({
-    ...authControllerGetMeQuery(deepMerge(fetcherOptions, variables)),
+    ...authControllerGetMeUserQuery(deepMerge(fetcherOptions, variables)),
     ...options,
     ...queryOptions,
   });
 };
 
-export const useAuthControllerGetMe = <TData = Schemas.GetMeResponseDto,>(
-  variables: AuthControllerGetMeVariables | reactQuery.SkipToken,
+export const useAuthControllerGetMeUser = <TData = Schemas.GetMeResponseDto,>(
+  variables: AuthControllerGetMeUserVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
       Schemas.GetMeResponseDto,
-      AuthControllerGetMeError,
+      AuthControllerGetMeUserError,
       TData
     >,
     "queryKey" | "queryFn" | "initialData"
@@ -579,10 +579,115 @@ export const useAuthControllerGetMe = <TData = Schemas.GetMeResponseDto,>(
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useQuery<
     Schemas.GetMeResponseDto,
-    AuthControllerGetMeError,
+    AuthControllerGetMeUserError,
     TData
   >({
-    ...authControllerGetMeQuery(
+    ...authControllerGetMeUserQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type AuthControllerGetMeCustomerError = Fetcher.ErrorWrapper<undefined>;
+
+export type AuthControllerGetMeCustomerVariables =
+  QueriesContext["fetcherOptions"];
+
+export const fetchAuthControllerGetMeCustomer = (
+  variables: AuthControllerGetMeCustomerVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.GetMeResponseDto,
+    AuthControllerGetMeCustomerError,
+    undefined,
+    {},
+    {},
+    {}
+  >({ url: "/auth/customer/me", method: "get", ...variables, signal });
+
+export function authControllerGetMeCustomerQuery(
+  variables: AuthControllerGetMeCustomerVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (options: QueryFnOptions) => Promise<Schemas.GetMeResponseDto>;
+};
+
+export function authControllerGetMeCustomerQuery(
+  variables: AuthControllerGetMeCustomerVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((options: QueryFnOptions) => Promise<Schemas.GetMeResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function authControllerGetMeCustomerQuery(
+  variables: AuthControllerGetMeCustomerVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/auth/customer/me",
+      operationId: "authControllerGetMeCustomer",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchAuthControllerGetMeCustomer(variables, signal),
+  };
+}
+
+export const useSuspenseAuthControllerGetMeCustomer = <
+  TData = Schemas.GetMeResponseDto,
+>(
+  variables: AuthControllerGetMeCustomerVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.GetMeResponseDto,
+      AuthControllerGetMeCustomerError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.GetMeResponseDto,
+    AuthControllerGetMeCustomerError,
+    TData
+  >({
+    ...authControllerGetMeCustomerQuery(deepMerge(fetcherOptions, variables)),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useAuthControllerGetMeCustomer = <
+  TData = Schemas.GetMeResponseDto,
+>(
+  variables: AuthControllerGetMeCustomerVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.GetMeResponseDto,
+      AuthControllerGetMeCustomerError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.GetMeResponseDto,
+    AuthControllerGetMeCustomerError,
+    TData
+  >({
+    ...authControllerGetMeCustomerQuery(
       variables === reactQuery.skipToken
         ? variables
         : deepMerge(fetcherOptions, variables),
@@ -1593,14 +1698,17 @@ export const useSiteControllerCreate = (
   });
 };
 
-export type SiteControllerSiteQueryParams = {
+export type SiteControllerSitePathParams = {
+  /**
+   * @format uuid
+   */
   id: string;
 };
 
 export type SiteControllerSiteError = Fetcher.ErrorWrapper<undefined>;
 
 export type SiteControllerSiteVariables = {
-  queryParams: SiteControllerSiteQueryParams;
+  pathParams: SiteControllerSitePathParams;
 } & QueriesContext["fetcherOptions"];
 
 export const fetchSiteControllerSite = (
@@ -1612,8 +1720,8 @@ export const fetchSiteControllerSite = (
     SiteControllerSiteError,
     undefined,
     {},
-    SiteControllerSiteQueryParams,
-    {}
+    {},
+    SiteControllerSitePathParams
   >({ url: "/site/{id}", method: "get", ...variables, signal });
 
 export function siteControllerSiteQuery(
@@ -2173,20 +2281,12 @@ export type CustomerControllerCustomersQueryParams = {
    */
   page?: number;
   search?: string;
-  /**
-   * @format uuid
-   */
-  customerId: string;
-  /**
-   * @format uuid
-   */
-  staffId?: string;
 };
 
 export type CustomerControllerCustomersError = Fetcher.ErrorWrapper<undefined>;
 
 export type CustomerControllerCustomersVariables = {
-  queryParams: CustomerControllerCustomersQueryParams;
+  queryParams?: CustomerControllerCustomersQueryParams;
 } & QueriesContext["fetcherOptions"];
 
 export const fetchCustomerControllerCustomers = (
@@ -2555,11 +2655,11 @@ export type CustomerJobControllerJobsQueryParams = {
   /**
    * @format uuid
    */
-  customerId: string;
+  staffId?: string;
   /**
    * @format uuid
    */
-  staffId?: string;
+  customerId: string;
 };
 
 export type CustomerJobControllerJobsError = Fetcher.ErrorWrapper<undefined>;
@@ -2791,9 +2891,14 @@ export type QueryOperation =
       variables: UserControllerGetGeneralsVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/auth/me";
-      operationId: "authControllerGetMe";
-      variables: AuthControllerGetMeVariables | reactQuery.SkipToken;
+      path: "/auth/user/me";
+      operationId: "authControllerGetMeUser";
+      variables: AuthControllerGetMeUserVariables | reactQuery.SkipToken;
+    }
+  | {
+      path: "/auth/customer/me";
+      operationId: "authControllerGetMeCustomer";
+      variables: AuthControllerGetMeCustomerVariables | reactQuery.SkipToken;
     }
   | {
       path: "/sow";
