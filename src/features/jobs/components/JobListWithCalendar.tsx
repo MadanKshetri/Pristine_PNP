@@ -1,9 +1,9 @@
-import { Input, ScreenHeader } from '@/src/components/ui';
-import { User } from '@/src/lib/store/authStore';
-import { format, isSameDay, parseISO, startOfDay } from 'date-fns';
-import { useRouter } from 'expo-router';
-import { Clock, MapPin } from 'lucide-react-native';
-import React, { useMemo, useState } from 'react';
+import { Input, ScreenHeader } from "@/src/components/ui";
+import { User } from "@/src/lib/store/authStore";
+import { format, isSameDay, parseISO, startOfDay } from "date-fns";
+import { useRouter } from "expo-router";
+import { Clock, MapPin } from "lucide-react-native";
+import React, { useMemo, useState } from "react";
 import {
   ActivityIndicator,
   ScrollView,
@@ -11,9 +11,9 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from 'react-native';
-import { Calendar, DateData } from 'react-native-calendars';
-import type { Job, JobFilters } from '../types';
+} from "react-native";
+import { Calendar, DateData } from "react-native-calendars";
+import type { Job, JobFilters } from "../types";
 
 interface MarkedDates {
   [date: string]: {
@@ -24,71 +24,24 @@ interface MarkedDates {
   };
 }
 
-// export const JobListWithCalendar: React.FC = () => {
-//   const user = useAuthStore((state) => state.user);
-//   const [filters, setFilters] = useState<{ search?: string }>({});
 
-//   const handleSearch = (text: string) => {
-//     setFilters((prev) => ({ ...prev, search: text }));
-//   };
-
-//   const {data: jobsData, error, isLoading, refetch} = useJobControllerJobs({
-//     queryParams: {
-//       page: 0,
-//       take: 25,
-//       ...(filters.search ? { search: filters.search } : {}),
-//     }
-//   },{
-//     enabled: !!(user?.role==='general'),
-//   }
-// )
-
-// //for manager
-// const {data: jobsDataManager, error: errorManager, isLoading: isLoadingManager, refetch: refetchManager} = useJobControllerJobs({
-//   queryParams: {
-//     page: 0,
-//     take: 25,
-//     ...(filters.search ? { search: filters.search } : {}),
-//   }
-// },{
-//   enabled: !!(user?.role==='manager'),
-// }
-// )
-
-//   const jobs = useMemo(() => jobsData?.data ?? [], [jobsData?.data]);
-
-// // Render JobsList for manager or general user and pass refetch + search props
-// if (user?.role === 'manager') {
-//   return (
-//     <JobsList
-//       jobs={jobsDataManager?.data ?? []}
-//       user={user!}
-//       handleSearch={handleSearch}
-//       error={errorManager}
-//       isLoading={isLoadingManager}
-//       refetch={refetchManager}
-//       search={filters.search}
-//     />
-//   );
-// }
-
-//   return (
-//     <JobsList
-//       jobs={jobs}
-//       user={user!}
-//       handleSearch={handleSearch}
-//       error={error}
-//       isLoading={isLoading}
-//       refetch={refetch}
-//       search={filters.search}
-//     />
-//   );
-// };
-
-//set the render component seperate to render conditionally for manager and general user
-
-export const JobListWithCalendar = ({jobs, user , handleSearch , error , isLoading, refetch, search}: {jobs: Job[], user: User, handleSearch: React.Dispatch<React.SetStateAction<JobFilters>>, error: any, isLoading: boolean, refetch: () => void, search?: string}) => {
-
+export const JobListWithCalendar = ({
+  jobs,
+  user,
+  handleSearch,
+  error,
+  isLoading,
+  refetch,
+  search,
+}: {
+  jobs: Job[];
+  user: User;
+  handleSearch: React.Dispatch<React.SetStateAction<JobFilters>>;
+  error: any;
+  isLoading: boolean;
+  refetch: () => void;
+  search?: string;
+}) => {
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
@@ -96,18 +49,16 @@ export const JobListWithCalendar = ({jobs, user , handleSearch , error , isLoadi
     router.push(`/job/${jobId}` as any);
   };
 
-
-   const markedDates = useMemo(() => {
+  const markedDates = useMemo(() => {
     const marked: MarkedDates = {};
-    
+
     jobs.forEach((job: Job) => {
-      
       // Mark start date if exists
       if (job.startAt) {
-        const startDate = format(parseISO(job.startAt), 'yyyy-MM-dd');
+        const startDate = format(parseISO(job.startAt), "yyyy-MM-dd");
         marked[startDate] = {
           marked: true,
-          dotColor: '#10b981',
+          dotColor: "#10b981",
         };
       }
     });
@@ -117,7 +68,7 @@ export const JobListWithCalendar = ({jobs, user , handleSearch , error , isLoadi
       marked[selectedDate] = {
         ...marked[selectedDate],
         selected: true,
-        selectedColor: '#e0e7ff',
+        selectedColor: "#e0e7ff",
       };
     }
 
@@ -147,10 +98,10 @@ export const JobListWithCalendar = ({jobs, user , handleSearch , error , isLoadi
 
   const formatDate = (datetime: string) => {
     const date = new Date(datetime);
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
     });
   };
 
@@ -159,7 +110,7 @@ export const JobListWithCalendar = ({jobs, user , handleSearch , error , isLoadi
       <View style={styles.errorContainer}>
         <Text style={styles.errorTitle}>Error Loading Jobs</Text>
         <Text style={styles.errorText}>
-          {(error as any)?.payload || 'Something went wrong. Please try again.'}
+          {(error as any)?.payload || "Something went wrong. Please try again."}
         </Text>
         <TouchableOpacity style={styles.retryButton} onPress={() => refetch()}>
           <Text style={styles.retryButtonText}>Retry</Text>
@@ -172,16 +123,18 @@ export const JobListWithCalendar = ({jobs, user , handleSearch , error , isLoadi
     <View style={styles.container}>
       <ScreenHeader
         title="Jobs Calendar"
-        subtitle={selectedDate
-          ? `Jobs for ${formatDate(selectedDate)}`
-          : `${jobs.length} total jobs`}
+        subtitle={
+          selectedDate
+            ? `Jobs for ${formatDate(selectedDate)}`
+            : `${jobs.length} total jobs`
+        }
       />
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.searchContainer}>
           <Input
             placeholder="Search jobs..."
-            value={search || ''}
+            value={search || ""}
             onChangeText={(text) => handleSearch({ search: text })}
           />
         </View>
@@ -191,19 +144,19 @@ export const JobListWithCalendar = ({jobs, user , handleSearch , error , isLoadi
             onDayPress={onDayPress}
             markedDates={markedDates}
             theme={{
-              backgroundColor: '#ffffff',
-              calendarBackground: '#ffffff',
-              textSectionTitleColor: '#64748b',
-              selectedDayBackgroundColor: '#3b82f6',
-              selectedDayTextColor: '#ffffff',
-              todayTextColor: '#3b82f6',
-              dayTextColor: '#0f172a',
-              textDisabledColor: '#cbd5e1',
-              dotColor: '#3b82f6',
-              monthTextColor: '#0f172a',
-              textDayFontWeight: '600',
-              textMonthFontWeight: '700',
-              textDayHeaderFontWeight: '600',
+              backgroundColor: "#ffffff",
+              calendarBackground: "#ffffff",
+              textSectionTitleColor: "#64748b",
+              selectedDayBackgroundColor: "#3b82f6",
+              selectedDayTextColor: "#ffffff",
+              todayTextColor: "#3b82f6",
+              dayTextColor: "#0f172a",
+              textDisabledColor: "#cbd5e1",
+              dotColor: "#3b82f6",
+              monthTextColor: "#0f172a",
+              textDayFontWeight: "600",
+              textMonthFontWeight: "700",
+              textDayHeaderFontWeight: "600",
               textDayFontSize: 15,
               textMonthFontSize: 18,
               textDayHeaderFontSize: 13,
@@ -215,7 +168,7 @@ export const JobListWithCalendar = ({jobs, user , handleSearch , error , isLoadi
         <View style={styles.jobsContainer}>
           <View style={styles.jobsHeader}>
             <Text style={styles.jobsTitle}>
-              {selectedDate ? 'Jobs for Selected Date' : 'All Jobs'}
+              {selectedDate ? "Jobs for Selected Date" : "All Jobs"}
             </Text>
             <View style={styles.countBadge}>
               <Text style={styles.countText}>{filteredJobs.length}</Text>
@@ -231,10 +184,10 @@ export const JobListWithCalendar = ({jobs, user , handleSearch , error , isLoadi
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyText}>
                 {selectedDate
-                  ? 'No jobs scheduled for this date'
+                  ? "No jobs scheduled for this date"
                   : search
-                  ? 'No matching jobs found'
-                  : 'No jobs assigned'}
+                    ? "No matching jobs found"
+                    : "No jobs assigned"}
               </Text>
             </View>
           ) : (
@@ -242,27 +195,59 @@ export const JobListWithCalendar = ({jobs, user , handleSearch , error , isLoadi
               <TouchableOpacity
                 key={job.id}
                 onPress={() => handleJobPress(job.id)}
-                activeOpacity={0.7}>
+                activeOpacity={0.7}
+              >
                 <View style={styles.jobCard}>
                   <View style={styles.jobCardHeader}>
                     <View style={styles.jobTitleContainer}>
                       <Text style={styles.jobTitle}>{job.title}</Text>
-                      <Text style={styles.jobDate}>{formatDate(job.createdAt)}</Text>
+                      <Text style={styles.jobDate}>
+                        {formatDate(job.createdAt)}
+                      </Text>
                     </View>
-                    <View
-                      style={
-                        job.startAt
-                          ? styles.statusBadgeInProgress
-                          : styles.statusBadgeScheduled
-                      }>
-                      <Text
+                    <View style={{display:'flex',flexDirection: 'row', alignItems: 'center', gap: 10}}>
+                      <View
                         style={
                           job.startAt
-                            ? styles.statusTextInProgress
-                            : styles.statusTextScheduled
-                        }>
-                        {job.startAt ? 'Started' : 'Pending'}
-                      </Text>
+                            ? styles.statusBadgeInProgress
+                            : styles.statusBadgeScheduled
+                        }
+                      >
+                        <Text
+                          style={
+                            job.startAt
+                              ? styles.statusTextInProgress
+                              : styles.statusTextScheduled
+                          }
+                          className="capitalize"
+                        >
+                          {job.status}
+                        </Text>
+                      </View>
+
+                      {job.startAt && new Date(job.startAt) < new Date() && <View
+                        style={
+                          {
+                            backgroundColor: "#fd170fff",
+                            padding: 5,
+                            borderRadius: 8,
+                            width: 50,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }
+                        }
+                      >
+                        <Text
+                          style={
+                            {
+                              color: "#ffffff",
+                            }
+                          }
+                          className="capitalize"
+                        >
+                          Due
+                        </Text>
+                      </View>}
                     </View>
                   </View>
 
@@ -280,7 +265,8 @@ export const JobListWithCalendar = ({jobs, user , handleSearch , error , isLoadi
                       <View style={styles.detailRow}>
                         <Clock size={16} color="#64748b" strokeWidth={2} />
                         <Text style={styles.detailText}>
-                          Started {format(new Date(job.startAt), 'MMM dd, h:mm a')}
+                          Started{" "}
+                          {format(new Date(job.startAt), "MMM dd, h:mm a")}
                         </Text>
                       </View>
                     )}
@@ -303,22 +289,21 @@ export const JobListWithCalendar = ({jobs, user , handleSearch , error , isLoadi
       </ScrollView>
     </View>
   );
-  
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: "#f8fafc",
   },
   header: {
     paddingHorizontal: 16,
     paddingTop: 60,
     paddingBottom: 24,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     borderBottomLeftRadius: 24,
     borderBottomRightRadius: 24,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
@@ -326,14 +311,14 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 32,
-    fontWeight: '700',
-    color: '#0f172a',
+    fontWeight: "700",
+    color: "#0f172a",
     marginBottom: 4,
   },
   headerSubtitle: {
     fontSize: 16,
-    color: '#64748b',
-    fontWeight: '500',
+    color: "#64748b",
+    fontWeight: "500",
   },
   searchContainer: {
     paddingHorizontal: 16,
@@ -341,10 +326,10 @@ const styles = StyleSheet.create({
   },
   calendarContainer: {
     margin: 16,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     borderRadius: 20,
-    overflow: 'hidden',
-    shadowColor: '#000',
+    overflow: "hidden",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.06,
     shadowRadius: 8,
@@ -357,107 +342,107 @@ const styles = StyleSheet.create({
   clearButton: {
     marginHorizontal: 16,
     marginBottom: 16,
-    backgroundColor: '#3b82f6',
+    backgroundColor: "#3b82f6",
     padding: 16,
     borderRadius: 12,
-    alignItems: 'center',
+    alignItems: "center",
   },
   clearButtonText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   jobsContainer: {
     paddingHorizontal: 16,
   },
   jobsHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 16,
   },
   jobsTitle: {
     fontSize: 20,
-    fontWeight: '700',
-    color: '#0f172a',
+    fontWeight: "700",
+    color: "#0f172a",
     marginRight: 8,
   },
   countBadge: {
-    backgroundColor: '#e0e7ff',
+    backgroundColor: "#e0e7ff",
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
   },
   countText: {
     fontSize: 14,
-    fontWeight: '700',
-    color: '#3730a3',
+    fontWeight: "700",
+    color: "#3730a3",
   },
   loadingContainer: {
     paddingVertical: 40,
-    alignItems: 'center',
+    alignItems: "center",
   },
   loadingText: {
     marginTop: 12,
     fontSize: 16,
-    color: '#64748b',
-    fontWeight: '500',
+    color: "#64748b",
+    fontWeight: "500",
   },
   emptyContainer: {
     paddingVertical: 40,
-    alignItems: 'center',
+    alignItems: "center",
   },
   emptyText: {
     fontSize: 16,
-    color: '#64748b',
-    fontWeight: '500',
+    color: "#64748b",
+    fontWeight: "500",
   },
   errorContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f8fafc',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f8fafc",
     paddingHorizontal: 24,
   },
   errorTitle: {
     fontSize: 20,
-    fontWeight: '700',
-    color: '#0f172a',
+    fontWeight: "700",
+    color: "#0f172a",
     marginBottom: 8,
   },
   errorText: {
     fontSize: 14,
-    color: '#64748b',
-    textAlign: 'center',
+    color: "#64748b",
+    textAlign: "center",
     marginBottom: 24,
   },
   retryButton: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: "#3b82f6",
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 12,
   },
   retryButtonText: {
-    color: '#ffffff',
+    color: "#ffffff",
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   jobCard: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     padding: 16,
     borderRadius: 16,
     marginBottom: 12,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.06,
     shadowRadius: 8,
     elevation: 2,
     borderWidth: 1,
-    borderColor: '#f1f5f9',
+    borderColor: "#f1f5f9",
   },
   jobCardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
     marginBottom: 12,
   },
   jobTitleContainer: {
@@ -466,60 +451,60 @@ const styles = StyleSheet.create({
   },
   jobTitle: {
     fontSize: 18,
-    fontWeight: '700',
-    color: '#0f172a',
+    fontWeight: "700",
+    color: "#0f172a",
     marginBottom: 4,
   },
   jobDate: {
     fontSize: 14,
-    color: '#64748b',
-    fontWeight: '500',
+    color: "#64748b",
+    fontWeight: "500",
   },
   statusBadgeInProgress: {
-    backgroundColor: '#dbeafe',
+    backgroundColor: "#dbeafe",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
   },
   statusTextInProgress: {
     fontSize: 12,
-    fontWeight: '700',
-    color: '#1e40af',
+    fontWeight: "700",
+    color: "#1e40af",
   },
   statusBadgeScheduled: {
-    backgroundColor: '#fef3c7',
+    backgroundColor: "#fef3c7",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
   },
   statusTextScheduled: {
     fontSize: 12,
-    fontWeight: '700',
-    color: '#92400e',
+    fontWeight: "700",
+    color: "#92400e",
   },
   jobDetails: {
     gap: 12,
     marginBottom: 12,
   },
   detailRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   detailText: {
     fontSize: 14,
-    color: '#475569',
-    fontWeight: '500',
+    color: "#475569",
+    fontWeight: "500",
     marginLeft: 10,
     flex: 1,
   },
   descriptionContainer: {
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#f1f5f9',
+    borderTopColor: "#f1f5f9",
   },
   descriptionText: {
     fontSize: 14,
-    color: '#64748b',
+    color: "#64748b",
     lineHeight: 20,
   },
   bottomPadding: {

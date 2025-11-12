@@ -62,6 +62,7 @@ export const HomeScreen = ({ jobs , isLoading , user }: { jobs: ListJobDto[] , i
   const currentJobs = jobs.filter((job) => job.status === 'In Progress').slice(0, 3);
   const upcomingJobs = jobs.filter((job) => job.status === 'scheduled').slice(0, 3);
 
+
   const handleJobPress = (jobId: string) => {
     router.push(`/job/${jobId}`);
   };
@@ -199,7 +200,7 @@ export const HomeScreen = ({ jobs , isLoading , user }: { jobs: ListJobDto[] , i
                     </Text>
                   </View>
                   <View style={styles.statusBadgeScheduled}>
-                    <Text style={styles.statusTextScheduled}>Pending</Text>
+                    <Text style={styles.statusTextScheduled} className="capitalize">{job.status}</Text>
                   </View>
                 </View>
 

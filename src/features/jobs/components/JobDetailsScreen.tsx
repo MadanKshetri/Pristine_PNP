@@ -1,201 +1,305 @@
-import { Button, Card } from "@/src/components/ui"
-import { useAuthStore } from "@/src/lib/store/authStore"
-import { Ionicons } from "@expo/vector-icons"
-import { format } from "date-fns"
-import { useRouter } from "expo-router"
-import type React from "react"
-import { useState } from "react"
-import { ActivityIndicator, Alert, Modal, ScrollView, Text, TouchableOpacity, View } from "react-native"
-import QRCode from "react-native-qrcode-svg"
-import { SafeAreaView } from "react-native-safe-area-context"
-import { useJobActions, useJobDetails } from "../hooks"
-import { ChecklistItem } from "./ChecklistItem"
+import { QRScannerModal } from "@/src/components/qr/QRScannerModal";
+import { Button, Card } from "@/src/components/ui";
+import { useAuthStore } from "@/src/lib/store/authStore";
+import { Ionicons } from "@expo/vector-icons";
+import { format } from "date-fns";
+import * as FileSystem from "expo-file-system/legacy";
+import * as Location from "expo-location";
+import * as MediaLibrary from "expo-media-library";
+import { useRouter } from "expo-router";
+import type React from "react";
+import { useRef, useState } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  Modal,
+  Platform,
+  ScrollView,
+  Share,
+  Text,
+  TouchableOpacity,
+  View
+} from "react-native";
+import QRCode from "react-native-qrcode-svg";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useJobActions, useJobDetails } from "../hooks";
+import { ChecklistItem } from "./ChecklistItem";
+import { styles } from "./jobDetailScreenStyle";
 
 interface JobDetailsScreenProps {
-  jobId: string
+  jobId: string;
 }
 
-export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({ jobId }) => {
-  const router = useRouter()
-  const { job, isLoading, error, refetch } = useJobDetails(jobId)
-  const { startJob, isStartingJob } = useJobActions()
-  const user = useAuthStore((state) => state.user)
-  const [showQRModal, setShowQRModal] = useState(false)
+export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
+  jobId,
+}) => {
+  const router = useRouter();
+  const { job, isLoading, error, refetch } = useJobDetails(jobId);
+  const { startJob, isStartingJob } = useJobActions();
+  const user = useAuthStore((state) => state.user);
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
+  const qrRef = useRef<any>(null);
 
-  const isManager = user?.role === "manager"
-  const isGeneralUser = user?.role === "general"
+  const isManager = user?.role === "manager";
+  const isGeneralUser = user?.role === "general";
 
   const handleStartJob = async () => {
-    Alert.alert("Start Job", "Are you sure you want to start this job? Your location will be recorded.", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Start",
-        onPress: async () => {
-          const result = await startJob(jobId)
-          if (result.success) {
-            refetch()
-          }
+    Alert.alert(
+      "Start Job",
+      "We will request your location, then open the QR scanner to proceed.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Continue",
+          onPress: async () => {
+            const { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== Location.PermissionStatus.GRANTED) {
+              Alert.alert(
+                "Permission Required",
+                "Location permission is needed to start a job."
+              );
+              return;
+            }
+            setShowScanner(true);
+          },
         },
-      },
-    ])
-  }
+      ],
+    );
+  };
+
+  const handleScanned = async (data: string) => {
+    try {
+      if (data.startsWith("http://") || data.startsWith("https://")) {
+        await fetch(data, { method: "GET" });
+      } else if (data.startsWith("pristine-pnp://")) {
+        await startJob(jobId);
+      } else {
+        // Fallback: try to start job if QR contains matching job id
+        if (data.includes(`/job/${jobId}`) && data.includes("start")) {
+          await startJob(jobId);
+        } else {
+          Alert.alert("Unrecognized QR", "The scanned QR is not supported.");
+        }
+      }
+      await refetch();
+      Alert.alert("Success", "Job action completed.");
+    } catch (e: any) {
+      Alert.alert("Error", e?.message || "Failed to process QR");
+    }
+  };
 
   const getJobStatusBadge = (): { label: string; color: string } => {
-    if (!job) return { label: "Unknown", color: "gray" }
+    if (!job) return { label: "Unknown", color: "gray" };
 
-    const hasStarted = job.startAt !== null
-    const allCompleted = job.checklists.every((c) => c.status === "Completed")
-    const hasInProgress = job.checklists.some((c) => c.status === "Ongoing")
+    const hasStarted = job.startAt !== null;
+    const allCompleted = job.checklists.every((c) => c.status === "Completed");
+    const hasInProgress = job.checklists.some((c) => c.status === "Ongoing");
 
     if (allCompleted) {
-      return { label: "Completed", color: "green" }
+      return { label: "Completed", color: "green" };
     } else if (hasInProgress || hasStarted) {
-      return { label: "In Progress", color: "blue" }
+      return { label: "In Progress", color: "blue" };
     } else {
-      return { label: "Not Started", color: "yellow" }
+      return { label: "Not Started", color: "yellow" };
     }
-  }
+  };
 
   if (isLoading) {
     return (
-      <View className="flex-1 justify-center items-center bg-slate-50">
-        <View className="items-center">
-          <View className="w-20 h-20 rounded-full bg-teal-100 items-center justify-center mb-4">
+      <View style={styles.loadingContainer}>
+        <View style={styles.loadingInner}>
+          <View style={styles.loadingSpinnerWrap}>
             <ActivityIndicator size="large" color="#0D9488" />
           </View>
-          <Text className="text-base font-semibold text-slate-900">Loading job details</Text>
-          <Text className="text-sm text-slate-500 mt-1">Please wait...</Text>
+          <Text style={styles.loadingTitle}>
+            Loading job details
+          </Text>
+          <Text style={styles.loadingSubtitle}>Please wait...</Text>
         </View>
       </View>
-    )
+    );
   }
 
   if (error || !job) {
     const errorMessage = error
       ? (error as any)?.payload || "Failed to load job details."
-      : "Job not found. It may have been deleted or you may not have access."
+      : "Job not found. It may have been deleted or you may not have access.";
 
     return (
-      <View className="flex-1 justify-center items-center bg-slate-50 px-6">
-        <View className="w-28 h-28 rounded-full bg-red-100 items-center justify-center mb-6">
+      <View style={styles.errorContainer}>
+        <View style={styles.errorIconWrap}>
           <Ionicons name="alert-circle-outline" size={56} color="#DC2626" />
         </View>
-        <Text className="text-2xl font-bold text-slate-900 mb-3">{error ? "Error Loading Job" : "Job Not Found"}</Text>
-        <Text className="text-base text-slate-600 text-center mb-8 px-4 leading-6">{errorMessage}</Text>
-        <View className="flex-row gap-3">
+        <Text style={styles.errorTitle}>
+          {error ? "Error Loading Job" : "Job Not Found"}
+        </Text>
+        <Text style={styles.errorMessage}>
+          {errorMessage}
+        </Text>
+        <View style={styles.errorActions}>
           <Button onPress={() => router.back()} variant="outline">
-            <View className="flex-row items-center px-2">
+            <View style={styles.rowCenterPX2}>
               <Ionicons name="arrow-back" size={18} color="#64748B" />
-              <Text className="text-slate-700 font-semibold ml-2">Go Back</Text>
+              <Text style={styles.btnOutlineText}>Go Back</Text>
             </View>
           </Button>
           {error && (
             <Button onPress={() => refetch()} variant="primary">
-              <View className="flex-row items-center px-2">
+              <View style={styles.rowCenterPX2}>
                 <Ionicons name="refresh" size={18} color="#FFFFFF" />
-                <Text className="text-white font-semibold ml-2">Retry</Text>
+                <Text style={styles.btnPrimaryText}>Retry</Text>
               </View>
             </Button>
           )}
         </View>
       </View>
-    )
+    );
   }
 
-  const statusBadge = getJobStatusBadge()
-  const hasStarted = job.startAt !== null
-  const canStart = !hasStarted && isGeneralUser
+  const statusBadge = getJobStatusBadge();
+  const canStart = job.status === "scheduled" && isGeneralUser;
   const completionPercentage =
     job.checklists.length > 0
-      ? (job.checklists.filter((c) => c.status === "Completed").length / job.checklists.length) * 100
-      : 0
+      ? (job.checklists.filter((c) => c.status === "Completed").length /
+          job.checklists.length) *
+        100
+      : 0;
 
   // Generate QR code URL for job start
-  const jobStartUrl = `pristine-pnp://job/${jobId}/start`
+  const jobStartUrl = `pristine-pnp://job/${jobId}/start`;
 
   return (
     <>
-      <SafeAreaView className="flex-1 bg-slate-50" edges={["top"]}>
-        <ScrollView className="flex-1 bg-slate-50" showsVerticalScrollIndicator={false}>
+      <SafeAreaView style={styles.safeArea} edges={["top"]}>
+        <ScrollView style={styles.scrollArea} showsVerticalScrollIndicator={false}>
           {/* Header with Gradient Background */}
-          <View  className="bg-gradient-to-b from-teal-600 to-teal-700 px-6 ">
-            <View style={{ flex: 1 , flexDirection: 'row' , justifyContent:'space-between' }} className="flex flex-row items-center justify-between mb-8 ">
+          <View style={styles.headerWrap}>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+              
+            >
               <TouchableOpacity
                 onPress={() => router.back()}
-                className="flex-row items-center bg-white/15 px-3 py-2.5 rounded-xl backdrop-blur-sm"
+                style={styles.backBtn}
                 activeOpacity={0.7}
               >
                 <Ionicons name="arrow-back" size={20} color="#000000" />
-                <Text className="text-base font-semibold  ml-2">Back</Text>
+                <Text style={styles.backBtnText}>Back</Text>
               </TouchableOpacity>
 
               {/* QR Code Button for Managers */}
               {isManager && (
                 <TouchableOpacity
                   onPress={() => setShowQRModal(true)}
-                  style={{height: 40}}
-                  className="bg-white px-4 py-2.5 rounded-xl flex-row items-center shadow-lg"
+                  style={[{ height: 40 }, styles.qrBtn]}
                   activeOpacity={0.8}
                 >
                   <Ionicons name="qr-code" size={20} color="#0D9488" />
-                  <Text className="text-teal-600 text-sm font-bold ml-2">QR Code</Text>
+                  <Text style={styles.qrBtnText}>
+                    QR Code
+                  </Text>
                 </TouchableOpacity>
               )}
             </View>
 
-            <View className="flex-row justify-between items-start">
-              <View className="flex-1 pr-4">
-                <Text className="text-3xl font-bold mb-3 leading-tight ">{job.title}</Text>
-                <View className="flex-row items-center bg-white/20 self-start px-3 py-2 rounded-lg">
+            <View style={styles.headerTitleRow}>
+              <View style={styles.headerTitleCol}>
+                <Text style={styles.headerTitle}>
+                  {job.title}
+                </Text>
+                <View style={styles.jobNumberPill}>
                   <Ionicons name="document-text" size={14} color="#000000" />
-                  <Text className="text-sm font-medium  ml-1.5">#{job.jobNumber}</Text>
+                  <Text style={styles.jobNumberText}>
+                    #{job.jobNumber}
+                  </Text>
                 </View>
+                {isManager && (
+                  <View
+                    style={[
+                      styles.statusBadge,
+                      { alignSelf: "flex-start", marginTop: 10 },
+                      statusBadge.color === "green"
+                        ? { backgroundColor: "#10B981" }
+                        : statusBadge.color === "blue"
+                        ? { backgroundColor: "#06B6D4" }
+                        : { backgroundColor: "#F59E0B" },
+                    ]}
+                  >
+                    <Text style={styles.statusBadgeText}>{statusBadge.label}</Text>
+                  </View>
+                )}
               </View>
-              <View
-                className={`px-4 py-2.5 rounded-xl font-semibold ${
-                  statusBadge.color === "green"
-                    ? "bg-emerald-500"
-                    : statusBadge.color === "blue"
-                      ? "bg-cyan-500"
-                      : "bg-amber-500"
-                }`}
-              >
-                <Text className="text-xs font-bold ">{statusBadge.label}</Text>
-              </View>
+              {!isManager && (
+                <View
+                  style={[
+                    styles.statusBadge,
+                    statusBadge.color === "green"
+                      ? { backgroundColor: "#10B981" }
+                      : statusBadge.color === "blue"
+                      ? { backgroundColor: "#06B6D4" }
+                      : { backgroundColor: "#F59E0B" },
+                  ]}
+                >
+                  <Text style={styles.statusBadgeText}>{statusBadge.label}</Text>
+                </View>
+              )}
             </View>
 
-            {job.description && <Text className="text-sm  leading-5 mt-4">{job.description}</Text>}
+            {job.description && (
+              <Text style={styles.description}>{job.description}</Text>
+            )}
           </View>
 
           {/* Content Section */}
-          <View className="px-6 py-6 gap-5">
+          <View style={styles.contentWrap}>
             {/* Progress Card */}
             {job.checklists.length > 0 && (
-              <Card className="bg-white border border-slate-200 shadow-sm overflow-hidden">
-                <View className="p-5">
-                  <View className="flex-row items-center justify-between mb-6">
-                    <View className="flex-row items-center flex-1">
-                      <View className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500 to-teal-600 items-center justify-center">
-                        <Ionicons name="stats-chart" size={24} color="#FFFFFF" />
+              <Card style={styles.cardBase}>
+                <View style={styles.cardBody}>
+                  <View style={styles.rowBetween}>
+                    <View style={styles.rowCenterFlex1}>
+                      <View style={styles.progressIconWrap}>
+                        <Ionicons
+                          name="stats-chart"
+                          size={24}
+                          color="#FFFFFF"
+                        />
                       </View>
-                      <View className="ml-4 flex-1">
-                        <Text className="text-lg font-bold text-slate-900">Overall Progress</Text>
-                        <Text className="text-sm text-slate-500 mt-1">
-                          {job.checklists.filter((c) => c.status === "Completed").length} of {job.checklists.length}{" "}
-                          tasks completed
+                      <View style={styles.progressTextWrap}>
+                        <Text style={styles.progressTitle}>
+                          Overall Progress
+                        </Text>
+                        <Text style={styles.progressSubtitle}>
+                          {
+                            job.checklists.filter(
+                              (c) => c.status === "Completed",
+                            ).length
+                          }{" "}
+                          of {job.checklists.length} tasks completed
                         </Text>
                       </View>
                     </View>
-                    <Text className="text-3xl font-bold text-teal-600 ml-2">{Math.round(completionPercentage)}%</Text>
+                    <Text style={styles.progressPercent}>
+                      {Math.round(completionPercentage)}%
+                    </Text>
                   </View>
 
                   {/* Progress Bar */}
-                  <View className="h-3 bg-slate-200 rounded-full overflow-hidden">
+                  <View style={styles.progressBarBg}>
                     <View
-                      className={`h-full rounded-full ${
-                        completionPercentage === 100 ? "bg-emerald-500" : "bg-gradient-to-r from-teal-500 to-cyan-500"
-                      }`}
-                      style={{ width: `${completionPercentage}%` }}
+                      style={[
+                        styles.progressBarFill,
+                        {
+                          width: `${completionPercentage}%`,
+                          backgroundColor:
+                            completionPercentage === 100 ? "#10B981" : "#14B8A6",
+                        },
+                      ]}
                     />
                   </View>
                 </View>
@@ -204,19 +308,25 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({ jobId }) => 
 
             {/* Site Information */}
             {job.site && (
-              <Card className="bg-white border border-slate-200 shadow-sm overflow-hidden">
-                <View className="p-5">
-                  <View className="flex-row items-center mb-4">
-                    <View className="w-12 h-12 rounded-xl bg-teal-100 items-center justify-center">
+              <Card style={styles.cardBase}>
+                <View style={styles.cardBody}>
+                  <View style={styles.rowCenterMB4}>
+                    <View style={styles.siteIconWrap}>
                       <Ionicons name="location" size={24} color="#0D9488" />
                     </View>
-                    <Text className="text-lg font-bold text-slate-900 ml-4">Site Location</Text>
+                    <Text style={styles.cardTitle}>
+                      Site Location
+                    </Text>
                   </View>
-                  <View className="bg-slate-50 rounded-xl p-4 border border-slate-200">
-                    <Text className="text-base text-slate-900 font-semibold mb-2">{job.site.address}</Text>
-                    <View className="flex-row items-center">
+                  <View style={styles.infoBox}>
+                    <Text style={styles.infoBoxTitle}>
+                      {job.site.address}
+                    </Text>
+                    <View style={styles.rowCenter}>
                       <Ionicons name="business" size={16} color="#64748B" />
-                      <Text className="text-sm text-slate-600 ml-2">{job.site.city}</Text>
+                      <Text style={styles.infoBoxSubtitle}>
+                        {job.site.city}
+                      </Text>
                     </View>
                   </View>
                 </View>
@@ -224,44 +334,62 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({ jobId }) => 
             )}
 
             {/* Job Timeline */}
-            <Card className="bg-white border border-slate-200 shadow-sm overflow-hidden">
-              <View className="p-5">
-                <View className="flex-row items-center mb-5">
-                  <View className="w-12 h-12 rounded-xl bg-teal-100 items-center justify-center">
+            <Card style={styles.cardBase}>
+              <View style={styles.cardBody}>
+                <View style={styles.rowCenterMB5}>
+                  <View style={styles.siteIconWrap}>
                     <Ionicons name="time" size={24} color="#0D9488" />
                   </View>
-                  <Text className="text-lg font-bold text-slate-900 ml-4">Timeline</Text>
+                  <Text style={styles.cardTitle}>
+                    Timeline
+                  </Text>
                 </View>
-                <View className="gap-3">
-                  <View className="bg-slate-50 rounded-xl p-4 border border-slate-200">
-                    <View className="flex-row items-center justify-between mb-2">
-                      <View className="flex-row items-center flex-1">
-                        <View className="w-10 h-10 rounded-lg bg-teal-100 items-center justify-center">
-                          <Ionicons name="add-circle" size={20} color="#0D9488" />
+                <View style={styles.vGap3}>
+                  <View style={styles.infoBox}>
+                    <View style={styles.rowBetweenMB2}>
+                      <View style={styles.rowCenterFlex1}>
+                        <View style={styles.timelineIconSmall}>
+                          <Ionicons
+                            name="add-circle"
+                            size={20}
+                            color="#0D9488"
+                          />
                         </View>
-                        <Text className="text-sm font-semibold text-slate-900 ml-3">Created</Text>
+                        <Text style={styles.timelineLabel}>
+                          Created
+                        </Text>
                       </View>
-                      <Text className="text-sm font-bold text-slate-900">
+                      <Text style={styles.timelineDate}>
                         {format(new Date(job.createdAt), "MMM dd, yyyy")}
                       </Text>
                     </View>
-                    <Text className="text-xs text-slate-500 ml-13">{format(new Date(job.createdAt), "h:mm a")}</Text>
+                    <Text style={styles.timelineTime}>
+                      {format(new Date(job.createdAt), "h:mm a")}
+                    </Text>
                   </View>
 
-                  {hasStarted && job.startAt && (
-                    <View className="bg-emerald-50 rounded-xl p-4 border border-emerald-200">
-                      <View className="flex-row items-center justify-between mb-2">
-                        <View className="flex-row items-center flex-1">
-                          <View className="w-10 h-10 rounded-lg bg-emerald-100 items-center justify-center">
-                            <Ionicons name="play-circle" size={20} color="#059669" />
+                  {job.startAt && (
+                    <View style={styles.infoBoxSuccess}>
+                      <View style={styles.rowBetweenMB2}>
+                        <View style={styles.rowCenterFlex1}>
+                          <View style={styles.timelineIconSmallSuccess}>
+                            <Ionicons
+                              name="play-circle"
+                              size={20}
+                              color="#059669"
+                            />
                           </View>
-                          <Text className="text-sm font-semibold text-slate-900 ml-3">Started</Text>
+                          <Text style={styles.timelineLabel}>
+                            Started
+                          </Text>
                         </View>
-                        <Text className="text-sm font-bold text-emerald-700">
+                        <Text style={styles.timelineDateSuccess}>
                           {format(new Date(job.startAt), "MMM dd, yyyy")}
                         </Text>
                       </View>
-                      <Text className="text-xs text-emerald-700 ml-13">{format(new Date(job.startAt), "h:mm a")}</Text>
+                      <Text style={styles.timelineTimeSuccess}>
+                        {format(new Date(job.startAt), "h:mm a")}
+                      </Text>
                     </View>
                   )}
                 </View>
@@ -270,22 +398,30 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({ jobId }) => 
 
             {/* Start Job Button */}
             {canStart && (
-              <View className="mb-2">
+              <View
+                style={styles.startWrap}
+              >
                 <TouchableOpacity
                   onPress={handleStartJob}
                   disabled={isStartingJob}
-                  className="bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl p-5 active:from-emerald-600 active:to-teal-600 shadow-lg"
+                  style={styles.startBtn}
                   activeOpacity={0.9}
                 >
-                  <View className="flex-row items-center justify-center">
+                  <View style={styles.rowCenterJustifyCenter}>
                     {isStartingJob ? (
                       <ActivityIndicator size="small" color="#FFFFFF" />
                     ) : (
                       <>
-                        <View className="w-12 h-12 rounded-lg bg-white/20 items-center justify-center">
-                          <Ionicons name="play-circle" size={28} color="#FFFFFF" />
+                        <View style={styles.startIconWrap}>
+                          <Ionicons
+                            name="play-circle"
+                            size={28}
+                            color="white"
+                          />
                         </View>
-                        <Text className="text-white text-xl font-bold ml-4">Start Job</Text>
+                        <Text style={styles.startText}>
+                          Start Job
+                        </Text>
                       </>
                     )}
                   </View>
@@ -294,21 +430,23 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({ jobId }) => 
             )}
 
             {/* Checklists Section */}
-            <View className="mb-2">
-              <View className="flex-row items-center mb-5">
-                <View className="w-12 h-12 rounded-xl bg-teal-100 items-center justify-center">
+            <View style={styles.mb2}>
+              <View style={styles.rowCenterMB5}>
+                <View style={styles.siteIconWrap}>
                   <Ionicons name="checkmark-circle" size={24} color="#0D9488" />
                 </View>
-                <Text className="text-xl font-bold text-slate-900 ml-4">Checklist Items</Text>
+                <Text style={styles.sectionTitle}>
+                  Checklist Items
+                </Text>
               </View>
 
-              <View className="gap-3">
+              <View style={styles.vGap3}>
                 {job.checklists.map((checklist, index) => (
                   <View key={checklist.id}>
                     <ChecklistItem
                       checklist={checklist}
                       index={index}
-                      jobStarted={hasStarted}
+                      jobStarted={job.status !== "scheduled"}
                       onUpdate={refetch}
                       isReadOnly={isManager}
                     />
@@ -325,63 +463,110 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({ jobId }) => 
         visible={showQRModal}
         transparent={true}
         animationType="slide"
-        style={{width: '70%'}}
+        style={{ width: "70%" }}
         onRequestClose={() => setShowQRModal(false)}
       >
-        <TouchableOpacity style={{backgroundColor: 'transparent'}} className="flex-1 bg-transparent" activeOpacity={1} onPress={() => setShowQRModal(false)}>
-          <View className="">
-            <TouchableOpacity activeOpacity={1} onPress={(e) => e.stopPropagation()}>
-              <View className="bg-transparent rounded-t-3xl shadow-2xl w-fit">
-                {/* Modal Header */}
+        <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setShowQRModal(false)}>
+          <TouchableOpacity activeOpacity={1} onPress={(e) => e.stopPropagation()} style={styles.modalContentWrap}>
+            <View style={styles.qrHeader}> 
+              <Text style={styles.qrTitle}>Start Job QR</Text>
+              <Text style={styles.qrSubtitle}>Have your staff scan this code to start the job</Text>
+            </View>
 
-                {/* QR Code Container */}
-                <View style={{marginTop: 42 ,flex:1, flexDirection:'row' , justifyContent:'flex-end'}} className="flex flex-row items-end ">
-                  <View style={{borderRadius:30 ,backgroundColor:'#ffffff', height:270}} className="bg-white p-8 border-teal-200 h-full shadow-md">
-                    <QRCode value={jobStartUrl} size={220} backgroundColor="white" color="black"  />
-                  </View>
-                </View>
+            <View style={styles.qrBox}>
+              <QRCode
+                value={jobStartUrl}
+                size={220}
+                backgroundColor="white"
+                color="black"
+                getRef={(c: any) => (qrRef.current = c)}
+              />
+            </View>
 
-                {/* Job Info Card */}
-                {/* <View className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-2xl p-5 mb-5 border-2 border-teal-200">
-                  <View className="flex-row items-center mb-4">
-                    <View className="w-10 h-10 rounded-lg bg-teal-200 items-center justify-center">
-                      <Ionicons name="briefcase" size={20} color="#0D9488" />
-                    </View>
-                    <Text className="text-base font-bold text-teal-900 ml-3">Job Information</Text>
-                  </View>
-                  <View>
-                    <View className="flex-row items-start mb-3">
-                      <Text className="text-sm text-teal-700 font-bold w-20">Job:</Text>
-                      <Text className="text-sm text-teal-900 font-semibold flex-1">{job.title}</Text>
-                    </View>
-                    <View className="flex-row items-start">
-                      <Text className="text-sm text-teal-700 font-bold w-20">Number:</Text>
-                      <Text className="text-sm text-teal-900 font-semibold">#{job.jobNumber}</Text>
-                    </View>
-                  </View>
-                </View> */}
-
-                {/* Instructions */}
-                {/* <View className="bg-slate-50 rounded-xl p-4 mb-6 border border-slate-200">
-                  <View className="flex-row items-start">
-                    <Ionicons name="help-circle" size={22} color="#64748B" />
-                    <Text className="text-sm text-slate-700 leading-5 ml-3 flex-1">
-                      Open the Pristine PNP app and scan this QR code to instantly start this job
-                    </Text>
-                  </View>
-                </View> */}
-
-                {/* Close Button */}
-                {/* <Button onPress={() => setShowQRModal(false)} variant="primary" fullWidth>
-                  <View className="py-1">
-                    <Text className="text-white font-bold text-base">Close</Text>
-                  </View>
-                </Button> */}
+            <View style={styles.qrJobInfo}>
+              <Text style={styles.qrJobTitle}>{job.title}</Text>
+              <Text style={styles.qrJobNumber}>#{job.jobNumber}</Text>
+              <View
+                style={[
+                  styles.statusBadge,
+                  { marginTop: 8 },
+                  statusBadge.color === "green"
+                    ? { backgroundColor: "#10B981" }
+                    : statusBadge.color === "blue"
+                    ? { backgroundColor: "#06B6D4" }
+                    : { backgroundColor: "#F59E0B" },
+                ]}
+              >
+                <Text style={styles.statusBadgeText}>{statusBadge.label}</Text>
               </View>
-            </TouchableOpacity>
-          </View>
+            </View>
+
+            <View style={styles.qrActionsRow}>
+              <TouchableOpacity
+                onPress={async () => {
+                  console.log("QR Code saved to Photos");
+                  if (!qrRef.current) return;
+                  await new Promise<void>((resolve, reject) => {
+                    try {
+                      qrRef.current.toDataURL(async (data: string) => {
+                        try {
+                          const baseDir = (FileSystem as any).cacheDirectory || (FileSystem as any).documentDirectory || '';
+                          const fileUri = `${baseDir}job-${job.jobNumber}-qr.png`;
+                          console.log(fileUri, "------", baseDir);
+                          await FileSystem.writeAsStringAsync(fileUri, data, { encoding: FileSystem.EncodingType?.Base64 || 'base64' });
+                          console.log("QR Code saved to Photos");
+                          try {
+                            console.log("MediaLibrary");
+                            const { status } = await MediaLibrary.requestPermissionsAsync(true);
+                            console.log(status);
+                            if (status !== 'granted') {
+                              throw new Error('Permission to access Photos was denied');
+                            }
+                            const asset = await MediaLibrary.createAssetAsync(fileUri);
+                            await MediaLibrary.createAlbumAsync('Pristine PNP', asset, false).catch(async () => {
+                              await MediaLibrary.addAssetsToAlbumAsync([asset], (await MediaLibrary.getAlbumAsync('Pristine PNP')) || undefined, false).catch(() => {});
+                            });
+                            Alert.alert('Saved', 'QR code saved to Photos');
+                          } catch (saveErr) {
+                            console.log(saveErr);
+                            let shareUrl = fileUri;
+                            if (Platform.OS === 'android' && (FileSystem as any).getContentUriAsync) {
+                              try {
+                                shareUrl = await (FileSystem as any).getContentUriAsync(fileUri);
+                              } catch {}
+                            }
+                            console.log("shareUrl", shareUrl);
+                            await Share.share({ url: shareUrl });
+                          }
+                          resolve();
+                        } catch (err) {
+                          reject(err);
+                        }
+                      });
+                    } catch (e) {
+                      reject(e as any);
+                    }
+                  });
+                }}
+                style={styles.qrDownloadIconBtn}
+                activeOpacity={0.9}
+              >
+                <Ionicons name="download" size={22} color="#FFFFFF" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setShowQRModal(false)} style={[styles.qrCloseBtn, styles.qrCloseBtnWide]} activeOpacity={0.9}>
+                <Text style={styles.qrCloseText}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
         </TouchableOpacity>
       </Modal>
+
+      {/* QR Scanner Modal */}
+      <QRScannerModal
+        visible={showScanner}
+        onClose={() => setShowScanner(false)}
+        onScanned={handleScanned}
+      />
     </>
-  )
-}
+  );
+};

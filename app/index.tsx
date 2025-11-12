@@ -1,9 +1,9 @@
-import { useAuthStore } from '@/src/lib/store/authStore';
-import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Redirect, useRouter } from 'expo-router';
-import React from 'react';
-import { Image, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import { useAuthStore } from "@/src/lib/store/authStore";
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { Redirect, useRouter } from "expo-router";
+import React from "react";
+import { Image, StatusBar, Text, TouchableOpacity, View } from "react-native";
 
 const Index = () => {
   const router = useRouter();
@@ -17,12 +17,12 @@ const Index = () => {
   return (
     <View className="flex-1 bg-white">
       <StatusBar barStyle="light-content" />
-      
+
       {/* Top Container with Gradient */}
       <View className="h-[65%] relative">
         <LinearGradient
-          colors={['#06114F', '#017EFE']}
-          start={{ x: 0, y: 0 }}    
+          colors={["#06114F", "#017EFE"]}
+          start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           className="flex-1 items-center justify-center"
         >
@@ -30,7 +30,7 @@ const Index = () => {
           <View className="items-center">
             <View className="w-32 h-32 bg-white/10 rounded-full items-center justify-center mb-6">
               <Image
-                source={require('@/assets/images/logo.png')}
+                source={require("@/assets/images/logo.png")}
                 className="w-28 h-28"
                 resizeMode="contain"
               />
@@ -50,7 +50,10 @@ const Index = () => {
         </LinearGradient>
 
         {/* Wave decoration */}
-        <View className="absolute bottom-0 w-full h-20 bg-white" style={{ borderTopLeftRadius: 40, borderTopRightRadius: 40 }} />
+        <View
+          className="absolute bottom-0 w-full h-20 bg-white"
+          style={{ borderTopLeftRadius: 40, borderTopRightRadius: 40 }}
+        />
       </View>
 
       {/* Content Container */}
@@ -64,12 +67,14 @@ const Index = () => {
           </Text>
 
           {/* Get Started Button */}
-          <TouchableOpacity 
+          <TouchableOpacity
             className="w-full bg-blue-500 py-4 rounded-xl items-center shadow-lg active:scale-95"
-            onPress={() => router.push('/(auth)/login')}
+            onPress={() => router.push("/(auth)/login")}
           >
             <View className="flex-row items-center">
-              <Text className="text-white text-lg font-bold mr-2">Get Started</Text>
+              <Text className="text-white text-lg font-bold mr-2">
+                Get Started
+              </Text>
               <Ionicons name="arrow-forward" size={20} color="#FFFFFF" />
             </View>
           </TouchableOpacity>
