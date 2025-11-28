@@ -3,14 +3,6 @@
  *
  * @version 1.0.0
  */
-export type IdNameDto = {
-  /**
-   * @format uuid
-   */
-  id: string;
-  name: string;
-};
-
 export type AssetDto = {
   /**
    * @format uuid
@@ -18,6 +10,81 @@ export type AssetDto = {
   id: string;
   name: string;
   url: string;
+};
+
+export type GetMeDto = {
+  id: string;
+  fullName: string;
+  email: string;
+  image: AssetDto | null;
+};
+
+export type GetMeResponseDto = {
+  message: string;
+  data: GetMeDto;
+};
+
+export type LoginUserRequestDto = {
+  email: string;
+};
+
+export type MessageResponseDto = {
+  message: string;
+};
+
+export type VerrifyOtpDto = {
+  otp: string;
+  email: string;
+};
+
+export type LoginUserUserDto = {
+  /**
+   * @format uuid
+   */
+  id: string;
+  fullName: string;
+  email: string;
+};
+
+export type LoginUserDto = {
+  token: string;
+  user: LoginUserUserDto;
+};
+
+export type LoginUserResponseDto = {
+  message: string;
+  data: LoginUserDto;
+};
+
+export type LoginManagerManagerDto = {
+  /**
+   * @format uuid
+   */
+  id: string;
+  fullName: string;
+  email: string;
+  /**
+   * @format uuid
+   */
+  customerId: string;
+};
+
+export type LoginManagerDto = {
+  token: string;
+  user: LoginManagerManagerDto;
+};
+
+export type LoginManagerResponseDto = {
+  message: string;
+  data: LoginManagerDto;
+};
+
+export type IdNameDto = {
+  /**
+   * @format uuid
+   */
+  id: string;
+  name: string;
 };
 
 export type ListManagerDto = {
@@ -102,73 +169,6 @@ export type UpdateGeneralDto = {
    * @format binary
    */
   photo?: Blob;
-};
-
-export type GetMeDto = {
-  id: string;
-  fullName: string;
-  email: string;
-  image: AssetDto | null;
-};
-
-export type GetMeResponseDto = {
-  message: string;
-  data: GetMeDto;
-};
-
-export type LoginUserRequestDto = {
-  email: string;
-};
-
-export type MessageResponseDto = {
-  message: string;
-};
-
-export type VerrifyOtpDto = {
-  otp: string;
-  email: string;
-};
-
-export type LoginUserUserDto = {
-  /**
-   * @format uuid
-   */
-  id: string;
-  fullName: string;
-  email: string;
-};
-
-export type LoginUserDto = {
-  token: string;
-  user: LoginUserUserDto;
-};
-
-export type LoginUserResponseDto = {
-  message: string;
-  data: LoginUserDto;
-};
-
-export type LoginManagerManagerDto = {
-  /**
-   * @format uuid
-   */
-  id: string;
-  fullName: string;
-  email: string;
-  /**
-   * @format uuid
-   */
-  customerId: string;
-};
-
-export type LoginManagerDto = {
-  token: string;
-  user: LoginManagerManagerDto;
-};
-
-export type LoginManagerResponseDto = {
-  message: string;
-  data: LoginManagerDto;
 };
 
 export type ListSOWDto = {
@@ -369,6 +369,7 @@ export type ListJobDto = {
   id: string;
   title: string;
   jobNumber: number;
+  assignedStaff: IdNameDto | null;
   startAt: string | null;
   createdAt: string;
   site?: GetJobSiteDto | null;
@@ -378,6 +379,18 @@ export type ListJobResponseDto = {
   message: string;
   data: ListJobDto[];
   pagination: PaginationResponseDTO;
+};
+
+export type UpdateChecklistSowRequestDto = {
+  status?: "Pending" | "Ongoing" | "Completed" | "Cancelled";
+  /**
+   * @format binary
+   */
+  attachments?: Blob;
+  /**
+   * @format uuid
+   */
+  id: string;
 };
 
 export type GetJobChecklistDto = {
@@ -402,6 +415,7 @@ export type GetJobDto = {
   jobNumber: number;
   startAt: string | null;
   createdAt: string;
+  assignedStaff: IdNameDto | null;
   site?: GetJobSiteDto | null;
   checklists: GetJobChecklistDto[];
 };
@@ -434,18 +448,6 @@ export type CreateJobRequestDto = {
   customerId: string;
 };
 
-export type UpdateChecklistSowRequestDto = {
-  status?: "Pending" | "Ongoing" | "Completed" | "Cancelled";
-  /**
-   * @format binary
-   */
-  attachments?: Blob;
-  /**
-   * @format uuid
-   */
-  id: string;
-};
-
 export type StartJobRequestDto = {
   /**
    * @format uuid
@@ -457,49 +459,26 @@ export type StartJobRequestDto = {
    * @format date-time
    */
   startedAt: string;
+  token: string;
 };
 
-export type ListCustomerDto = {
-  email?: string | null;
-  id: string;
-  name: string;
-  createdBy: IdNameDto;
+export type ManagerGenerateQrTokenDto = {
+  token: string;
 };
 
-export type ListCustomerResponseDto = {
+export type ManagerGenerateQrTokenResponseDto = {
   message: string;
-  data: ListCustomerDto[];
-  pagination: PaginationResponseDTO;
+  data: ManagerGenerateQrTokenDto;
 };
 
-export type CreateCustomerRequestDto = {
-  name: string;
-  email?: string;
+export type DashboardSummaryDto = {
+  pending: number;
+  completed: number;
+  upcomming: number;
+  cancelled: number;
 };
 
-export type GetCustomerSiteDto = {
-  address: string;
-  /**
-   * @format uuid
-   */
-  id: string;
-  name: string;
-};
-
-export type GetCustomerDto = {
-  email?: string | null;
-  id: string;
-  name: string;
-  createdBy: IdNameDto;
-  sites: GetCustomerSiteDto[];
-};
-
-export type GetCustomerResponseDto = {
+export type DashboardSummaryResponseDto = {
   message: string;
-  data: GetCustomerDto;
-};
-
-export type UpdateCustomerRequestDto = {
-  name?: string;
-  email?: string;
+  data: DashboardSummaryDto;
 };

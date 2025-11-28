@@ -1,5 +1,5 @@
-import { JobDetailsScreen } from '@/src/features/jobs';
-import { useLocalSearchParams } from 'expo-router';
+import { JobDetailsScreen } from "@/src/features/jobs";
+import { useLocalSearchParams } from "expo-router";
 
 export default function JobDetailPage() {
   const { id } = useLocalSearchParams<{ id: string }>();

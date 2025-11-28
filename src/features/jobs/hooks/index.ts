@@ -1,4 +1,3 @@
 export { useJobActions } from './useJobActions';
-export { useJobDetails } from './useJobDetails';
+export { useJobDetailsByRole } from './useJobDetails';
 export { useJobs } from './useJobs';
-

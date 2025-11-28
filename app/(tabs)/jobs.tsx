@@ -6,6 +6,7 @@ import { useState } from "react";
 export default function JobsScreen() {
   const [filters, setFilters] = useState<JobFilters>({});
   const user = useAuthStore((state) => state.user);
+
   const { jobs, error, isLoading, refetch } = useJobsByRole(filters);
 
   if (!user) {

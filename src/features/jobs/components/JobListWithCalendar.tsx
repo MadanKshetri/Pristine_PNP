@@ -2,7 +2,7 @@ import { Input, ScreenHeader } from "@/src/components/ui";
 import { User } from "@/src/lib/store/authStore";
 import { format, isSameDay, parseISO, startOfDay } from "date-fns";
 import { useRouter } from "expo-router";
-import { Clock, MapPin } from "lucide-react-native";
+import { ChevronLeft, ChevronRight, Clock, MapPin } from "lucide-react-native";
 import React, { useMemo, useState } from "react";
 import {
   ActivityIndicator,
@@ -14,20 +14,19 @@ import {
 } from "react-native";
 import { Calendar, DateData } from "react-native-calendars";
 import type { Job, JobFilters } from "../types";
+import { debounce } from "@/src/utils/debounce";
 
 interface MarkedDates {
   [date: string]: {
-    marked: boolean;
-    dotColor: string;
+    marked?: boolean;
+    dots?: { key: string; color: string }[];
     selected?: boolean;
     selectedColor?: string;
   };
 }
 
-
 export const JobListWithCalendar = ({
   jobs,
-  user,
   handleSearch,
   error,
   isLoading,
@@ -44,6 +43,15 @@ export const JobListWithCalendar = ({
 }) => {
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [searchText, setSearchText] = useState<string>(search || "");
+
+  const handleJobSearch = useMemo(
+    () =>
+      debounce((text: string) => {
+        handleSearch({ search: text });
+      }, 300),
+    [handleSearch],
+  );
 
   const handleJobPress = (jobId: string) => {
     router.push(`/job/${jobId}` as any);
@@ -53,20 +61,26 @@ export const JobListWithCalendar = ({
     const marked: MarkedDates = {};
 
     jobs.forEach((job: Job) => {
-      // Mark start date if exists
+      const createdDate = format(parseISO(job.createdAt), "yyyy-MM-dd");
+      if (!marked[createdDate]) marked[createdDate] = { dots: [] };
+      marked[createdDate].dots = [
+        ...(marked[createdDate].dots || []),
+        { key: `created-${job.id}`, color: "#3b82f6" },
+      ];
+
       if (job.startAt) {
         const startDate = format(parseISO(job.startAt), "yyyy-MM-dd");
-        marked[startDate] = {
-          marked: true,
-          dotColor: "#10b981",
-        };
+        if (!marked[startDate]) marked[startDate] = { dots: [] };
+        marked[startDate].dots = [
+          ...(marked[startDate].dots || []),
+          { key: `start-${job.id}`, color: "#10b981" },
+        ];
       }
     });
 
-    // Highlight selected date
-    if (selectedDate && marked[selectedDate]) {
+    if (selectedDate) {
       marked[selectedDate] = {
-        ...marked[selectedDate],
+        ...(marked[selectedDate] || {}),
         selected: true,
         selectedColor: "#e0e7ff",
       };
@@ -134,8 +148,12 @@ export const JobListWithCalendar = ({
         <View style={styles.searchContainer}>
           <Input
             placeholder="Search jobs..."
-            value={search || ""}
-            onChangeText={(text) => handleSearch({ search: text })}
+            value={searchText}
+            className="bg-gray"
+            onChangeText={(text) => {
+              setSearchText(text);
+              handleJobSearch(text);
+            }}
           />
         </View>
 
@@ -143,6 +161,17 @@ export const JobListWithCalendar = ({
           <Calendar
             onDayPress={onDayPress}
             markedDates={markedDates}
+            markingType="multi-dot"
+            enableSwipeMonths
+            firstDay={1}
+            hideExtraDays
+            renderArrow={(direction) =>
+              direction === "left" ? (
+                <ChevronLeft size={18} color="#0f172a" />
+              ) : (
+                <ChevronRight size={18} color="#0f172a" />
+              )
+            }
             theme={{
               backgroundColor: "#ffffff",
               calendarBackground: "#ffffff",
@@ -152,17 +181,42 @@ export const JobListWithCalendar = ({
               todayTextColor: "#3b82f6",
               dayTextColor: "#0f172a",
               textDisabledColor: "#cbd5e1",
-              dotColor: "#3b82f6",
               monthTextColor: "#0f172a",
+              arrowColor: "#0f172a",
               textDayFontWeight: "600",
               textMonthFontWeight: "700",
               textDayHeaderFontWeight: "600",
               textDayFontSize: 15,
               textMonthFontSize: 18,
               textDayHeaderFontSize: 13,
+              todayBackgroundColor: "#eff6ff",
             }}
             style={styles.calendar}
           />
+
+          {selectedDate && (
+            <TouchableOpacity
+              style={styles.clearPill}
+              onPress={() => setSelectedDate(null)}
+            >
+              <Text style={styles.clearPillText}>Clear date</Text>
+            </TouchableOpacity>
+          )}
+
+          <View style={styles.legendRow}>
+            <View style={styles.legendItem}>
+              <View
+                style={[styles.legendDot, { backgroundColor: "#3b82f6" }]}
+              />
+              <Text style={styles.legendLabel}>Created</Text>
+            </View>
+            <View style={styles.legendItem}>
+              <View
+                style={[styles.legendDot, { backgroundColor: "#10b981" }]}
+              />
+              <Text style={styles.legendLabel}>Start</Text>
+            </View>
+          </View>
         </View>
 
         <View style={styles.jobsContainer}>
@@ -205,7 +259,14 @@ export const JobListWithCalendar = ({
                         {formatDate(job.createdAt)}
                       </Text>
                     </View>
-                    <View style={{display:'flex',flexDirection: 'row', alignItems: 'center', gap: 10}}>
+                    <View
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 10,
+                      }}
+                    >
                       <View
                         style={
                           job.startAt
@@ -225,29 +286,27 @@ export const JobListWithCalendar = ({
                         </Text>
                       </View>
 
-                      {job.startAt && new Date(job.startAt) < new Date() && <View
-                        style={
-                          {
+                      {job.startAt && new Date(job.startAt) < new Date() && (
+                        <View
+                          style={{
                             backgroundColor: "#fd170fff",
                             padding: 5,
                             borderRadius: 8,
                             width: 50,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }
-                        }
-                      >
-                        <Text
-                          style={
-                            {
-                              color: "#ffffff",
-                            }
-                          }
-                          className="capitalize"
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
                         >
-                          Due
-                        </Text>
-                      </View>}
+                          <Text
+                            style={{
+                              color: "#ffffff",
+                            }}
+                            className="capitalize"
+                          >
+                            Due
+                          </Text>
+                        </View>
+                      )}
                     </View>
                   </View>
 
@@ -338,6 +397,42 @@ const styles = StyleSheet.create({
   calendar: {
     borderRadius: 20,
     padding: 10,
+  },
+  clearPill: {
+    alignSelf: "flex-end",
+    marginRight: 12,
+    marginBottom: 8,
+    backgroundColor: "#eef2ff",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 999,
+  },
+  clearPillText: {
+    color: "#3730a3",
+    fontSize: 12,
+    fontWeight: "700",
+  },
+  legendRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+    paddingHorizontal: 12,
+    paddingBottom: 12,
+  },
+  legendItem: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  legendDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 6,
+  },
+  legendLabel: {
+    fontSize: 12,
+    color: "#475569",
+    fontWeight: "600",
   },
   clearButton: {
     marginHorizontal: 16,

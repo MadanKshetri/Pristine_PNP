@@ -1,18 +1,18 @@
-import type { GetJobChecklistDto, GetJobDto, ListJobDto } from '@/fetchers/queriesSchemas';
+import type {
+  GetJobChecklistDto,
+  GetJobDto,
+  ListJobDto,
+} from "@/fetchers/queriesSchemas";
+
+import type { ManagerJobControllerJobsQueryParams } from "@/fetchers/queriesComponents";
 
 // Re-export types from auto-generated schemas
 export type Job = ListJobDto;
 export type JobDetails = GetJobDto;
 export type JobChecklist = GetJobChecklistDto;
 
-// Job status enum matching backend
-export type JobStatus = 'Pending' | 'Ongoing' | 'Completed' | 'Cancelled';
-
-// Filter types for job list
-export type JobFilterStatus = 'all' | JobStatus;
-
 export interface JobFilters {
-  status?: JobFilterStatus;
+  status?: ManagerJobControllerJobsQueryParams["status"];
   search?: string;
   page?: number;
   take?: number;

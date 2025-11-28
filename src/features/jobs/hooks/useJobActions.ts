@@ -1,12 +1,13 @@
-import { useJobControllerStartJob, useJobControllerUpdateChecklistSow } from '@/fetchers/queriesComponents';
+import { useStaffJobControllerCompleteJob, useStaffJobControllerStartJob, useStaffJobControllerUpdateChecklistSow } from '@/fetchers/queriesComponents';
 import * as Location from 'expo-location';
 import { Alert } from 'react-native';
 
 export const useJobActions = () => {
-  const startJobMutation = useJobControllerStartJob();
-  const updateChecklistMutation = useJobControllerUpdateChecklistSow();
+  const startJobMutation = useStaffJobControllerStartJob();
+  const completeJobMutation = useStaffJobControllerCompleteJob();
+  const updateChecklistMutation = useStaffJobControllerUpdateChecklistSow();
 
-  const startJob = async (jobId: string) => {
+  const startJob = async (jobId: string, token: string) => {
     try {
       // Request location permission
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -26,6 +27,7 @@ export const useJobActions = () => {
       const result = await startJobMutation.mutateAsync({
         body: {
           jobId,
+          token,
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
           startedAt: new Date().toISOString(),
@@ -40,20 +42,54 @@ export const useJobActions = () => {
     }
   };
 
+  const completeJob = async (jobId: string) => {
+    try {
+      const result = await completeJobMutation.mutateAsync({
+        pathParams: { id: jobId },
+      });
+      Alert.alert('Success', 'Job completed successfully!');
+      return { success: true, data: result };
+    } catch (error: any) {
+      Alert.alert('Error', error?.message || 'Failed to complete job');
+      return { success: false, error };
+    }
+  };
+
   const updateChecklist = async (
     checklistId: string,
     status: 'Pending' | 'Ongoing' | 'Completed' | 'Cancelled',
-    attachments?: Blob
+    attachment?: { uri: string; name?: string; type?: string }
   ) => {
     try {
-      const result = await updateChecklistMutation.mutateAsync({
-        pathParams: { id: checklistId },
-        body: {
-          id: checklistId,
-          status,
-          attachments,
-        },
-      });
+      const variables = attachment
+        ? {
+            pathParams: { id: checklistId },
+            // cast as any to satisfy generated types; fetcher already supports FormData
+            body: (() => {
+              const form = new FormData();
+              form.append('id', checklistId);
+              form.append('status', status);
+              form.append(
+                'attachments',
+                {
+                  // React Native FormData file
+                  uri: attachment.uri,
+                  name: attachment.name || 'photo.jpg',
+                  type: attachment.type || 'image/jpeg',
+                } as any
+              );
+              return form as any;
+            })(),
+          }
+        : {
+            pathParams: { id: checklistId },
+            body: {
+              id: checklistId,
+              status,
+            },
+          };
+
+      const result = await updateChecklistMutation.mutateAsync(variables as any);
 
       return { success: true, data: result };
     } catch (error: any) {
@@ -64,8 +100,10 @@ export const useJobActions = () => {
 
   return {
     startJob,
+    completeJob,
     updateChecklist,
     isStartingJob: startJobMutation.isPending,
+    isCompletingJob: completeJobMutation.isPending,
     isUpdatingChecklist: updateChecklistMutation.isPending,
   };
 };

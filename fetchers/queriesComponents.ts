@@ -18,478 +18,6 @@ type QueryFnOptions = {
   signal?: AbortController["signal"];
 };
 
-export type UserControllerGetManagersQueryParams = {
-  /**
-   * @minimum 0
-   */
-  take?: number;
-  /**
-   * @minimum 0
-   */
-  page?: number;
-  search?: string;
-  /**
-   * @format uuid
-   */
-  customerId?: string;
-};
-
-export type UserControllerGetManagersError = Fetcher.ErrorWrapper<undefined>;
-
-export type UserControllerGetManagersVariables = {
-  queryParams?: UserControllerGetManagersQueryParams;
-} & QueriesContext["fetcherOptions"];
-
-export const fetchUserControllerGetManagers = (
-  variables: UserControllerGetManagersVariables,
-  signal?: AbortSignal,
-) =>
-  queriesFetch<
-    Schemas.ListManagerResponseDto,
-    UserControllerGetManagersError,
-    undefined,
-    {},
-    UserControllerGetManagersQueryParams,
-    {}
-  >({ url: "/user/managers", method: "get", ...variables, signal });
-
-export function userControllerGetManagersQuery(
-  variables: UserControllerGetManagersVariables,
-): {
-  queryKey: reactQuery.QueryKey;
-  queryFn: (options: QueryFnOptions) => Promise<Schemas.ListManagerResponseDto>;
-};
-
-export function userControllerGetManagersQuery(
-  variables: UserControllerGetManagersVariables | reactQuery.SkipToken,
-): {
-  queryKey: reactQuery.QueryKey;
-  queryFn:
-    | ((options: QueryFnOptions) => Promise<Schemas.ListManagerResponseDto>)
-    | reactQuery.SkipToken;
-};
-
-export function userControllerGetManagersQuery(
-  variables: UserControllerGetManagersVariables | reactQuery.SkipToken,
-) {
-  return {
-    queryKey: queryKeyFn({
-      path: "/user/managers",
-      operationId: "userControllerGetManagers",
-      variables,
-    }),
-    queryFn:
-      variables === reactQuery.skipToken
-        ? reactQuery.skipToken
-        : ({ signal }: QueryFnOptions) =>
-            fetchUserControllerGetManagers(variables, signal),
-  };
-}
-
-export const useSuspenseUserControllerGetManagers = <
-  TData = Schemas.ListManagerResponseDto,
->(
-  variables: UserControllerGetManagersVariables,
-  options?: Omit<
-    reactQuery.UseQueryOptions<
-      Schemas.ListManagerResponseDto,
-      UserControllerGetManagersError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
-  >,
-) => {
-  const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useSuspenseQuery<
-    Schemas.ListManagerResponseDto,
-    UserControllerGetManagersError,
-    TData
-  >({
-    ...userControllerGetManagersQuery(deepMerge(fetcherOptions, variables)),
-    ...options,
-    ...queryOptions,
-  });
-};
-
-export const useUserControllerGetManagers = <
-  TData = Schemas.ListManagerResponseDto,
->(
-  variables: UserControllerGetManagersVariables | reactQuery.SkipToken,
-  options?: Omit<
-    reactQuery.UseQueryOptions<
-      Schemas.ListManagerResponseDto,
-      UserControllerGetManagersError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
-  >,
-) => {
-  const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useQuery<
-    Schemas.ListManagerResponseDto,
-    UserControllerGetManagersError,
-    TData
-  >({
-    ...userControllerGetManagersQuery(
-      variables === reactQuery.skipToken
-        ? variables
-        : deepMerge(fetcherOptions, variables),
-    ),
-    ...options,
-    ...queryOptions,
-  });
-};
-
-export type UserControllerGetGeneralsQueryParams = {
-  /**
-   * @minimum 0
-   */
-  take?: number;
-  /**
-   * @minimum 0
-   */
-  page?: number;
-  search?: string;
-  /**
-   * @format uuid
-   */
-  customerId?: string;
-};
-
-export type UserControllerGetGeneralsError = Fetcher.ErrorWrapper<undefined>;
-
-export type UserControllerGetGeneralsVariables = {
-  queryParams?: UserControllerGetGeneralsQueryParams;
-} & QueriesContext["fetcherOptions"];
-
-export const fetchUserControllerGetGenerals = (
-  variables: UserControllerGetGeneralsVariables,
-  signal?: AbortSignal,
-) =>
-  queriesFetch<
-    Schemas.ListGeneralResponseDto,
-    UserControllerGetGeneralsError,
-    undefined,
-    {},
-    UserControllerGetGeneralsQueryParams,
-    {}
-  >({ url: "/user/general", method: "get", ...variables, signal });
-
-export function userControllerGetGeneralsQuery(
-  variables: UserControllerGetGeneralsVariables,
-): {
-  queryKey: reactQuery.QueryKey;
-  queryFn: (options: QueryFnOptions) => Promise<Schemas.ListGeneralResponseDto>;
-};
-
-export function userControllerGetGeneralsQuery(
-  variables: UserControllerGetGeneralsVariables | reactQuery.SkipToken,
-): {
-  queryKey: reactQuery.QueryKey;
-  queryFn:
-    | ((options: QueryFnOptions) => Promise<Schemas.ListGeneralResponseDto>)
-    | reactQuery.SkipToken;
-};
-
-export function userControllerGetGeneralsQuery(
-  variables: UserControllerGetGeneralsVariables | reactQuery.SkipToken,
-) {
-  return {
-    queryKey: queryKeyFn({
-      path: "/user/general",
-      operationId: "userControllerGetGenerals",
-      variables,
-    }),
-    queryFn:
-      variables === reactQuery.skipToken
-        ? reactQuery.skipToken
-        : ({ signal }: QueryFnOptions) =>
-            fetchUserControllerGetGenerals(variables, signal),
-  };
-}
-
-export const useSuspenseUserControllerGetGenerals = <
-  TData = Schemas.ListGeneralResponseDto,
->(
-  variables: UserControllerGetGeneralsVariables,
-  options?: Omit<
-    reactQuery.UseQueryOptions<
-      Schemas.ListGeneralResponseDto,
-      UserControllerGetGeneralsError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
-  >,
-) => {
-  const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useSuspenseQuery<
-    Schemas.ListGeneralResponseDto,
-    UserControllerGetGeneralsError,
-    TData
-  >({
-    ...userControllerGetGeneralsQuery(deepMerge(fetcherOptions, variables)),
-    ...options,
-    ...queryOptions,
-  });
-};
-
-export const useUserControllerGetGenerals = <
-  TData = Schemas.ListGeneralResponseDto,
->(
-  variables: UserControllerGetGeneralsVariables | reactQuery.SkipToken,
-  options?: Omit<
-    reactQuery.UseQueryOptions<
-      Schemas.ListGeneralResponseDto,
-      UserControllerGetGeneralsError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
-  >,
-) => {
-  const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useQuery<
-    Schemas.ListGeneralResponseDto,
-    UserControllerGetGeneralsError,
-    TData
-  >({
-    ...userControllerGetGeneralsQuery(
-      variables === reactQuery.skipToken
-        ? variables
-        : deepMerge(fetcherOptions, variables),
-    ),
-    ...options,
-    ...queryOptions,
-  });
-};
-
-export type UserControllerCreateManagerError = Fetcher.ErrorWrapper<undefined>;
-
-export type UserControllerCreateManagerVariables = {
-  body: Schemas.CreateManagerDto;
-} & QueriesContext["fetcherOptions"];
-
-export const fetchUserControllerCreateManager = (
-  variables: UserControllerCreateManagerVariables,
-  signal?: AbortSignal,
-) =>
-  queriesFetch<
-    Schemas.MessageResponseWithIdDataDto,
-    UserControllerCreateManagerError,
-    Schemas.CreateManagerDto,
-    {},
-    {},
-    {}
-  >({ url: "/user/createManager", method: "post", ...variables, signal });
-
-export const useUserControllerCreateManager = (
-  options?: Omit<
-    reactQuery.UseMutationOptions<
-      Schemas.MessageResponseWithIdDataDto,
-      UserControllerCreateManagerError,
-      UserControllerCreateManagerVariables
-    >,
-    "mutationFn"
-  >,
-) => {
-  const { fetcherOptions } = useQueriesContext();
-  return reactQuery.useMutation<
-    Schemas.MessageResponseWithIdDataDto,
-    UserControllerCreateManagerError,
-    UserControllerCreateManagerVariables
-  >({
-    mutationFn: (variables: UserControllerCreateManagerVariables) =>
-      fetchUserControllerCreateManager(deepMerge(fetcherOptions, variables)),
-    ...options,
-  });
-};
-
-export type UserControllerUpdateManagerPathParams = {
-  /**
-   * @format uuid
-   */
-  id: string;
-};
-
-export type UserControllerUpdateManagerError = Fetcher.ErrorWrapper<undefined>;
-
-export type UserControllerUpdateManagerVariables = {
-  body?: Schemas.UpdateManagerDto;
-  pathParams: UserControllerUpdateManagerPathParams;
-} & QueriesContext["fetcherOptions"];
-
-export const fetchUserControllerUpdateManager = (
-  variables: UserControllerUpdateManagerVariables,
-  signal?: AbortSignal,
-) =>
-  queriesFetch<
-    Schemas.MessageResponseWithIdDataDto,
-    UserControllerUpdateManagerError,
-    Schemas.UpdateManagerDto,
-    {},
-    {},
-    UserControllerUpdateManagerPathParams
-  >({ url: "/user/manager/{id}", method: "patch", ...variables, signal });
-
-export const useUserControllerUpdateManager = (
-  options?: Omit<
-    reactQuery.UseMutationOptions<
-      Schemas.MessageResponseWithIdDataDto,
-      UserControllerUpdateManagerError,
-      UserControllerUpdateManagerVariables
-    >,
-    "mutationFn"
-  >,
-) => {
-  const { fetcherOptions } = useQueriesContext();
-  return reactQuery.useMutation<
-    Schemas.MessageResponseWithIdDataDto,
-    UserControllerUpdateManagerError,
-    UserControllerUpdateManagerVariables
-  >({
-    mutationFn: (variables: UserControllerUpdateManagerVariables) =>
-      fetchUserControllerUpdateManager(deepMerge(fetcherOptions, variables)),
-    ...options,
-  });
-};
-
-export type UserControllerCreateGeneralError = Fetcher.ErrorWrapper<undefined>;
-
-export type UserControllerCreateGeneralVariables = {
-  body: Schemas.CreateGeneralDto;
-} & QueriesContext["fetcherOptions"];
-
-export const fetchUserControllerCreateGeneral = (
-  variables: UserControllerCreateGeneralVariables,
-  signal?: AbortSignal,
-) =>
-  queriesFetch<
-    Schemas.MessageResponseWithIdDataDto,
-    UserControllerCreateGeneralError,
-    Schemas.CreateGeneralDto,
-    {},
-    {},
-    {}
-  >({ url: "/user/createGeneral", method: "post", ...variables, signal });
-
-export const useUserControllerCreateGeneral = (
-  options?: Omit<
-    reactQuery.UseMutationOptions<
-      Schemas.MessageResponseWithIdDataDto,
-      UserControllerCreateGeneralError,
-      UserControllerCreateGeneralVariables
-    >,
-    "mutationFn"
-  >,
-) => {
-  const { fetcherOptions } = useQueriesContext();
-  return reactQuery.useMutation<
-    Schemas.MessageResponseWithIdDataDto,
-    UserControllerCreateGeneralError,
-    UserControllerCreateGeneralVariables
-  >({
-    mutationFn: (variables: UserControllerCreateGeneralVariables) =>
-      fetchUserControllerCreateGeneral(deepMerge(fetcherOptions, variables)),
-    ...options,
-  });
-};
-
-export type UserControllerUpdateGeneralPathParams = {
-  /**
-   * @format uuid
-   */
-  id: string;
-};
-
-export type UserControllerUpdateGeneralError = Fetcher.ErrorWrapper<undefined>;
-
-export type UserControllerUpdateGeneralVariables = {
-  body?: Schemas.UpdateGeneralDto;
-  pathParams: UserControllerUpdateGeneralPathParams;
-} & QueriesContext["fetcherOptions"];
-
-export const fetchUserControllerUpdateGeneral = (
-  variables: UserControllerUpdateGeneralVariables,
-  signal?: AbortSignal,
-) =>
-  queriesFetch<
-    Schemas.MessageResponseWithIdDataDto,
-    UserControllerUpdateGeneralError,
-    Schemas.UpdateGeneralDto,
-    {},
-    {},
-    UserControllerUpdateGeneralPathParams
-  >({ url: "/user/general/{id}", method: "patch", ...variables, signal });
-
-export const useUserControllerUpdateGeneral = (
-  options?: Omit<
-    reactQuery.UseMutationOptions<
-      Schemas.MessageResponseWithIdDataDto,
-      UserControllerUpdateGeneralError,
-      UserControllerUpdateGeneralVariables
-    >,
-    "mutationFn"
-  >,
-) => {
-  const { fetcherOptions } = useQueriesContext();
-  return reactQuery.useMutation<
-    Schemas.MessageResponseWithIdDataDto,
-    UserControllerUpdateGeneralError,
-    UserControllerUpdateGeneralVariables
-  >({
-    mutationFn: (variables: UserControllerUpdateGeneralVariables) =>
-      fetchUserControllerUpdateGeneral(deepMerge(fetcherOptions, variables)),
-    ...options,
-  });
-};
-
-export type UserControllerDeleteUserPathParams = {
-  /**
-   * @format uuid
-   */
-  id: string;
-};
-
-export type UserControllerDeleteUserError = Fetcher.ErrorWrapper<undefined>;
-
-export type UserControllerDeleteUserVariables = {
-  pathParams: UserControllerDeleteUserPathParams;
-} & QueriesContext["fetcherOptions"];
-
-export const fetchUserControllerDeleteUser = (
-  variables: UserControllerDeleteUserVariables,
-  signal?: AbortSignal,
-) =>
-  queriesFetch<
-    Schemas.MessageResponseWithIdDataDto,
-    UserControllerDeleteUserError,
-    undefined,
-    {},
-    {},
-    UserControllerDeleteUserPathParams
-  >({ url: "/user/{id}", method: "delete", ...variables, signal });
-
-export const useUserControllerDeleteUser = (
-  options?: Omit<
-    reactQuery.UseMutationOptions<
-      Schemas.MessageResponseWithIdDataDto,
-      UserControllerDeleteUserError,
-      UserControllerDeleteUserVariables
-    >,
-    "mutationFn"
-  >,
-) => {
-  const { fetcherOptions } = useQueriesContext();
-  return reactQuery.useMutation<
-    Schemas.MessageResponseWithIdDataDto,
-    UserControllerDeleteUserError,
-    UserControllerDeleteUserVariables
-  >({
-    mutationFn: (variables: UserControllerDeleteUserVariables) =>
-      fetchUserControllerDeleteUser(deepMerge(fetcherOptions, variables)),
-    ...options,
-  });
-};
-
 export type AuthControllerGetMeUserError = Fetcher.ErrorWrapper<undefined>;
 
 export type AuthControllerGetMeUserVariables = QueriesContext["fetcherOptions"];
@@ -565,7 +93,7 @@ export const useSuspenseAuthControllerGetMeUser = <
   });
 };
 
-export const useAuthControllerGetMeUser = <TData = Schemas.GetMeResponseDto,>(
+export const useAuthControllerGetMeUser = <TData = Schemas.GetMeResponseDto>(
   variables: AuthControllerGetMeUserVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -903,7 +431,498 @@ export const useAuthControllerVerifyManagerOtp = (
   });
 };
 
-export type SowControllerSowsQueryParams = {
+export type AdminUserControllerGetManagersQueryParams = {
+  /**
+   * @minimum 0
+   */
+  take?: number;
+  /**
+   * @minimum 0
+   */
+  page?: number;
+  search?: string;
+  /**
+   * @format uuid
+   */
+  customerId?: string;
+};
+
+export type AdminUserControllerGetManagersError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AdminUserControllerGetManagersVariables = {
+  queryParams?: AdminUserControllerGetManagersQueryParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminUserControllerGetManagers = (
+  variables: AdminUserControllerGetManagersVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.ListManagerResponseDto,
+    AdminUserControllerGetManagersError,
+    undefined,
+    {},
+    AdminUserControllerGetManagersQueryParams,
+    {}
+  >({ url: "/admin/user/managers", method: "get", ...variables, signal });
+
+export function adminUserControllerGetManagersQuery(
+  variables: AdminUserControllerGetManagersVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (options: QueryFnOptions) => Promise<Schemas.ListManagerResponseDto>;
+};
+
+export function adminUserControllerGetManagersQuery(
+  variables: AdminUserControllerGetManagersVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((options: QueryFnOptions) => Promise<Schemas.ListManagerResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function adminUserControllerGetManagersQuery(
+  variables: AdminUserControllerGetManagersVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/admin/user/managers",
+      operationId: "adminUserControllerGetManagers",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchAdminUserControllerGetManagers(variables, signal),
+  };
+}
+
+export const useSuspenseAdminUserControllerGetManagers = <
+  TData = Schemas.ListManagerResponseDto,
+>(
+  variables: AdminUserControllerGetManagersVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListManagerResponseDto,
+      AdminUserControllerGetManagersError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.ListManagerResponseDto,
+    AdminUserControllerGetManagersError,
+    TData
+  >({
+    ...adminUserControllerGetManagersQuery(
+      deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useAdminUserControllerGetManagers = <
+  TData = Schemas.ListManagerResponseDto,
+>(
+  variables: AdminUserControllerGetManagersVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListManagerResponseDto,
+      AdminUserControllerGetManagersError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.ListManagerResponseDto,
+    AdminUserControllerGetManagersError,
+    TData
+  >({
+    ...adminUserControllerGetManagersQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type AdminUserControllerGetGeneralsQueryParams = {
+  /**
+   * @minimum 0
+   */
+  take?: number;
+  /**
+   * @minimum 0
+   */
+  page?: number;
+  search?: string;
+  /**
+   * @format uuid
+   */
+  customerId?: string;
+};
+
+export type AdminUserControllerGetGeneralsError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AdminUserControllerGetGeneralsVariables = {
+  queryParams?: AdminUserControllerGetGeneralsQueryParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminUserControllerGetGenerals = (
+  variables: AdminUserControllerGetGeneralsVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.ListGeneralResponseDto,
+    AdminUserControllerGetGeneralsError,
+    undefined,
+    {},
+    AdminUserControllerGetGeneralsQueryParams,
+    {}
+  >({ url: "/admin/user/general", method: "get", ...variables, signal });
+
+export function adminUserControllerGetGeneralsQuery(
+  variables: AdminUserControllerGetGeneralsVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (options: QueryFnOptions) => Promise<Schemas.ListGeneralResponseDto>;
+};
+
+export function adminUserControllerGetGeneralsQuery(
+  variables: AdminUserControllerGetGeneralsVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((options: QueryFnOptions) => Promise<Schemas.ListGeneralResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function adminUserControllerGetGeneralsQuery(
+  variables: AdminUserControllerGetGeneralsVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/admin/user/general",
+      operationId: "adminUserControllerGetGenerals",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchAdminUserControllerGetGenerals(variables, signal),
+  };
+}
+
+export const useSuspenseAdminUserControllerGetGenerals = <
+  TData = Schemas.ListGeneralResponseDto,
+>(
+  variables: AdminUserControllerGetGeneralsVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListGeneralResponseDto,
+      AdminUserControllerGetGeneralsError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.ListGeneralResponseDto,
+    AdminUserControllerGetGeneralsError,
+    TData
+  >({
+    ...adminUserControllerGetGeneralsQuery(
+      deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useAdminUserControllerGetGenerals = <
+  TData = Schemas.ListGeneralResponseDto,
+>(
+  variables: AdminUserControllerGetGeneralsVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListGeneralResponseDto,
+      AdminUserControllerGetGeneralsError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.ListGeneralResponseDto,
+    AdminUserControllerGetGeneralsError,
+    TData
+  >({
+    ...adminUserControllerGetGeneralsQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type AdminUserControllerCreateManagerError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AdminUserControllerCreateManagerVariables = {
+  body: Schemas.CreateManagerDto;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminUserControllerCreateManager = (
+  variables: AdminUserControllerCreateManagerVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminUserControllerCreateManagerError,
+    Schemas.CreateManagerDto,
+    {},
+    {},
+    {}
+  >({ url: "/admin/user/createManager", method: "post", ...variables, signal });
+
+export const useAdminUserControllerCreateManager = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.MessageResponseWithIdDataDto,
+      AdminUserControllerCreateManagerError,
+      AdminUserControllerCreateManagerVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminUserControllerCreateManagerError,
+    AdminUserControllerCreateManagerVariables
+  >({
+    mutationFn: (variables: AdminUserControllerCreateManagerVariables) =>
+      fetchAdminUserControllerCreateManager(
+        deepMerge(fetcherOptions, variables),
+      ),
+    ...options,
+  });
+};
+
+export type AdminUserControllerUpdateManagerPathParams = {
+  /**
+   * @format uuid
+   */
+  id: string;
+};
+
+export type AdminUserControllerUpdateManagerError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AdminUserControllerUpdateManagerVariables = {
+  body?: Schemas.UpdateManagerDto;
+  pathParams: AdminUserControllerUpdateManagerPathParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminUserControllerUpdateManager = (
+  variables: AdminUserControllerUpdateManagerVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminUserControllerUpdateManagerError,
+    Schemas.UpdateManagerDto,
+    {},
+    {},
+    AdminUserControllerUpdateManagerPathParams
+  >({ url: "/admin/user/manager/{id}", method: "patch", ...variables, signal });
+
+export const useAdminUserControllerUpdateManager = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.MessageResponseWithIdDataDto,
+      AdminUserControllerUpdateManagerError,
+      AdminUserControllerUpdateManagerVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminUserControllerUpdateManagerError,
+    AdminUserControllerUpdateManagerVariables
+  >({
+    mutationFn: (variables: AdminUserControllerUpdateManagerVariables) =>
+      fetchAdminUserControllerUpdateManager(
+        deepMerge(fetcherOptions, variables),
+      ),
+    ...options,
+  });
+};
+
+export type AdminUserControllerCreateGeneralError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AdminUserControllerCreateGeneralVariables = {
+  body: Schemas.CreateGeneralDto;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminUserControllerCreateGeneral = (
+  variables: AdminUserControllerCreateGeneralVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminUserControllerCreateGeneralError,
+    Schemas.CreateGeneralDto,
+    {},
+    {},
+    {}
+  >({ url: "/admin/user/createGeneral", method: "post", ...variables, signal });
+
+export const useAdminUserControllerCreateGeneral = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.MessageResponseWithIdDataDto,
+      AdminUserControllerCreateGeneralError,
+      AdminUserControllerCreateGeneralVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminUserControllerCreateGeneralError,
+    AdminUserControllerCreateGeneralVariables
+  >({
+    mutationFn: (variables: AdminUserControllerCreateGeneralVariables) =>
+      fetchAdminUserControllerCreateGeneral(
+        deepMerge(fetcherOptions, variables),
+      ),
+    ...options,
+  });
+};
+
+export type AdminUserControllerUpdateGeneralPathParams = {
+  /**
+   * @format uuid
+   */
+  id: string;
+};
+
+export type AdminUserControllerUpdateGeneralError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AdminUserControllerUpdateGeneralVariables = {
+  body?: Schemas.UpdateGeneralDto;
+  pathParams: AdminUserControllerUpdateGeneralPathParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminUserControllerUpdateGeneral = (
+  variables: AdminUserControllerUpdateGeneralVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminUserControllerUpdateGeneralError,
+    Schemas.UpdateGeneralDto,
+    {},
+    {},
+    AdminUserControllerUpdateGeneralPathParams
+  >({ url: "/admin/user/general/{id}", method: "patch", ...variables, signal });
+
+export const useAdminUserControllerUpdateGeneral = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.MessageResponseWithIdDataDto,
+      AdminUserControllerUpdateGeneralError,
+      AdminUserControllerUpdateGeneralVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminUserControllerUpdateGeneralError,
+    AdminUserControllerUpdateGeneralVariables
+  >({
+    mutationFn: (variables: AdminUserControllerUpdateGeneralVariables) =>
+      fetchAdminUserControllerUpdateGeneral(
+        deepMerge(fetcherOptions, variables),
+      ),
+    ...options,
+  });
+};
+
+export type AdminUserControllerDeleteUserPathParams = {
+  /**
+   * @format uuid
+   */
+  id: string;
+};
+
+export type AdminUserControllerDeleteUserError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AdminUserControllerDeleteUserVariables = {
+  pathParams: AdminUserControllerDeleteUserPathParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminUserControllerDeleteUser = (
+  variables: AdminUserControllerDeleteUserVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminUserControllerDeleteUserError,
+    undefined,
+    {},
+    {},
+    AdminUserControllerDeleteUserPathParams
+  >({ url: "/admin/user/{id}", method: "delete", ...variables, signal });
+
+export const useAdminUserControllerDeleteUser = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.MessageResponseWithIdDataDto,
+      AdminUserControllerDeleteUserError,
+      AdminUserControllerDeleteUserVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminUserControllerDeleteUserError,
+    AdminUserControllerDeleteUserVariables
+  >({
+    mutationFn: (variables: AdminUserControllerDeleteUserVariables) =>
+      fetchAdminUserControllerDeleteUser(deepMerge(fetcherOptions, variables)),
+    ...options,
+  });
+};
+
+export type AdminSowControllerSowsQueryParams = {
   /**
    * @minimum 0
    */
@@ -915,32 +934,34 @@ export type SowControllerSowsQueryParams = {
   search?: string;
 };
 
-export type SowControllerSowsError = Fetcher.ErrorWrapper<undefined>;
+export type AdminSowControllerSowsError = Fetcher.ErrorWrapper<undefined>;
 
-export type SowControllerSowsVariables = {
-  queryParams?: SowControllerSowsQueryParams;
+export type AdminSowControllerSowsVariables = {
+  queryParams?: AdminSowControllerSowsQueryParams;
 } & QueriesContext["fetcherOptions"];
 
-export const fetchSowControllerSows = (
-  variables: SowControllerSowsVariables,
+export const fetchAdminSowControllerSows = (
+  variables: AdminSowControllerSowsVariables,
   signal?: AbortSignal,
 ) =>
   queriesFetch<
     Schemas.ListSOWResponseDto,
-    SowControllerSowsError,
+    AdminSowControllerSowsError,
     undefined,
     {},
-    SowControllerSowsQueryParams,
+    AdminSowControllerSowsQueryParams,
     {}
-  >({ url: "/sow", method: "get", ...variables, signal });
+  >({ url: "/admin/sow", method: "get", ...variables, signal });
 
-export function sowControllerSowsQuery(variables: SowControllerSowsVariables): {
+export function adminSowControllerSowsQuery(
+  variables: AdminSowControllerSowsVariables,
+): {
   queryKey: reactQuery.QueryKey;
   queryFn: (options: QueryFnOptions) => Promise<Schemas.ListSOWResponseDto>;
 };
 
-export function sowControllerSowsQuery(
-  variables: SowControllerSowsVariables | reactQuery.SkipToken,
+export function adminSowControllerSowsQuery(
+  variables: AdminSowControllerSowsVariables | reactQuery.SkipToken,
 ): {
   queryKey: reactQuery.QueryKey;
   queryFn:
@@ -948,31 +969,31 @@ export function sowControllerSowsQuery(
     | reactQuery.SkipToken;
 };
 
-export function sowControllerSowsQuery(
-  variables: SowControllerSowsVariables | reactQuery.SkipToken,
+export function adminSowControllerSowsQuery(
+  variables: AdminSowControllerSowsVariables | reactQuery.SkipToken,
 ) {
   return {
     queryKey: queryKeyFn({
-      path: "/sow",
-      operationId: "sowControllerSows",
+      path: "/admin/sow",
+      operationId: "adminSowControllerSows",
       variables,
     }),
     queryFn:
       variables === reactQuery.skipToken
         ? reactQuery.skipToken
         : ({ signal }: QueryFnOptions) =>
-            fetchSowControllerSows(variables, signal),
+            fetchAdminSowControllerSows(variables, signal),
   };
 }
 
-export const useSuspenseSowControllerSows = <
+export const useSuspenseAdminSowControllerSows = <
   TData = Schemas.ListSOWResponseDto,
 >(
-  variables: SowControllerSowsVariables,
+  variables: AdminSowControllerSowsVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
       Schemas.ListSOWResponseDto,
-      SowControllerSowsError,
+      AdminSowControllerSowsError,
       TData
     >,
     "queryKey" | "queryFn" | "initialData"
@@ -981,21 +1002,21 @@ export const useSuspenseSowControllerSows = <
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useSuspenseQuery<
     Schemas.ListSOWResponseDto,
-    SowControllerSowsError,
+    AdminSowControllerSowsError,
     TData
   >({
-    ...sowControllerSowsQuery(deepMerge(fetcherOptions, variables)),
+    ...adminSowControllerSowsQuery(deepMerge(fetcherOptions, variables)),
     ...options,
     ...queryOptions,
   });
 };
 
-export const useSowControllerSows = <TData = Schemas.ListSOWResponseDto,>(
-  variables: SowControllerSowsVariables | reactQuery.SkipToken,
+export const useAdminSowControllerSows = <TData = Schemas.ListSOWResponseDto>(
+  variables: AdminSowControllerSowsVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
       Schemas.ListSOWResponseDto,
-      SowControllerSowsError,
+      AdminSowControllerSowsError,
       TData
     >,
     "queryKey" | "queryFn" | "initialData"
@@ -1004,10 +1025,10 @@ export const useSowControllerSows = <TData = Schemas.ListSOWResponseDto,>(
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useQuery<
     Schemas.ListSOWResponseDto,
-    SowControllerSowsError,
+    AdminSowControllerSowsError,
     TData
   >({
-    ...sowControllerSowsQuery(
+    ...adminSowControllerSowsQuery(
       variables === reactQuery.skipToken
         ? variables
         : deepMerge(fetcherOptions, variables),
@@ -1017,31 +1038,31 @@ export const useSowControllerSows = <TData = Schemas.ListSOWResponseDto,>(
   });
 };
 
-export type SowControllerCreateError = Fetcher.ErrorWrapper<undefined>;
+export type AdminSowControllerCreateError = Fetcher.ErrorWrapper<undefined>;
 
-export type SowControllerCreateVariables = {
+export type AdminSowControllerCreateVariables = {
   body: Schemas.CreateScopeOfWorkRequestDto;
 } & QueriesContext["fetcherOptions"];
 
-export const fetchSowControllerCreate = (
-  variables: SowControllerCreateVariables,
+export const fetchAdminSowControllerCreate = (
+  variables: AdminSowControllerCreateVariables,
   signal?: AbortSignal,
 ) =>
   queriesFetch<
     Schemas.MessageResponseWithIdDataDto,
-    SowControllerCreateError,
+    AdminSowControllerCreateError,
     Schemas.CreateScopeOfWorkRequestDto,
     {},
     {},
     {}
-  >({ url: "/sow", method: "post", ...variables, signal });
+  >({ url: "/admin/sow", method: "post", ...variables, signal });
 
-export const useSowControllerCreate = (
+export const useAdminSowControllerCreate = (
   options?: Omit<
     reactQuery.UseMutationOptions<
       Schemas.MessageResponseWithIdDataDto,
-      SowControllerCreateError,
-      SowControllerCreateVariables
+      AdminSowControllerCreateError,
+      AdminSowControllerCreateVariables
     >,
     "mutationFn"
   >,
@@ -1049,48 +1070,50 @@ export const useSowControllerCreate = (
   const { fetcherOptions } = useQueriesContext();
   return reactQuery.useMutation<
     Schemas.MessageResponseWithIdDataDto,
-    SowControllerCreateError,
-    SowControllerCreateVariables
+    AdminSowControllerCreateError,
+    AdminSowControllerCreateVariables
   >({
-    mutationFn: (variables: SowControllerCreateVariables) =>
-      fetchSowControllerCreate(deepMerge(fetcherOptions, variables)),
+    mutationFn: (variables: AdminSowControllerCreateVariables) =>
+      fetchAdminSowControllerCreate(deepMerge(fetcherOptions, variables)),
     ...options,
   });
 };
 
-export type SowControllerSowPathParams = {
+export type AdminSowControllerSowPathParams = {
   /**
    * @format uuid
    */
   id: string;
 };
 
-export type SowControllerSowError = Fetcher.ErrorWrapper<undefined>;
+export type AdminSowControllerSowError = Fetcher.ErrorWrapper<undefined>;
 
-export type SowControllerSowVariables = {
-  pathParams: SowControllerSowPathParams;
+export type AdminSowControllerSowVariables = {
+  pathParams: AdminSowControllerSowPathParams;
 } & QueriesContext["fetcherOptions"];
 
-export const fetchSowControllerSow = (
-  variables: SowControllerSowVariables,
+export const fetchAdminSowControllerSow = (
+  variables: AdminSowControllerSowVariables,
   signal?: AbortSignal,
 ) =>
   queriesFetch<
     Schemas.GetSOWResponseDto,
-    SowControllerSowError,
+    AdminSowControllerSowError,
     undefined,
     {},
     {},
-    SowControllerSowPathParams
-  >({ url: "/sow/{id}", method: "get", ...variables, signal });
+    AdminSowControllerSowPathParams
+  >({ url: "/admin/sow/{id}", method: "get", ...variables, signal });
 
-export function sowControllerSowQuery(variables: SowControllerSowVariables): {
+export function adminSowControllerSowQuery(
+  variables: AdminSowControllerSowVariables,
+): {
   queryKey: reactQuery.QueryKey;
   queryFn: (options: QueryFnOptions) => Promise<Schemas.GetSOWResponseDto>;
 };
 
-export function sowControllerSowQuery(
-  variables: SowControllerSowVariables | reactQuery.SkipToken,
+export function adminSowControllerSowQuery(
+  variables: AdminSowControllerSowVariables | reactQuery.SkipToken,
 ): {
   queryKey: reactQuery.QueryKey;
   queryFn:
@@ -1098,29 +1121,31 @@ export function sowControllerSowQuery(
     | reactQuery.SkipToken;
 };
 
-export function sowControllerSowQuery(
-  variables: SowControllerSowVariables | reactQuery.SkipToken,
+export function adminSowControllerSowQuery(
+  variables: AdminSowControllerSowVariables | reactQuery.SkipToken,
 ) {
   return {
     queryKey: queryKeyFn({
-      path: "/sow/{id}",
-      operationId: "sowControllerSow",
+      path: "/admin/sow/{id}",
+      operationId: "adminSowControllerSow",
       variables,
     }),
     queryFn:
       variables === reactQuery.skipToken
         ? reactQuery.skipToken
         : ({ signal }: QueryFnOptions) =>
-            fetchSowControllerSow(variables, signal),
+            fetchAdminSowControllerSow(variables, signal),
   };
 }
 
-export const useSuspenseSowControllerSow = <TData = Schemas.GetSOWResponseDto,>(
-  variables: SowControllerSowVariables,
+export const useSuspenseAdminSowControllerSow = <
+  TData = Schemas.GetSOWResponseDto,
+>(
+  variables: AdminSowControllerSowVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
       Schemas.GetSOWResponseDto,
-      SowControllerSowError,
+      AdminSowControllerSowError,
       TData
     >,
     "queryKey" | "queryFn" | "initialData"
@@ -1129,21 +1154,21 @@ export const useSuspenseSowControllerSow = <TData = Schemas.GetSOWResponseDto,>(
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useSuspenseQuery<
     Schemas.GetSOWResponseDto,
-    SowControllerSowError,
+    AdminSowControllerSowError,
     TData
   >({
-    ...sowControllerSowQuery(deepMerge(fetcherOptions, variables)),
+    ...adminSowControllerSowQuery(deepMerge(fetcherOptions, variables)),
     ...options,
     ...queryOptions,
   });
 };
 
-export const useSowControllerSow = <TData = Schemas.GetSOWResponseDto,>(
-  variables: SowControllerSowVariables | reactQuery.SkipToken,
+export const useAdminSowControllerSow = <TData = Schemas.GetSOWResponseDto>(
+  variables: AdminSowControllerSowVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
       Schemas.GetSOWResponseDto,
-      SowControllerSowError,
+      AdminSowControllerSowError,
       TData
     >,
     "queryKey" | "queryFn" | "initialData"
@@ -1152,10 +1177,10 @@ export const useSowControllerSow = <TData = Schemas.GetSOWResponseDto,>(
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useQuery<
     Schemas.GetSOWResponseDto,
-    SowControllerSowError,
+    AdminSowControllerSowError,
     TData
   >({
-    ...sowControllerSowQuery(
+    ...adminSowControllerSowQuery(
       variables === reactQuery.skipToken
         ? variables
         : deepMerge(fetcherOptions, variables),
@@ -1165,39 +1190,39 @@ export const useSowControllerSow = <TData = Schemas.GetSOWResponseDto,>(
   });
 };
 
-export type SowControllerUpdatePathParams = {
+export type AdminSowControllerUpdatePathParams = {
   /**
    * @format uuid
    */
   id: string;
 };
 
-export type SowControllerUpdateError = Fetcher.ErrorWrapper<undefined>;
+export type AdminSowControllerUpdateError = Fetcher.ErrorWrapper<undefined>;
 
-export type SowControllerUpdateVariables = {
+export type AdminSowControllerUpdateVariables = {
   body?: Schemas.UpdateScopeOfWorkRequestDto;
-  pathParams: SowControllerUpdatePathParams;
+  pathParams: AdminSowControllerUpdatePathParams;
 } & QueriesContext["fetcherOptions"];
 
-export const fetchSowControllerUpdate = (
-  variables: SowControllerUpdateVariables,
+export const fetchAdminSowControllerUpdate = (
+  variables: AdminSowControllerUpdateVariables,
   signal?: AbortSignal,
 ) =>
   queriesFetch<
     Schemas.MessageResponseWithIdDataDto,
-    SowControllerUpdateError,
+    AdminSowControllerUpdateError,
     Schemas.UpdateScopeOfWorkRequestDto,
     {},
     {},
-    SowControllerUpdatePathParams
-  >({ url: "/sow/{id}", method: "patch", ...variables, signal });
+    AdminSowControllerUpdatePathParams
+  >({ url: "/admin/sow/{id}", method: "patch", ...variables, signal });
 
-export const useSowControllerUpdate = (
+export const useAdminSowControllerUpdate = (
   options?: Omit<
     reactQuery.UseMutationOptions<
       Schemas.MessageResponseWithIdDataDto,
-      SowControllerUpdateError,
-      SowControllerUpdateVariables
+      AdminSowControllerUpdateError,
+      AdminSowControllerUpdateVariables
     >,
     "mutationFn"
   >,
@@ -1205,16 +1230,16 @@ export const useSowControllerUpdate = (
   const { fetcherOptions } = useQueriesContext();
   return reactQuery.useMutation<
     Schemas.MessageResponseWithIdDataDto,
-    SowControllerUpdateError,
-    SowControllerUpdateVariables
+    AdminSowControllerUpdateError,
+    AdminSowControllerUpdateVariables
   >({
-    mutationFn: (variables: SowControllerUpdateVariables) =>
-      fetchSowControllerUpdate(deepMerge(fetcherOptions, variables)),
+    mutationFn: (variables: AdminSowControllerUpdateVariables) =>
+      fetchAdminSowControllerUpdate(deepMerge(fetcherOptions, variables)),
     ...options,
   });
 };
 
-export type SowGroupControllerSowsQueryParams = {
+export type AdminSowGroupControllerSowsQueryParams = {
   /**
    * @minimum 0
    */
@@ -1226,27 +1251,27 @@ export type SowGroupControllerSowsQueryParams = {
   search?: string;
 };
 
-export type SowGroupControllerSowsError = Fetcher.ErrorWrapper<undefined>;
+export type AdminSowGroupControllerSowsError = Fetcher.ErrorWrapper<undefined>;
 
-export type SowGroupControllerSowsVariables = {
-  queryParams?: SowGroupControllerSowsQueryParams;
+export type AdminSowGroupControllerSowsVariables = {
+  queryParams?: AdminSowGroupControllerSowsQueryParams;
 } & QueriesContext["fetcherOptions"];
 
-export const fetchSowGroupControllerSows = (
-  variables: SowGroupControllerSowsVariables,
+export const fetchAdminSowGroupControllerSows = (
+  variables: AdminSowGroupControllerSowsVariables,
   signal?: AbortSignal,
 ) =>
   queriesFetch<
     Schemas.ListSOWGroupResponseDto,
-    SowGroupControllerSowsError,
+    AdminSowGroupControllerSowsError,
     undefined,
     {},
-    SowGroupControllerSowsQueryParams,
+    AdminSowGroupControllerSowsQueryParams,
     {}
-  >({ url: "/sowGroup", method: "get", ...variables, signal });
+  >({ url: "/admin/sowGroup", method: "get", ...variables, signal });
 
-export function sowGroupControllerSowsQuery(
-  variables: SowGroupControllerSowsVariables,
+export function adminSowGroupControllerSowsQuery(
+  variables: AdminSowGroupControllerSowsVariables,
 ): {
   queryKey: reactQuery.QueryKey;
   queryFn: (
@@ -1254,8 +1279,8 @@ export function sowGroupControllerSowsQuery(
   ) => Promise<Schemas.ListSOWGroupResponseDto>;
 };
 
-export function sowGroupControllerSowsQuery(
-  variables: SowGroupControllerSowsVariables | reactQuery.SkipToken,
+export function adminSowGroupControllerSowsQuery(
+  variables: AdminSowGroupControllerSowsVariables | reactQuery.SkipToken,
 ): {
   queryKey: reactQuery.QueryKey;
   queryFn:
@@ -1263,31 +1288,31 @@ export function sowGroupControllerSowsQuery(
     | reactQuery.SkipToken;
 };
 
-export function sowGroupControllerSowsQuery(
-  variables: SowGroupControllerSowsVariables | reactQuery.SkipToken,
+export function adminSowGroupControllerSowsQuery(
+  variables: AdminSowGroupControllerSowsVariables | reactQuery.SkipToken,
 ) {
   return {
     queryKey: queryKeyFn({
-      path: "/sowGroup",
-      operationId: "sowGroupControllerSows",
+      path: "/admin/sowGroup",
+      operationId: "adminSowGroupControllerSows",
       variables,
     }),
     queryFn:
       variables === reactQuery.skipToken
         ? reactQuery.skipToken
         : ({ signal }: QueryFnOptions) =>
-            fetchSowGroupControllerSows(variables, signal),
+            fetchAdminSowGroupControllerSows(variables, signal),
   };
 }
 
-export const useSuspenseSowGroupControllerSows = <
+export const useSuspenseAdminSowGroupControllerSows = <
   TData = Schemas.ListSOWGroupResponseDto,
 >(
-  variables: SowGroupControllerSowsVariables,
+  variables: AdminSowGroupControllerSowsVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
       Schemas.ListSOWGroupResponseDto,
-      SowGroupControllerSowsError,
+      AdminSowGroupControllerSowsError,
       TData
     >,
     "queryKey" | "queryFn" | "initialData"
@@ -1296,23 +1321,23 @@ export const useSuspenseSowGroupControllerSows = <
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useSuspenseQuery<
     Schemas.ListSOWGroupResponseDto,
-    SowGroupControllerSowsError,
+    AdminSowGroupControllerSowsError,
     TData
   >({
-    ...sowGroupControllerSowsQuery(deepMerge(fetcherOptions, variables)),
+    ...adminSowGroupControllerSowsQuery(deepMerge(fetcherOptions, variables)),
     ...options,
     ...queryOptions,
   });
 };
 
-export const useSowGroupControllerSows = <
+export const useAdminSowGroupControllerSows = <
   TData = Schemas.ListSOWGroupResponseDto,
 >(
-  variables: SowGroupControllerSowsVariables | reactQuery.SkipToken,
+  variables: AdminSowGroupControllerSowsVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
       Schemas.ListSOWGroupResponseDto,
-      SowGroupControllerSowsError,
+      AdminSowGroupControllerSowsError,
       TData
     >,
     "queryKey" | "queryFn" | "initialData"
@@ -1321,10 +1346,10 @@ export const useSowGroupControllerSows = <
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useQuery<
     Schemas.ListSOWGroupResponseDto,
-    SowGroupControllerSowsError,
+    AdminSowGroupControllerSowsError,
     TData
   >({
-    ...sowGroupControllerSowsQuery(
+    ...adminSowGroupControllerSowsQuery(
       variables === reactQuery.skipToken
         ? variables
         : deepMerge(fetcherOptions, variables),
@@ -1334,31 +1359,32 @@ export const useSowGroupControllerSows = <
   });
 };
 
-export type SowGroupControllerCreateError = Fetcher.ErrorWrapper<undefined>;
+export type AdminSowGroupControllerCreateError =
+  Fetcher.ErrorWrapper<undefined>;
 
-export type SowGroupControllerCreateVariables = {
+export type AdminSowGroupControllerCreateVariables = {
   body: Schemas.CreateScopeOfWorkGroupRequestDto;
 } & QueriesContext["fetcherOptions"];
 
-export const fetchSowGroupControllerCreate = (
-  variables: SowGroupControllerCreateVariables,
+export const fetchAdminSowGroupControllerCreate = (
+  variables: AdminSowGroupControllerCreateVariables,
   signal?: AbortSignal,
 ) =>
   queriesFetch<
     Schemas.MessageResponseWithIdDataDto,
-    SowGroupControllerCreateError,
+    AdminSowGroupControllerCreateError,
     Schemas.CreateScopeOfWorkGroupRequestDto,
     {},
     {},
     {}
-  >({ url: "/sowGroup", method: "post", ...variables, signal });
+  >({ url: "/admin/sowGroup", method: "post", ...variables, signal });
 
-export const useSowGroupControllerCreate = (
+export const useAdminSowGroupControllerCreate = (
   options?: Omit<
     reactQuery.UseMutationOptions<
       Schemas.MessageResponseWithIdDataDto,
-      SowGroupControllerCreateError,
-      SowGroupControllerCreateVariables
+      AdminSowGroupControllerCreateError,
+      AdminSowGroupControllerCreateVariables
     >,
     "mutationFn"
   >,
@@ -1366,50 +1392,50 @@ export const useSowGroupControllerCreate = (
   const { fetcherOptions } = useQueriesContext();
   return reactQuery.useMutation<
     Schemas.MessageResponseWithIdDataDto,
-    SowGroupControllerCreateError,
-    SowGroupControllerCreateVariables
+    AdminSowGroupControllerCreateError,
+    AdminSowGroupControllerCreateVariables
   >({
-    mutationFn: (variables: SowGroupControllerCreateVariables) =>
-      fetchSowGroupControllerCreate(deepMerge(fetcherOptions, variables)),
+    mutationFn: (variables: AdminSowGroupControllerCreateVariables) =>
+      fetchAdminSowGroupControllerCreate(deepMerge(fetcherOptions, variables)),
     ...options,
   });
 };
 
-export type SowGroupControllerSowPathParams = {
+export type AdminSowGroupControllerSowPathParams = {
   /**
    * @format uuid
    */
   id: string;
 };
 
-export type SowGroupControllerSowError = Fetcher.ErrorWrapper<undefined>;
+export type AdminSowGroupControllerSowError = Fetcher.ErrorWrapper<undefined>;
 
-export type SowGroupControllerSowVariables = {
-  pathParams: SowGroupControllerSowPathParams;
+export type AdminSowGroupControllerSowVariables = {
+  pathParams: AdminSowGroupControllerSowPathParams;
 } & QueriesContext["fetcherOptions"];
 
-export const fetchSowGroupControllerSow = (
-  variables: SowGroupControllerSowVariables,
+export const fetchAdminSowGroupControllerSow = (
+  variables: AdminSowGroupControllerSowVariables,
   signal?: AbortSignal,
 ) =>
   queriesFetch<
     Schemas.GetSOWGroupResponseDto,
-    SowGroupControllerSowError,
+    AdminSowGroupControllerSowError,
     undefined,
     {},
     {},
-    SowGroupControllerSowPathParams
-  >({ url: "/sowGroup/{id}", method: "get", ...variables, signal });
+    AdminSowGroupControllerSowPathParams
+  >({ url: "/admin/sowGroup/{id}", method: "get", ...variables, signal });
 
-export function sowGroupControllerSowQuery(
-  variables: SowGroupControllerSowVariables,
+export function adminSowGroupControllerSowQuery(
+  variables: AdminSowGroupControllerSowVariables,
 ): {
   queryKey: reactQuery.QueryKey;
   queryFn: (options: QueryFnOptions) => Promise<Schemas.GetSOWGroupResponseDto>;
 };
 
-export function sowGroupControllerSowQuery(
-  variables: SowGroupControllerSowVariables | reactQuery.SkipToken,
+export function adminSowGroupControllerSowQuery(
+  variables: AdminSowGroupControllerSowVariables | reactQuery.SkipToken,
 ): {
   queryKey: reactQuery.QueryKey;
   queryFn:
@@ -1417,31 +1443,31 @@ export function sowGroupControllerSowQuery(
     | reactQuery.SkipToken;
 };
 
-export function sowGroupControllerSowQuery(
-  variables: SowGroupControllerSowVariables | reactQuery.SkipToken,
+export function adminSowGroupControllerSowQuery(
+  variables: AdminSowGroupControllerSowVariables | reactQuery.SkipToken,
 ) {
   return {
     queryKey: queryKeyFn({
-      path: "/sowGroup/{id}",
-      operationId: "sowGroupControllerSow",
+      path: "/admin/sowGroup/{id}",
+      operationId: "adminSowGroupControllerSow",
       variables,
     }),
     queryFn:
       variables === reactQuery.skipToken
         ? reactQuery.skipToken
         : ({ signal }: QueryFnOptions) =>
-            fetchSowGroupControllerSow(variables, signal),
+            fetchAdminSowGroupControllerSow(variables, signal),
   };
 }
 
-export const useSuspenseSowGroupControllerSow = <
+export const useSuspenseAdminSowGroupControllerSow = <
   TData = Schemas.GetSOWGroupResponseDto,
 >(
-  variables: SowGroupControllerSowVariables,
+  variables: AdminSowGroupControllerSowVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
       Schemas.GetSOWGroupResponseDto,
-      SowGroupControllerSowError,
+      AdminSowGroupControllerSowError,
       TData
     >,
     "queryKey" | "queryFn" | "initialData"
@@ -1450,23 +1476,23 @@ export const useSuspenseSowGroupControllerSow = <
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useSuspenseQuery<
     Schemas.GetSOWGroupResponseDto,
-    SowGroupControllerSowError,
+    AdminSowGroupControllerSowError,
     TData
   >({
-    ...sowGroupControllerSowQuery(deepMerge(fetcherOptions, variables)),
+    ...adminSowGroupControllerSowQuery(deepMerge(fetcherOptions, variables)),
     ...options,
     ...queryOptions,
   });
 };
 
-export const useSowGroupControllerSow = <
+export const useAdminSowGroupControllerSow = <
   TData = Schemas.GetSOWGroupResponseDto,
 >(
-  variables: SowGroupControllerSowVariables | reactQuery.SkipToken,
+  variables: AdminSowGroupControllerSowVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
       Schemas.GetSOWGroupResponseDto,
-      SowGroupControllerSowError,
+      AdminSowGroupControllerSowError,
       TData
     >,
     "queryKey" | "queryFn" | "initialData"
@@ -1475,10 +1501,10 @@ export const useSowGroupControllerSow = <
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useQuery<
     Schemas.GetSOWGroupResponseDto,
-    SowGroupControllerSowError,
+    AdminSowGroupControllerSowError,
     TData
   >({
-    ...sowGroupControllerSowQuery(
+    ...adminSowGroupControllerSowQuery(
       variables === reactQuery.skipToken
         ? variables
         : deepMerge(fetcherOptions, variables),
@@ -1488,39 +1514,40 @@ export const useSowGroupControllerSow = <
   });
 };
 
-export type SowGroupControllerUpdatePathParams = {
+export type AdminSowGroupControllerUpdatePathParams = {
   /**
    * @format uuid
    */
   id: string;
 };
 
-export type SowGroupControllerUpdateError = Fetcher.ErrorWrapper<undefined>;
+export type AdminSowGroupControllerUpdateError =
+  Fetcher.ErrorWrapper<undefined>;
 
-export type SowGroupControllerUpdateVariables = {
+export type AdminSowGroupControllerUpdateVariables = {
   body?: Schemas.UpdateSowGroupRequestDto;
-  pathParams: SowGroupControllerUpdatePathParams;
+  pathParams: AdminSowGroupControllerUpdatePathParams;
 } & QueriesContext["fetcherOptions"];
 
-export const fetchSowGroupControllerUpdate = (
-  variables: SowGroupControllerUpdateVariables,
+export const fetchAdminSowGroupControllerUpdate = (
+  variables: AdminSowGroupControllerUpdateVariables,
   signal?: AbortSignal,
 ) =>
   queriesFetch<
     Schemas.MessageResponseWithIdDataDto,
-    SowGroupControllerUpdateError,
+    AdminSowGroupControllerUpdateError,
     Schemas.UpdateSowGroupRequestDto,
     {},
     {},
-    SowGroupControllerUpdatePathParams
-  >({ url: "/sowGroup/{id}", method: "patch", ...variables, signal });
+    AdminSowGroupControllerUpdatePathParams
+  >({ url: "/admin/sowGroup/{id}", method: "patch", ...variables, signal });
 
-export const useSowGroupControllerUpdate = (
+export const useAdminSowGroupControllerUpdate = (
   options?: Omit<
     reactQuery.UseMutationOptions<
       Schemas.MessageResponseWithIdDataDto,
-      SowGroupControllerUpdateError,
-      SowGroupControllerUpdateVariables
+      AdminSowGroupControllerUpdateError,
+      AdminSowGroupControllerUpdateVariables
     >,
     "mutationFn"
   >,
@@ -1528,11 +1555,11 @@ export const useSowGroupControllerUpdate = (
   const { fetcherOptions } = useQueriesContext();
   return reactQuery.useMutation<
     Schemas.MessageResponseWithIdDataDto,
-    SowGroupControllerUpdateError,
-    SowGroupControllerUpdateVariables
+    AdminSowGroupControllerUpdateError,
+    AdminSowGroupControllerUpdateVariables
   >({
-    mutationFn: (variables: SowGroupControllerUpdateVariables) =>
-      fetchSowGroupControllerUpdate(deepMerge(fetcherOptions, variables)),
+    mutationFn: (variables: AdminSowGroupControllerUpdateVariables) =>
+      fetchAdminSowGroupControllerUpdate(deepMerge(fetcherOptions, variables)),
     ...options,
   });
 };
@@ -1570,7 +1597,7 @@ export const fetchSiteControllerSites = (
     {},
     SiteControllerSitesQueryParams,
     {}
-  >({ url: "/site", method: "get", ...variables, signal });
+  >({ url: "/admin/site", method: "get", ...variables, signal });
 
 export function siteControllerSitesQuery(
   variables: SiteControllerSitesVariables,
@@ -1593,7 +1620,7 @@ export function siteControllerSitesQuery(
 ) {
   return {
     queryKey: queryKeyFn({
-      path: "/site",
+      path: "/admin/site",
       operationId: "siteControllerSites",
       variables,
     }),
@@ -1630,7 +1657,7 @@ export const useSuspenseSiteControllerSites = <
   });
 };
 
-export const useSiteControllerSites = <TData = Schemas.ListSiteResponseDto,>(
+export const useSiteControllerSites = <TData = Schemas.ListSiteResponseDto>(
   variables: SiteControllerSitesVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -1674,7 +1701,7 @@ export const fetchSiteControllerCreate = (
     {},
     {},
     {}
-  >({ url: "/site", method: "post", ...variables, signal });
+  >({ url: "/admin/site", method: "post", ...variables, signal });
 
 export const useSiteControllerCreate = (
   options?: Omit<
@@ -1722,7 +1749,7 @@ export const fetchSiteControllerSite = (
     {},
     {},
     SiteControllerSitePathParams
-  >({ url: "/site/{id}", method: "get", ...variables, signal });
+  >({ url: "/admin/site/{id}", method: "get", ...variables, signal });
 
 export function siteControllerSiteQuery(
   variables: SiteControllerSiteVariables,
@@ -1745,7 +1772,7 @@ export function siteControllerSiteQuery(
 ) {
   return {
     queryKey: queryKeyFn({
-      path: "/site/{id}",
+      path: "/admin/site/{id}",
       operationId: "siteControllerSite",
       variables,
     }),
@@ -1782,7 +1809,7 @@ export const useSuspenseSiteControllerSite = <
   });
 };
 
-export const useSiteControllerSite = <TData = Schemas.GetSiteResponseDto,>(
+export const useSiteControllerSite = <TData = Schemas.GetSiteResponseDto>(
   variables: SiteControllerSiteVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -1831,7 +1858,7 @@ export const fetchSiteControllerUpdate = (
     {},
     SiteControllerUpdateQueryParams,
     {}
-  >({ url: "/site/{id}", method: "patch", ...variables, signal });
+  >({ url: "/admin/site/{id}", method: "patch", ...variables, signal });
 
 export const useSiteControllerUpdate = (
   options?: Omit<
@@ -1855,7 +1882,998 @@ export const useSiteControllerUpdate = (
   });
 };
 
-export type JobControllerJobsQueryParams = {
+export type AdminJobControllerJobsQueryParams = {
+  /**
+   * @minimum 0
+   */
+  take?: number;
+  /**
+   * @minimum 0
+   */
+  page?: number;
+  search?: string;
+  /**
+   * @format uuid
+   */
+  staffId?: string;
+  /**
+   * @format uuid
+   */
+  customerId?: string;
+  status?: "scheduled" | "In Progress" | "Completed" | "Cancelled";
+};
+
+export type AdminJobControllerJobsError = Fetcher.ErrorWrapper<undefined>;
+
+export type AdminJobControllerJobsVariables = {
+  queryParams?: AdminJobControllerJobsQueryParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminJobControllerJobs = (
+  variables: AdminJobControllerJobsVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.ListJobResponseDto,
+    AdminJobControllerJobsError,
+    undefined,
+    {},
+    AdminJobControllerJobsQueryParams,
+    {}
+  >({ url: "/admin/job", method: "get", ...variables, signal });
+
+export function adminJobControllerJobsQuery(
+  variables: AdminJobControllerJobsVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (options: QueryFnOptions) => Promise<Schemas.ListJobResponseDto>;
+};
+
+export function adminJobControllerJobsQuery(
+  variables: AdminJobControllerJobsVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((options: QueryFnOptions) => Promise<Schemas.ListJobResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function adminJobControllerJobsQuery(
+  variables: AdminJobControllerJobsVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/admin/job",
+      operationId: "adminJobControllerJobs",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchAdminJobControllerJobs(variables, signal),
+  };
+}
+
+export const useSuspenseAdminJobControllerJobs = <
+  TData = Schemas.ListJobResponseDto,
+>(
+  variables: AdminJobControllerJobsVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListJobResponseDto,
+      AdminJobControllerJobsError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.ListJobResponseDto,
+    AdminJobControllerJobsError,
+    TData
+  >({
+    ...adminJobControllerJobsQuery(deepMerge(fetcherOptions, variables)),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useAdminJobControllerJobs = <TData = Schemas.ListJobResponseDto>(
+  variables: AdminJobControllerJobsVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListJobResponseDto,
+      AdminJobControllerJobsError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.ListJobResponseDto,
+    AdminJobControllerJobsError,
+    TData
+  >({
+    ...adminJobControllerJobsQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type AdminJobControllerCreateJobError = Fetcher.ErrorWrapper<undefined>;
+
+export type AdminJobControllerCreateJobVariables = {
+  body: Schemas.CreateJobRequestDto;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminJobControllerCreateJob = (
+  variables: AdminJobControllerCreateJobVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminJobControllerCreateJobError,
+    Schemas.CreateJobRequestDto,
+    {},
+    {},
+    {}
+  >({ url: "/admin/job", method: "post", ...variables, signal });
+
+export const useAdminJobControllerCreateJob = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.MessageResponseWithIdDataDto,
+      AdminJobControllerCreateJobError,
+      AdminJobControllerCreateJobVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminJobControllerCreateJobError,
+    AdminJobControllerCreateJobVariables
+  >({
+    mutationFn: (variables: AdminJobControllerCreateJobVariables) =>
+      fetchAdminJobControllerCreateJob(deepMerge(fetcherOptions, variables)),
+    ...options,
+  });
+};
+
+export type AdminJobControllerUpdateChecklistSowPathParams = {
+  /**
+   * @format uuid
+   */
+  id: string;
+};
+
+export type AdminJobControllerUpdateChecklistSowError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AdminJobControllerUpdateChecklistSowVariables = {
+  body: Schemas.UpdateChecklistSowRequestDto;
+  pathParams: AdminJobControllerUpdateChecklistSowPathParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminJobControllerUpdateChecklistSow = (
+  variables: AdminJobControllerUpdateChecklistSowVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminJobControllerUpdateChecklistSowError,
+    Schemas.UpdateChecklistSowRequestDto,
+    {},
+    {},
+    AdminJobControllerUpdateChecklistSowPathParams
+  >({
+    url: "/admin/job/checklistSow/{id}",
+    method: "patch",
+    ...variables,
+    signal,
+  });
+
+export const useAdminJobControllerUpdateChecklistSow = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.MessageResponseWithIdDataDto,
+      AdminJobControllerUpdateChecklistSowError,
+      AdminJobControllerUpdateChecklistSowVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminJobControllerUpdateChecklistSowError,
+    AdminJobControllerUpdateChecklistSowVariables
+  >({
+    mutationFn: (variables: AdminJobControllerUpdateChecklistSowVariables) =>
+      fetchAdminJobControllerUpdateChecklistSow(
+        deepMerge(fetcherOptions, variables),
+      ),
+    ...options,
+  });
+};
+
+export type AdminJobControllerAssignStaffToJobPathParams = {
+  /**
+   * @format uuid
+   */
+  jobId: string;
+  /**
+   * @format uuid
+   */
+  staffId: string;
+};
+
+export type AdminJobControllerAssignStaffToJobError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AdminJobControllerAssignStaffToJobVariables = {
+  pathParams: AdminJobControllerAssignStaffToJobPathParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminJobControllerAssignStaffToJob = (
+  variables: AdminJobControllerAssignStaffToJobVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminJobControllerAssignStaffToJobError,
+    undefined,
+    {},
+    {},
+    AdminJobControllerAssignStaffToJobPathParams
+  >({
+    url: "/admin/job/{jobId}/{staffId}",
+    method: "patch",
+    ...variables,
+    signal,
+  });
+
+export const useAdminJobControllerAssignStaffToJob = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.MessageResponseWithIdDataDto,
+      AdminJobControllerAssignStaffToJobError,
+      AdminJobControllerAssignStaffToJobVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminJobControllerAssignStaffToJobError,
+    AdminJobControllerAssignStaffToJobVariables
+  >({
+    mutationFn: (variables: AdminJobControllerAssignStaffToJobVariables) =>
+      fetchAdminJobControllerAssignStaffToJob(
+        deepMerge(fetcherOptions, variables),
+      ),
+    ...options,
+  });
+};
+
+export type AdminJobControllerJobPathParams = {
+  /**
+   * @format uuid
+   */
+  id: string;
+};
+
+export type AdminJobControllerJobError = Fetcher.ErrorWrapper<undefined>;
+
+export type AdminJobControllerJobVariables = {
+  pathParams: AdminJobControllerJobPathParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminJobControllerJob = (
+  variables: AdminJobControllerJobVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.GetJobResponseDto,
+    AdminJobControllerJobError,
+    undefined,
+    {},
+    {},
+    AdminJobControllerJobPathParams
+  >({ url: "/admin/job/{id}", method: "get", ...variables, signal });
+
+export function adminJobControllerJobQuery(
+  variables: AdminJobControllerJobVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (options: QueryFnOptions) => Promise<Schemas.GetJobResponseDto>;
+};
+
+export function adminJobControllerJobQuery(
+  variables: AdminJobControllerJobVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((options: QueryFnOptions) => Promise<Schemas.GetJobResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function adminJobControllerJobQuery(
+  variables: AdminJobControllerJobVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/admin/job/{id}",
+      operationId: "adminJobControllerJob",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchAdminJobControllerJob(variables, signal),
+  };
+}
+
+export const useSuspenseAdminJobControllerJob = <
+  TData = Schemas.GetJobResponseDto,
+>(
+  variables: AdminJobControllerJobVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.GetJobResponseDto,
+      AdminJobControllerJobError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.GetJobResponseDto,
+    AdminJobControllerJobError,
+    TData
+  >({
+    ...adminJobControllerJobQuery(deepMerge(fetcherOptions, variables)),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useAdminJobControllerJob = <TData = Schemas.GetJobResponseDto>(
+  variables: AdminJobControllerJobVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.GetJobResponseDto,
+      AdminJobControllerJobError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.GetJobResponseDto,
+    AdminJobControllerJobError,
+    TData
+  >({
+    ...adminJobControllerJobQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type AdminJobControllerStartJobError = Fetcher.ErrorWrapper<undefined>;
+
+export type AdminJobControllerStartJobVariables = {
+  body: Schemas.StartJobRequestDto;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminJobControllerStartJob = (
+  variables: AdminJobControllerStartJobVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminJobControllerStartJobError,
+    Schemas.StartJobRequestDto,
+    {},
+    {},
+    {}
+  >({ url: "/admin/job/start", method: "post", ...variables, signal });
+
+export const useAdminJobControllerStartJob = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.MessageResponseWithIdDataDto,
+      AdminJobControllerStartJobError,
+      AdminJobControllerStartJobVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminJobControllerStartJobError,
+    AdminJobControllerStartJobVariables
+  >({
+    mutationFn: (variables: AdminJobControllerStartJobVariables) =>
+      fetchAdminJobControllerStartJob(deepMerge(fetcherOptions, variables)),
+    ...options,
+  });
+};
+
+export type ManagerJobControllerJobsQueryParams = {
+  /**
+   * @minimum 0
+   */
+  take?: number;
+  /**
+   * @minimum 0
+   */
+  page?: number;
+  search?: string;
+  /**
+   * @format uuid
+   */
+  staffId?: string;
+  /**
+   * @format uuid
+   */
+  customerId?: string;
+  status?: "scheduled" | "In Progress" | "Completed" | "Cancelled";
+};
+
+export type ManagerJobControllerJobsError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: {
+        /**
+         * @example 401
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 401
+         */
+        error: 401;
+      };
+    }
+  | {
+      status: 406;
+      payload: {
+        /**
+         * @example 406
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 406
+         */
+        error: 406;
+      };
+    }
+>;
+
+export type ManagerJobControllerJobsVariables = {
+  queryParams?: ManagerJobControllerJobsQueryParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchManagerJobControllerJobs = (
+  variables: ManagerJobControllerJobsVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.ListJobResponseDto,
+    ManagerJobControllerJobsError,
+    undefined,
+    {},
+    ManagerJobControllerJobsQueryParams,
+    {}
+  >({ url: "/manager/job", method: "get", ...variables, signal });
+
+export function managerJobControllerJobsQuery(
+  variables: ManagerJobControllerJobsVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (options: QueryFnOptions) => Promise<Schemas.ListJobResponseDto>;
+};
+
+export function managerJobControllerJobsQuery(
+  variables: ManagerJobControllerJobsVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((options: QueryFnOptions) => Promise<Schemas.ListJobResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function managerJobControllerJobsQuery(
+  variables: ManagerJobControllerJobsVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/manager/job",
+      operationId: "managerJobControllerJobs",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchManagerJobControllerJobs(variables, signal),
+  };
+}
+
+export const useSuspenseManagerJobControllerJobs = <
+  TData = Schemas.ListJobResponseDto,
+>(
+  variables: ManagerJobControllerJobsVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListJobResponseDto,
+      ManagerJobControllerJobsError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.ListJobResponseDto,
+    ManagerJobControllerJobsError,
+    TData
+  >({
+    ...managerJobControllerJobsQuery(deepMerge(fetcherOptions, variables)),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useManagerJobControllerJobs = <TData = Schemas.ListJobResponseDto>(
+  variables: ManagerJobControllerJobsVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListJobResponseDto,
+      ManagerJobControllerJobsError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.ListJobResponseDto,
+    ManagerJobControllerJobsError,
+    TData
+  >({
+    ...managerJobControllerJobsQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type ManagerJobControllerGenerateQrError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: {
+        /**
+         * @example 401
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 401
+         */
+        error: 401;
+      };
+    }
+  | {
+      status: 406;
+      payload: {
+        /**
+         * @example 406
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 406
+         */
+        error: 406;
+      };
+    }
+>;
+
+export type ManagerJobControllerGenerateQrVariables =
+  QueriesContext["fetcherOptions"];
+
+export const fetchManagerJobControllerGenerateQr = (
+  variables: ManagerJobControllerGenerateQrVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.ManagerGenerateQrTokenResponseDto,
+    ManagerJobControllerGenerateQrError,
+    undefined,
+    {},
+    {},
+    {}
+  >({ url: "/manager/job/qr/generate", method: "get", ...variables, signal });
+
+export function managerJobControllerGenerateQrQuery(
+  variables: ManagerJobControllerGenerateQrVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (
+    options: QueryFnOptions,
+  ) => Promise<Schemas.ManagerGenerateQrTokenResponseDto>;
+};
+
+export function managerJobControllerGenerateQrQuery(
+  variables: ManagerJobControllerGenerateQrVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((
+        options: QueryFnOptions,
+      ) => Promise<Schemas.ManagerGenerateQrTokenResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function managerJobControllerGenerateQrQuery(
+  variables: ManagerJobControllerGenerateQrVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/manager/job/qr/generate",
+      operationId: "managerJobControllerGenerateQr",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchManagerJobControllerGenerateQr(variables, signal),
+  };
+}
+
+export const useSuspenseManagerJobControllerGenerateQr = <
+  TData = Schemas.ManagerGenerateQrTokenResponseDto,
+>(
+  variables: ManagerJobControllerGenerateQrVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ManagerGenerateQrTokenResponseDto,
+      ManagerJobControllerGenerateQrError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.ManagerGenerateQrTokenResponseDto,
+    ManagerJobControllerGenerateQrError,
+    TData
+  >({
+    ...managerJobControllerGenerateQrQuery(
+      deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useManagerJobControllerGenerateQr = <
+  TData = Schemas.ManagerGenerateQrTokenResponseDto,
+>(
+  variables: ManagerJobControllerGenerateQrVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ManagerGenerateQrTokenResponseDto,
+      ManagerJobControllerGenerateQrError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.ManagerGenerateQrTokenResponseDto,
+    ManagerJobControllerGenerateQrError,
+    TData
+  >({
+    ...managerJobControllerGenerateQrQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type ManagerJobControllerJobPathParams = {
+  /**
+   * @format uuid
+   */
+  id: string;
+};
+
+export type ManagerJobControllerJobError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: {
+        /**
+         * @example 401
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 401
+         */
+        error: 401;
+      };
+    }
+  | {
+      status: 406;
+      payload: {
+        /**
+         * @example 406
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 406
+         */
+        error: 406;
+      };
+    }
+>;
+
+export type ManagerJobControllerJobVariables = {
+  pathParams: ManagerJobControllerJobPathParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchManagerJobControllerJob = (
+  variables: ManagerJobControllerJobVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.GetJobResponseDto,
+    ManagerJobControllerJobError,
+    undefined,
+    {},
+    {},
+    ManagerJobControllerJobPathParams
+  >({ url: "/manager/job/{id}", method: "get", ...variables, signal });
+
+export function managerJobControllerJobQuery(
+  variables: ManagerJobControllerJobVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (options: QueryFnOptions) => Promise<Schemas.GetJobResponseDto>;
+};
+
+export function managerJobControllerJobQuery(
+  variables: ManagerJobControllerJobVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((options: QueryFnOptions) => Promise<Schemas.GetJobResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function managerJobControllerJobQuery(
+  variables: ManagerJobControllerJobVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/manager/job/{id}",
+      operationId: "managerJobControllerJob",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchManagerJobControllerJob(variables, signal),
+  };
+}
+
+export const useSuspenseManagerJobControllerJob = <
+  TData = Schemas.GetJobResponseDto,
+>(
+  variables: ManagerJobControllerJobVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.GetJobResponseDto,
+      ManagerJobControllerJobError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.GetJobResponseDto,
+    ManagerJobControllerJobError,
+    TData
+  >({
+    ...managerJobControllerJobQuery(deepMerge(fetcherOptions, variables)),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useManagerJobControllerJob = <TData = Schemas.GetJobResponseDto>(
+  variables: ManagerJobControllerJobVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.GetJobResponseDto,
+      ManagerJobControllerJobError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.GetJobResponseDto,
+    ManagerJobControllerJobError,
+    TData
+  >({
+    ...managerJobControllerJobQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type StaffControllerGetSummaryError = Fetcher.ErrorWrapper<{
+  status: 401;
+  payload: {
+    /**
+     * @example 401
+     */
+    statusCode: number;
+    message: string;
+    /**
+     * @example 401
+     */
+    error: 401;
+  };
+}>;
+
+export type StaffControllerGetSummaryVariables =
+  QueriesContext["fetcherOptions"];
+
+export const fetchStaffControllerGetSummary = (
+  variables: StaffControllerGetSummaryVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.DashboardSummaryResponseDto,
+    StaffControllerGetSummaryError,
+    undefined,
+    {},
+    {},
+    {}
+  >({ url: "/staff/summary", method: "get", ...variables, signal });
+
+export function staffControllerGetSummaryQuery(
+  variables: StaffControllerGetSummaryVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (
+    options: QueryFnOptions,
+  ) => Promise<Schemas.DashboardSummaryResponseDto>;
+};
+
+export function staffControllerGetSummaryQuery(
+  variables: StaffControllerGetSummaryVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((
+        options: QueryFnOptions,
+      ) => Promise<Schemas.DashboardSummaryResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function staffControllerGetSummaryQuery(
+  variables: StaffControllerGetSummaryVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/staff/summary",
+      operationId: "staffControllerGetSummary",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchStaffControllerGetSummary(variables, signal),
+  };
+}
+
+export const useSuspenseStaffControllerGetSummary = <
+  TData = Schemas.DashboardSummaryResponseDto,
+>(
+  variables: StaffControllerGetSummaryVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.DashboardSummaryResponseDto,
+      StaffControllerGetSummaryError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.DashboardSummaryResponseDto,
+    StaffControllerGetSummaryError,
+    TData
+  >({
+    ...staffControllerGetSummaryQuery(deepMerge(fetcherOptions, variables)),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useStaffControllerGetSummary = <
+  TData = Schemas.DashboardSummaryResponseDto,
+>(
+  variables: StaffControllerGetSummaryVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.DashboardSummaryResponseDto,
+      StaffControllerGetSummaryError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.DashboardSummaryResponseDto,
+    StaffControllerGetSummaryError,
+    TData
+  >({
+    ...staffControllerGetSummaryQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type StaffJobControllerJobsQueryParams = {
   /**
    * @minimum 0
    */
@@ -1869,38 +2887,37 @@ export type JobControllerJobsQueryParams = {
    * @format uuid
    */
   customerId?: string;
-  /**
-   * @format uuid
-   */
-  staffId?: string;
+  status?: "scheduled" | "In Progress" | "Completed" | "Cancelled";
 };
 
-export type JobControllerJobsError = Fetcher.ErrorWrapper<undefined>;
+export type StaffJobControllerJobsError = Fetcher.ErrorWrapper<undefined>;
 
-export type JobControllerJobsVariables = {
-  queryParams?: JobControllerJobsQueryParams;
+export type StaffJobControllerJobsVariables = {
+  queryParams?: StaffJobControllerJobsQueryParams;
 } & QueriesContext["fetcherOptions"];
 
-export const fetchJobControllerJobs = (
-  variables: JobControllerJobsVariables,
+export const fetchStaffJobControllerJobs = (
+  variables: StaffJobControllerJobsVariables,
   signal?: AbortSignal,
 ) =>
   queriesFetch<
     Schemas.ListJobResponseDto,
-    JobControllerJobsError,
+    StaffJobControllerJobsError,
     undefined,
     {},
-    JobControllerJobsQueryParams,
+    StaffJobControllerJobsQueryParams,
     {}
-  >({ url: "/job", method: "get", ...variables, signal });
+  >({ url: "/staff/job", method: "get", ...variables, signal });
 
-export function jobControllerJobsQuery(variables: JobControllerJobsVariables): {
+export function staffJobControllerJobsQuery(
+  variables: StaffJobControllerJobsVariables,
+): {
   queryKey: reactQuery.QueryKey;
   queryFn: (options: QueryFnOptions) => Promise<Schemas.ListJobResponseDto>;
 };
 
-export function jobControllerJobsQuery(
-  variables: JobControllerJobsVariables | reactQuery.SkipToken,
+export function staffJobControllerJobsQuery(
+  variables: StaffJobControllerJobsVariables | reactQuery.SkipToken,
 ): {
   queryKey: reactQuery.QueryKey;
   queryFn:
@@ -1908,31 +2925,31 @@ export function jobControllerJobsQuery(
     | reactQuery.SkipToken;
 };
 
-export function jobControllerJobsQuery(
-  variables: JobControllerJobsVariables | reactQuery.SkipToken,
+export function staffJobControllerJobsQuery(
+  variables: StaffJobControllerJobsVariables | reactQuery.SkipToken,
 ) {
   return {
     queryKey: queryKeyFn({
-      path: "/job",
-      operationId: "jobControllerJobs",
+      path: "/staff/job",
+      operationId: "staffJobControllerJobs",
       variables,
     }),
     queryFn:
       variables === reactQuery.skipToken
         ? reactQuery.skipToken
         : ({ signal }: QueryFnOptions) =>
-            fetchJobControllerJobs(variables, signal),
+            fetchStaffJobControllerJobs(variables, signal),
   };
 }
 
-export const useSuspenseJobControllerJobs = <
+export const useSuspenseStaffJobControllerJobs = <
   TData = Schemas.ListJobResponseDto,
 >(
-  variables: JobControllerJobsVariables,
+  variables: StaffJobControllerJobsVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
       Schemas.ListJobResponseDto,
-      JobControllerJobsError,
+      StaffJobControllerJobsError,
       TData
     >,
     "queryKey" | "queryFn" | "initialData"
@@ -1941,21 +2958,21 @@ export const useSuspenseJobControllerJobs = <
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useSuspenseQuery<
     Schemas.ListJobResponseDto,
-    JobControllerJobsError,
+    StaffJobControllerJobsError,
     TData
   >({
-    ...jobControllerJobsQuery(deepMerge(fetcherOptions, variables)),
+    ...staffJobControllerJobsQuery(deepMerge(fetcherOptions, variables)),
     ...options,
     ...queryOptions,
   });
 };
 
-export const useJobControllerJobs = <TData = Schemas.ListJobResponseDto,>(
-  variables: JobControllerJobsVariables | reactQuery.SkipToken,
+export const useStaffJobControllerJobs = <TData = Schemas.ListJobResponseDto>(
+  variables: StaffJobControllerJobsVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
       Schemas.ListJobResponseDto,
-      JobControllerJobsError,
+      StaffJobControllerJobsError,
       TData
     >,
     "queryKey" | "queryFn" | "initialData"
@@ -1964,10 +2981,10 @@ export const useJobControllerJobs = <TData = Schemas.ListJobResponseDto,>(
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useQuery<
     Schemas.ListJobResponseDto,
-    JobControllerJobsError,
+    StaffJobControllerJobsError,
     TData
   >({
-    ...jobControllerJobsQuery(
+    ...staffJobControllerJobsQuery(
       variables === reactQuery.skipToken
         ? variables
         : deepMerge(fetcherOptions, variables),
@@ -1977,241 +2994,45 @@ export const useJobControllerJobs = <TData = Schemas.ListJobResponseDto,>(
   });
 };
 
-export type JobControllerCreateJobError = Fetcher.ErrorWrapper<undefined>;
-
-export type JobControllerCreateJobVariables = {
-  body: Schemas.CreateJobRequestDto;
-} & QueriesContext["fetcherOptions"];
-
-export const fetchJobControllerCreateJob = (
-  variables: JobControllerCreateJobVariables,
-  signal?: AbortSignal,
-) =>
-  queriesFetch<
-    Schemas.MessageResponseWithIdDataDto,
-    JobControllerCreateJobError,
-    Schemas.CreateJobRequestDto,
-    {},
-    {},
-    {}
-  >({ url: "/job", method: "post", ...variables, signal });
-
-export const useJobControllerCreateJob = (
-  options?: Omit<
-    reactQuery.UseMutationOptions<
-      Schemas.MessageResponseWithIdDataDto,
-      JobControllerCreateJobError,
-      JobControllerCreateJobVariables
-    >,
-    "mutationFn"
-  >,
-) => {
-  const { fetcherOptions } = useQueriesContext();
-  return reactQuery.useMutation<
-    Schemas.MessageResponseWithIdDataDto,
-    JobControllerCreateJobError,
-    JobControllerCreateJobVariables
-  >({
-    mutationFn: (variables: JobControllerCreateJobVariables) =>
-      fetchJobControllerCreateJob(deepMerge(fetcherOptions, variables)),
-    ...options,
-  });
-};
-
-export type JobControllerAssignStaffToJobPathParams = {
-  /**
-   * @format uuid
-   */
-  jobId: string;
-  /**
-   * @format uuid
-   */
-  staffId: string;
-};
-
-export type JobControllerAssignStaffToJobError =
-  Fetcher.ErrorWrapper<undefined>;
-
-export type JobControllerAssignStaffToJobVariables = {
-  pathParams: JobControllerAssignStaffToJobPathParams;
-} & QueriesContext["fetcherOptions"];
-
-export const fetchJobControllerAssignStaffToJob = (
-  variables: JobControllerAssignStaffToJobVariables,
-  signal?: AbortSignal,
-) =>
-  queriesFetch<
-    Schemas.MessageResponseWithIdDataDto,
-    JobControllerAssignStaffToJobError,
-    undefined,
-    {},
-    {},
-    JobControllerAssignStaffToJobPathParams
-  >({ url: "/job/{jobId}/{staffId}", method: "patch", ...variables, signal });
-
-export const useJobControllerAssignStaffToJob = (
-  options?: Omit<
-    reactQuery.UseMutationOptions<
-      Schemas.MessageResponseWithIdDataDto,
-      JobControllerAssignStaffToJobError,
-      JobControllerAssignStaffToJobVariables
-    >,
-    "mutationFn"
-  >,
-) => {
-  const { fetcherOptions } = useQueriesContext();
-  return reactQuery.useMutation<
-    Schemas.MessageResponseWithIdDataDto,
-    JobControllerAssignStaffToJobError,
-    JobControllerAssignStaffToJobVariables
-  >({
-    mutationFn: (variables: JobControllerAssignStaffToJobVariables) =>
-      fetchJobControllerAssignStaffToJob(deepMerge(fetcherOptions, variables)),
-    ...options,
-  });
-};
-
-export type JobControllerJobPathParams = {
+export type StaffJobControllerUpdateChecklistSowPathParams = {
   /**
    * @format uuid
    */
   id: string;
 };
 
-export type JobControllerJobError = Fetcher.ErrorWrapper<undefined>;
-
-export type JobControllerJobVariables = {
-  pathParams: JobControllerJobPathParams;
-} & QueriesContext["fetcherOptions"];
-
-export const fetchJobControllerJob = (
-  variables: JobControllerJobVariables,
-  signal?: AbortSignal,
-) =>
-  queriesFetch<
-    Schemas.GetJobResponseDto,
-    JobControllerJobError,
-    undefined,
-    {},
-    {},
-    JobControllerJobPathParams
-  >({ url: "/job/{id}", method: "get", ...variables, signal });
-
-export function jobControllerJobQuery(variables: JobControllerJobVariables): {
-  queryKey: reactQuery.QueryKey;
-  queryFn: (options: QueryFnOptions) => Promise<Schemas.GetJobResponseDto>;
-};
-
-export function jobControllerJobQuery(
-  variables: JobControllerJobVariables | reactQuery.SkipToken,
-): {
-  queryKey: reactQuery.QueryKey;
-  queryFn:
-    | ((options: QueryFnOptions) => Promise<Schemas.GetJobResponseDto>)
-    | reactQuery.SkipToken;
-};
-
-export function jobControllerJobQuery(
-  variables: JobControllerJobVariables | reactQuery.SkipToken,
-) {
-  return {
-    queryKey: queryKeyFn({
-      path: "/job/{id}",
-      operationId: "jobControllerJob",
-      variables,
-    }),
-    queryFn:
-      variables === reactQuery.skipToken
-        ? reactQuery.skipToken
-        : ({ signal }: QueryFnOptions) =>
-            fetchJobControllerJob(variables, signal),
-  };
-}
-
-export const useSuspenseJobControllerJob = <TData = Schemas.GetJobResponseDto,>(
-  variables: JobControllerJobVariables,
-  options?: Omit<
-    reactQuery.UseQueryOptions<
-      Schemas.GetJobResponseDto,
-      JobControllerJobError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
-  >,
-) => {
-  const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useSuspenseQuery<
-    Schemas.GetJobResponseDto,
-    JobControllerJobError,
-    TData
-  >({
-    ...jobControllerJobQuery(deepMerge(fetcherOptions, variables)),
-    ...options,
-    ...queryOptions,
-  });
-};
-
-export const useJobControllerJob = <TData = Schemas.GetJobResponseDto,>(
-  variables: JobControllerJobVariables | reactQuery.SkipToken,
-  options?: Omit<
-    reactQuery.UseQueryOptions<
-      Schemas.GetJobResponseDto,
-      JobControllerJobError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
-  >,
-) => {
-  const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useQuery<
-    Schemas.GetJobResponseDto,
-    JobControllerJobError,
-    TData
-  >({
-    ...jobControllerJobQuery(
-      variables === reactQuery.skipToken
-        ? variables
-        : deepMerge(fetcherOptions, variables),
-    ),
-    ...options,
-    ...queryOptions,
-  });
-};
-
-export type JobControllerUpdateChecklistSowPathParams = {
-  /**
-   * @format uuid
-   */
-  id: string;
-};
-
-export type JobControllerUpdateChecklistSowError =
+export type StaffJobControllerUpdateChecklistSowError =
   Fetcher.ErrorWrapper<undefined>;
 
-export type JobControllerUpdateChecklistSowVariables = {
+export type StaffJobControllerUpdateChecklistSowVariables = {
   body: Schemas.UpdateChecklistSowRequestDto;
-  pathParams: JobControllerUpdateChecklistSowPathParams;
+  pathParams: StaffJobControllerUpdateChecklistSowPathParams;
 } & QueriesContext["fetcherOptions"];
 
-export const fetchJobControllerUpdateChecklistSow = (
-  variables: JobControllerUpdateChecklistSowVariables,
+export const fetchStaffJobControllerUpdateChecklistSow = (
+  variables: StaffJobControllerUpdateChecklistSowVariables,
   signal?: AbortSignal,
 ) =>
   queriesFetch<
     Schemas.MessageResponseWithIdDataDto,
-    JobControllerUpdateChecklistSowError,
+    StaffJobControllerUpdateChecklistSowError,
     Schemas.UpdateChecklistSowRequestDto,
     {},
     {},
-    JobControllerUpdateChecklistSowPathParams
-  >({ url: "/job/checklistSow/{id}", method: "patch", ...variables, signal });
+    StaffJobControllerUpdateChecklistSowPathParams
+  >({
+    url: "/staff/job/checklistSow/{id}",
+    method: "patch",
+    ...variables,
+    signal,
+  });
 
-export const useJobControllerUpdateChecklistSow = (
+export const useStaffJobControllerUpdateChecklistSow = (
   options?: Omit<
     reactQuery.UseMutationOptions<
       Schemas.MessageResponseWithIdDataDto,
-      JobControllerUpdateChecklistSowError,
-      JobControllerUpdateChecklistSowVariables
+      StaffJobControllerUpdateChecklistSowError,
+      StaffJobControllerUpdateChecklistSowVariables
     >,
     "mutationFn"
   >,
@@ -2219,590 +3040,52 @@ export const useJobControllerUpdateChecklistSow = (
   const { fetcherOptions } = useQueriesContext();
   return reactQuery.useMutation<
     Schemas.MessageResponseWithIdDataDto,
-    JobControllerUpdateChecklistSowError,
-    JobControllerUpdateChecklistSowVariables
+    StaffJobControllerUpdateChecklistSowError,
+    StaffJobControllerUpdateChecklistSowVariables
   >({
-    mutationFn: (variables: JobControllerUpdateChecklistSowVariables) =>
-      fetchJobControllerUpdateChecklistSow(
+    mutationFn: (variables: StaffJobControllerUpdateChecklistSowVariables) =>
+      fetchStaffJobControllerUpdateChecklistSow(
         deepMerge(fetcherOptions, variables),
       ),
     ...options,
   });
 };
 
-export type JobControllerStartJobError = Fetcher.ErrorWrapper<undefined>;
-
-export type JobControllerStartJobVariables = {
-  body: Schemas.StartJobRequestDto;
-} & QueriesContext["fetcherOptions"];
-
-export const fetchJobControllerStartJob = (
-  variables: JobControllerStartJobVariables,
-  signal?: AbortSignal,
-) =>
-  queriesFetch<
-    Schemas.MessageResponseWithIdDataDto,
-    JobControllerStartJobError,
-    Schemas.StartJobRequestDto,
-    {},
-    {},
-    {}
-  >({ url: "/job/start", method: "post", ...variables, signal });
-
-export const useJobControllerStartJob = (
-  options?: Omit<
-    reactQuery.UseMutationOptions<
-      Schemas.MessageResponseWithIdDataDto,
-      JobControllerStartJobError,
-      JobControllerStartJobVariables
-    >,
-    "mutationFn"
-  >,
-) => {
-  const { fetcherOptions } = useQueriesContext();
-  return reactQuery.useMutation<
-    Schemas.MessageResponseWithIdDataDto,
-    JobControllerStartJobError,
-    JobControllerStartJobVariables
-  >({
-    mutationFn: (variables: JobControllerStartJobVariables) =>
-      fetchJobControllerStartJob(deepMerge(fetcherOptions, variables)),
-    ...options,
-  });
-};
-
-export type CustomerControllerCustomersQueryParams = {
-  /**
-   * @minimum 0
-   */
-  take?: number;
-  /**
-   * @minimum 0
-   */
-  page?: number;
-  search?: string;
-};
-
-export type CustomerControllerCustomersError = Fetcher.ErrorWrapper<undefined>;
-
-export type CustomerControllerCustomersVariables = {
-  queryParams?: CustomerControllerCustomersQueryParams;
-} & QueriesContext["fetcherOptions"];
-
-export const fetchCustomerControllerCustomers = (
-  variables: CustomerControllerCustomersVariables,
-  signal?: AbortSignal,
-) =>
-  queriesFetch<
-    Schemas.ListCustomerResponseDto,
-    CustomerControllerCustomersError,
-    undefined,
-    {},
-    CustomerControllerCustomersQueryParams,
-    {}
-  >({ url: "/customer", method: "get", ...variables, signal });
-
-export function customerControllerCustomersQuery(
-  variables: CustomerControllerCustomersVariables,
-): {
-  queryKey: reactQuery.QueryKey;
-  queryFn: (
-    options: QueryFnOptions,
-  ) => Promise<Schemas.ListCustomerResponseDto>;
-};
-
-export function customerControllerCustomersQuery(
-  variables: CustomerControllerCustomersVariables | reactQuery.SkipToken,
-): {
-  queryKey: reactQuery.QueryKey;
-  queryFn:
-    | ((options: QueryFnOptions) => Promise<Schemas.ListCustomerResponseDto>)
-    | reactQuery.SkipToken;
-};
-
-export function customerControllerCustomersQuery(
-  variables: CustomerControllerCustomersVariables | reactQuery.SkipToken,
-) {
-  return {
-    queryKey: queryKeyFn({
-      path: "/customer",
-      operationId: "customerControllerCustomers",
-      variables,
-    }),
-    queryFn:
-      variables === reactQuery.skipToken
-        ? reactQuery.skipToken
-        : ({ signal }: QueryFnOptions) =>
-            fetchCustomerControllerCustomers(variables, signal),
-  };
-}
-
-export const useSuspenseCustomerControllerCustomers = <
-  TData = Schemas.ListCustomerResponseDto,
->(
-  variables: CustomerControllerCustomersVariables,
-  options?: Omit<
-    reactQuery.UseQueryOptions<
-      Schemas.ListCustomerResponseDto,
-      CustomerControllerCustomersError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
-  >,
-) => {
-  const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useSuspenseQuery<
-    Schemas.ListCustomerResponseDto,
-    CustomerControllerCustomersError,
-    TData
-  >({
-    ...customerControllerCustomersQuery(deepMerge(fetcherOptions, variables)),
-    ...options,
-    ...queryOptions,
-  });
-};
-
-export const useCustomerControllerCustomers = <
-  TData = Schemas.ListCustomerResponseDto,
->(
-  variables: CustomerControllerCustomersVariables | reactQuery.SkipToken,
-  options?: Omit<
-    reactQuery.UseQueryOptions<
-      Schemas.ListCustomerResponseDto,
-      CustomerControllerCustomersError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
-  >,
-) => {
-  const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useQuery<
-    Schemas.ListCustomerResponseDto,
-    CustomerControllerCustomersError,
-    TData
-  >({
-    ...customerControllerCustomersQuery(
-      variables === reactQuery.skipToken
-        ? variables
-        : deepMerge(fetcherOptions, variables),
-    ),
-    ...options,
-    ...queryOptions,
-  });
-};
-
-export type CustomerControllerCreateError = Fetcher.ErrorWrapper<undefined>;
-
-export type CustomerControllerCreateVariables = {
-  body: Schemas.CreateCustomerRequestDto;
-} & QueriesContext["fetcherOptions"];
-
-export const fetchCustomerControllerCreate = (
-  variables: CustomerControllerCreateVariables,
-  signal?: AbortSignal,
-) =>
-  queriesFetch<
-    Schemas.MessageResponseWithIdDataDto,
-    CustomerControllerCreateError,
-    Schemas.CreateCustomerRequestDto,
-    {},
-    {},
-    {}
-  >({ url: "/customer", method: "post", ...variables, signal });
-
-export const useCustomerControllerCreate = (
-  options?: Omit<
-    reactQuery.UseMutationOptions<
-      Schemas.MessageResponseWithIdDataDto,
-      CustomerControllerCreateError,
-      CustomerControllerCreateVariables
-    >,
-    "mutationFn"
-  >,
-) => {
-  const { fetcherOptions } = useQueriesContext();
-  return reactQuery.useMutation<
-    Schemas.MessageResponseWithIdDataDto,
-    CustomerControllerCreateError,
-    CustomerControllerCreateVariables
-  >({
-    mutationFn: (variables: CustomerControllerCreateVariables) =>
-      fetchCustomerControllerCreate(deepMerge(fetcherOptions, variables)),
-    ...options,
-  });
-};
-
-export type CustomerControllerCustomerPathParams = {
+export type StaffJobControllerJobPathParams = {
   /**
    * @format uuid
    */
   id: string;
 };
 
-export type CustomerControllerCustomerError = Fetcher.ErrorWrapper<undefined>;
+export type StaffJobControllerJobError = Fetcher.ErrorWrapper<undefined>;
 
-export type CustomerControllerCustomerVariables = {
-  pathParams: CustomerControllerCustomerPathParams;
+export type StaffJobControllerJobVariables = {
+  pathParams: StaffJobControllerJobPathParams;
 } & QueriesContext["fetcherOptions"];
 
-export const fetchCustomerControllerCustomer = (
-  variables: CustomerControllerCustomerVariables,
-  signal?: AbortSignal,
-) =>
-  queriesFetch<
-    Schemas.GetCustomerResponseDto,
-    CustomerControllerCustomerError,
-    undefined,
-    {},
-    {},
-    CustomerControllerCustomerPathParams
-  >({ url: "/customer/{id}", method: "get", ...variables, signal });
-
-export function customerControllerCustomerQuery(
-  variables: CustomerControllerCustomerVariables,
-): {
-  queryKey: reactQuery.QueryKey;
-  queryFn: (options: QueryFnOptions) => Promise<Schemas.GetCustomerResponseDto>;
-};
-
-export function customerControllerCustomerQuery(
-  variables: CustomerControllerCustomerVariables | reactQuery.SkipToken,
-): {
-  queryKey: reactQuery.QueryKey;
-  queryFn:
-    | ((options: QueryFnOptions) => Promise<Schemas.GetCustomerResponseDto>)
-    | reactQuery.SkipToken;
-};
-
-export function customerControllerCustomerQuery(
-  variables: CustomerControllerCustomerVariables | reactQuery.SkipToken,
-) {
-  return {
-    queryKey: queryKeyFn({
-      path: "/customer/{id}",
-      operationId: "customerControllerCustomer",
-      variables,
-    }),
-    queryFn:
-      variables === reactQuery.skipToken
-        ? reactQuery.skipToken
-        : ({ signal }: QueryFnOptions) =>
-            fetchCustomerControllerCustomer(variables, signal),
-  };
-}
-
-export const useSuspenseCustomerControllerCustomer = <
-  TData = Schemas.GetCustomerResponseDto,
->(
-  variables: CustomerControllerCustomerVariables,
-  options?: Omit<
-    reactQuery.UseQueryOptions<
-      Schemas.GetCustomerResponseDto,
-      CustomerControllerCustomerError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
-  >,
-) => {
-  const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useSuspenseQuery<
-    Schemas.GetCustomerResponseDto,
-    CustomerControllerCustomerError,
-    TData
-  >({
-    ...customerControllerCustomerQuery(deepMerge(fetcherOptions, variables)),
-    ...options,
-    ...queryOptions,
-  });
-};
-
-export const useCustomerControllerCustomer = <
-  TData = Schemas.GetCustomerResponseDto,
->(
-  variables: CustomerControllerCustomerVariables | reactQuery.SkipToken,
-  options?: Omit<
-    reactQuery.UseQueryOptions<
-      Schemas.GetCustomerResponseDto,
-      CustomerControllerCustomerError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
-  >,
-) => {
-  const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useQuery<
-    Schemas.GetCustomerResponseDto,
-    CustomerControllerCustomerError,
-    TData
-  >({
-    ...customerControllerCustomerQuery(
-      variables === reactQuery.skipToken
-        ? variables
-        : deepMerge(fetcherOptions, variables),
-    ),
-    ...options,
-    ...queryOptions,
-  });
-};
-
-export type CustomerControllerUpdatePathParams = {
-  /**
-   * @format uuid
-   */
-  id: string;
-};
-
-export type CustomerControllerUpdateError = Fetcher.ErrorWrapper<undefined>;
-
-export type CustomerControllerUpdateVariables = {
-  body?: Schemas.UpdateCustomerRequestDto;
-  pathParams: CustomerControllerUpdatePathParams;
-} & QueriesContext["fetcherOptions"];
-
-export const fetchCustomerControllerUpdate = (
-  variables: CustomerControllerUpdateVariables,
-  signal?: AbortSignal,
-) =>
-  queriesFetch<
-    Schemas.MessageResponseWithIdDataDto,
-    CustomerControllerUpdateError,
-    Schemas.UpdateCustomerRequestDto,
-    {},
-    {},
-    CustomerControllerUpdatePathParams
-  >({ url: "/customer/{id}", method: "patch", ...variables, signal });
-
-export const useCustomerControllerUpdate = (
-  options?: Omit<
-    reactQuery.UseMutationOptions<
-      Schemas.MessageResponseWithIdDataDto,
-      CustomerControllerUpdateError,
-      CustomerControllerUpdateVariables
-    >,
-    "mutationFn"
-  >,
-) => {
-  const { fetcherOptions } = useQueriesContext();
-  return reactQuery.useMutation<
-    Schemas.MessageResponseWithIdDataDto,
-    CustomerControllerUpdateError,
-    CustomerControllerUpdateVariables
-  >({
-    mutationFn: (variables: CustomerControllerUpdateVariables) =>
-      fetchCustomerControllerUpdate(deepMerge(fetcherOptions, variables)),
-    ...options,
-  });
-};
-
-export type CustomerControllerDeletePathParams = {
-  /**
-   * @format uuid
-   */
-  id: string;
-};
-
-export type CustomerControllerDeleteError = Fetcher.ErrorWrapper<undefined>;
-
-export type CustomerControllerDeleteVariables = {
-  pathParams: CustomerControllerDeletePathParams;
-} & QueriesContext["fetcherOptions"];
-
-export const fetchCustomerControllerDelete = (
-  variables: CustomerControllerDeleteVariables,
-  signal?: AbortSignal,
-) =>
-  queriesFetch<
-    Schemas.MessageResponseDto,
-    CustomerControllerDeleteError,
-    undefined,
-    {},
-    {},
-    CustomerControllerDeletePathParams
-  >({ url: "/customer/{id}", method: "delete", ...variables, signal });
-
-export const useCustomerControllerDelete = (
-  options?: Omit<
-    reactQuery.UseMutationOptions<
-      Schemas.MessageResponseDto,
-      CustomerControllerDeleteError,
-      CustomerControllerDeleteVariables
-    >,
-    "mutationFn"
-  >,
-) => {
-  const { fetcherOptions } = useQueriesContext();
-  return reactQuery.useMutation<
-    Schemas.MessageResponseDto,
-    CustomerControllerDeleteError,
-    CustomerControllerDeleteVariables
-  >({
-    mutationFn: (variables: CustomerControllerDeleteVariables) =>
-      fetchCustomerControllerDelete(deepMerge(fetcherOptions, variables)),
-    ...options,
-  });
-};
-
-export type CustomerJobControllerJobsQueryParams = {
-  /**
-   * @minimum 0
-   */
-  take?: number;
-  /**
-   * @minimum 0
-   */
-  page?: number;
-  search?: string;
-  /**
-   * @format uuid
-   */
-  staffId?: string;
-  /**
-   * @format uuid
-   */
-  customerId: string;
-};
-
-export type CustomerJobControllerJobsError = Fetcher.ErrorWrapper<undefined>;
-
-export type CustomerJobControllerJobsVariables = {
-  queryParams: CustomerJobControllerJobsQueryParams;
-} & QueriesContext["fetcherOptions"];
-
-export const fetchCustomerJobControllerJobs = (
-  variables: CustomerJobControllerJobsVariables,
-  signal?: AbortSignal,
-) =>
-  queriesFetch<
-    Schemas.ListJobResponseDto,
-    CustomerJobControllerJobsError,
-    undefined,
-    {},
-    CustomerJobControllerJobsQueryParams,
-    {}
-  >({ url: "/customers/job", method: "get", ...variables, signal });
-
-export function customerJobControllerJobsQuery(
-  variables: CustomerJobControllerJobsVariables,
-): {
-  queryKey: reactQuery.QueryKey;
-  queryFn: (options: QueryFnOptions) => Promise<Schemas.ListJobResponseDto>;
-};
-
-export function customerJobControllerJobsQuery(
-  variables: CustomerJobControllerJobsVariables | reactQuery.SkipToken,
-): {
-  queryKey: reactQuery.QueryKey;
-  queryFn:
-    | ((options: QueryFnOptions) => Promise<Schemas.ListJobResponseDto>)
-    | reactQuery.SkipToken;
-};
-
-export function customerJobControllerJobsQuery(
-  variables: CustomerJobControllerJobsVariables | reactQuery.SkipToken,
-) {
-  return {
-    queryKey: queryKeyFn({
-      path: "/customers/job",
-      operationId: "customerJobControllerJobs",
-      variables,
-    }),
-    queryFn:
-      variables === reactQuery.skipToken
-        ? reactQuery.skipToken
-        : ({ signal }: QueryFnOptions) =>
-            fetchCustomerJobControllerJobs(variables, signal),
-  };
-}
-
-export const useSuspenseCustomerJobControllerJobs = <
-  TData = Schemas.ListJobResponseDto,
->(
-  variables: CustomerJobControllerJobsVariables,
-  options?: Omit<
-    reactQuery.UseQueryOptions<
-      Schemas.ListJobResponseDto,
-      CustomerJobControllerJobsError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
-  >,
-) => {
-  const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useSuspenseQuery<
-    Schemas.ListJobResponseDto,
-    CustomerJobControllerJobsError,
-    TData
-  >({
-    ...customerJobControllerJobsQuery(deepMerge(fetcherOptions, variables)),
-    ...options,
-    ...queryOptions,
-  });
-};
-
-export const useCustomerJobControllerJobs = <
-  TData = Schemas.ListJobResponseDto,
->(
-  variables: CustomerJobControllerJobsVariables | reactQuery.SkipToken,
-  options?: Omit<
-    reactQuery.UseQueryOptions<
-      Schemas.ListJobResponseDto,
-      CustomerJobControllerJobsError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
-  >,
-) => {
-  const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useQuery<
-    Schemas.ListJobResponseDto,
-    CustomerJobControllerJobsError,
-    TData
-  >({
-    ...customerJobControllerJobsQuery(
-      variables === reactQuery.skipToken
-        ? variables
-        : deepMerge(fetcherOptions, variables),
-    ),
-    ...options,
-    ...queryOptions,
-  });
-};
-
-export type CustomerJobControllerJobPathParams = {
-  /**
-   * @format uuid
-   */
-  id: string;
-};
-
-export type CustomerJobControllerJobError = Fetcher.ErrorWrapper<undefined>;
-
-export type CustomerJobControllerJobVariables = {
-  pathParams: CustomerJobControllerJobPathParams;
-} & QueriesContext["fetcherOptions"];
-
-export const fetchCustomerJobControllerJob = (
-  variables: CustomerJobControllerJobVariables,
+export const fetchStaffJobControllerJob = (
+  variables: StaffJobControllerJobVariables,
   signal?: AbortSignal,
 ) =>
   queriesFetch<
     Schemas.GetJobResponseDto,
-    CustomerJobControllerJobError,
+    StaffJobControllerJobError,
     undefined,
     {},
     {},
-    CustomerJobControllerJobPathParams
-  >({ url: "/customers/job/{id}", method: "get", ...variables, signal });
+    StaffJobControllerJobPathParams
+  >({ url: "/staff/job/{id}", method: "get", ...variables, signal });
 
-export function customerJobControllerJobQuery(
-  variables: CustomerJobControllerJobVariables,
+export function staffJobControllerJobQuery(
+  variables: StaffJobControllerJobVariables,
 ): {
   queryKey: reactQuery.QueryKey;
   queryFn: (options: QueryFnOptions) => Promise<Schemas.GetJobResponseDto>;
 };
 
-export function customerJobControllerJobQuery(
-  variables: CustomerJobControllerJobVariables | reactQuery.SkipToken,
+export function staffJobControllerJobQuery(
+  variables: StaffJobControllerJobVariables | reactQuery.SkipToken,
 ): {
   queryKey: reactQuery.QueryKey;
   queryFn:
@@ -2810,31 +3093,31 @@ export function customerJobControllerJobQuery(
     | reactQuery.SkipToken;
 };
 
-export function customerJobControllerJobQuery(
-  variables: CustomerJobControllerJobVariables | reactQuery.SkipToken,
+export function staffJobControllerJobQuery(
+  variables: StaffJobControllerJobVariables | reactQuery.SkipToken,
 ) {
   return {
     queryKey: queryKeyFn({
-      path: "/customers/job/{id}",
-      operationId: "customerJobControllerJob",
+      path: "/staff/job/{id}",
+      operationId: "staffJobControllerJob",
       variables,
     }),
     queryFn:
       variables === reactQuery.skipToken
         ? reactQuery.skipToken
         : ({ signal }: QueryFnOptions) =>
-            fetchCustomerJobControllerJob(variables, signal),
+            fetchStaffJobControllerJob(variables, signal),
   };
 }
 
-export const useSuspenseCustomerJobControllerJob = <
+export const useSuspenseStaffJobControllerJob = <
   TData = Schemas.GetJobResponseDto,
 >(
-  variables: CustomerJobControllerJobVariables,
+  variables: StaffJobControllerJobVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
       Schemas.GetJobResponseDto,
-      CustomerJobControllerJobError,
+      StaffJobControllerJobError,
       TData
     >,
     "queryKey" | "queryFn" | "initialData"
@@ -2843,21 +3126,21 @@ export const useSuspenseCustomerJobControllerJob = <
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useSuspenseQuery<
     Schemas.GetJobResponseDto,
-    CustomerJobControllerJobError,
+    StaffJobControllerJobError,
     TData
   >({
-    ...customerJobControllerJobQuery(deepMerge(fetcherOptions, variables)),
+    ...staffJobControllerJobQuery(deepMerge(fetcherOptions, variables)),
     ...options,
     ...queryOptions,
   });
 };
 
-export const useCustomerJobControllerJob = <TData = Schemas.GetJobResponseDto,>(
-  variables: CustomerJobControllerJobVariables | reactQuery.SkipToken,
+export const useStaffJobControllerJob = <TData = Schemas.GetJobResponseDto>(
+  variables: StaffJobControllerJobVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
       Schemas.GetJobResponseDto,
-      CustomerJobControllerJobError,
+      StaffJobControllerJobError,
       TData
     >,
     "queryKey" | "queryFn" | "initialData"
@@ -2866,10 +3149,10 @@ export const useCustomerJobControllerJob = <TData = Schemas.GetJobResponseDto,>(
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useQuery<
     Schemas.GetJobResponseDto,
-    CustomerJobControllerJobError,
+    StaffJobControllerJobError,
     TData
   >({
-    ...customerJobControllerJobQuery(
+    ...staffJobControllerJobQuery(
       variables === reactQuery.skipToken
         ? variables
         : deepMerge(fetcherOptions, variables),
@@ -2879,17 +3162,97 @@ export const useCustomerJobControllerJob = <TData = Schemas.GetJobResponseDto,>(
   });
 };
 
+export type StaffJobControllerStartJobError = Fetcher.ErrorWrapper<undefined>;
+
+export type StaffJobControllerStartJobVariables = {
+  body: Schemas.StartJobRequestDto;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchStaffJobControllerStartJob = (
+  variables: StaffJobControllerStartJobVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.MessageResponseWithIdDataDto,
+    StaffJobControllerStartJobError,
+    Schemas.StartJobRequestDto,
+    {},
+    {},
+    {}
+  >({ url: "/staff/job/start", method: "post", ...variables, signal });
+
+export const useStaffJobControllerStartJob = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.MessageResponseWithIdDataDto,
+      StaffJobControllerStartJobError,
+      StaffJobControllerStartJobVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.MessageResponseWithIdDataDto,
+    StaffJobControllerStartJobError,
+    StaffJobControllerStartJobVariables
+  >({
+    mutationFn: (variables: StaffJobControllerStartJobVariables) =>
+      fetchStaffJobControllerStartJob(deepMerge(fetcherOptions, variables)),
+    ...options,
+  });
+};
+
+export type StaffJobControllerCompleteJobPathParams = {
+  /**
+   * @format uuid
+   */
+  id: string;
+};
+
+export type StaffJobControllerCompleteJobError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type StaffJobControllerCompleteJobVariables = {
+  pathParams: StaffJobControllerCompleteJobPathParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchStaffJobControllerCompleteJob = (
+  variables: StaffJobControllerCompleteJobVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.MessageResponseWithIdDataDto,
+    StaffJobControllerCompleteJobError,
+    undefined,
+    {},
+    {},
+    StaffJobControllerCompleteJobPathParams
+  >({ url: "/staff/job/complete/{id}", method: "post", ...variables, signal });
+
+export const useStaffJobControllerCompleteJob = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.MessageResponseWithIdDataDto,
+      StaffJobControllerCompleteJobError,
+      StaffJobControllerCompleteJobVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.MessageResponseWithIdDataDto,
+    StaffJobControllerCompleteJobError,
+    StaffJobControllerCompleteJobVariables
+  >({
+    mutationFn: (variables: StaffJobControllerCompleteJobVariables) =>
+      fetchStaffJobControllerCompleteJob(deepMerge(fetcherOptions, variables)),
+    ...options,
+  });
+};
+
 export type QueryOperation =
-  | {
-      path: "/user/managers";
-      operationId: "userControllerGetManagers";
-      variables: UserControllerGetManagersVariables | reactQuery.SkipToken;
-    }
-  | {
-      path: "/user/general";
-      operationId: "userControllerGetGenerals";
-      variables: UserControllerGetGeneralsVariables | reactQuery.SkipToken;
-    }
   | {
       path: "/auth/user/me";
       operationId: "authControllerGetMeUser";
@@ -2901,62 +3264,82 @@ export type QueryOperation =
       variables: AuthControllerGetMeCustomerVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/sow";
-      operationId: "sowControllerSows";
-      variables: SowControllerSowsVariables | reactQuery.SkipToken;
+      path: "/admin/user/managers";
+      operationId: "adminUserControllerGetManagers";
+      variables: AdminUserControllerGetManagersVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/sow/{id}";
-      operationId: "sowControllerSow";
-      variables: SowControllerSowVariables | reactQuery.SkipToken;
+      path: "/admin/user/general";
+      operationId: "adminUserControllerGetGenerals";
+      variables: AdminUserControllerGetGeneralsVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/sowGroup";
-      operationId: "sowGroupControllerSows";
-      variables: SowGroupControllerSowsVariables | reactQuery.SkipToken;
+      path: "/admin/sow";
+      operationId: "adminSowControllerSows";
+      variables: AdminSowControllerSowsVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/sowGroup/{id}";
-      operationId: "sowGroupControllerSow";
-      variables: SowGroupControllerSowVariables | reactQuery.SkipToken;
+      path: "/admin/sow/{id}";
+      operationId: "adminSowControllerSow";
+      variables: AdminSowControllerSowVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/site";
+      path: "/admin/sowGroup";
+      operationId: "adminSowGroupControllerSows";
+      variables: AdminSowGroupControllerSowsVariables | reactQuery.SkipToken;
+    }
+  | {
+      path: "/admin/sowGroup/{id}";
+      operationId: "adminSowGroupControllerSow";
+      variables: AdminSowGroupControllerSowVariables | reactQuery.SkipToken;
+    }
+  | {
+      path: "/admin/site";
       operationId: "siteControllerSites";
       variables: SiteControllerSitesVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/site/{id}";
+      path: "/admin/site/{id}";
       operationId: "siteControllerSite";
       variables: SiteControllerSiteVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/job";
-      operationId: "jobControllerJobs";
-      variables: JobControllerJobsVariables | reactQuery.SkipToken;
+      path: "/admin/job";
+      operationId: "adminJobControllerJobs";
+      variables: AdminJobControllerJobsVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/job/{id}";
-      operationId: "jobControllerJob";
-      variables: JobControllerJobVariables | reactQuery.SkipToken;
+      path: "/admin/job/{id}";
+      operationId: "adminJobControllerJob";
+      variables: AdminJobControllerJobVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/customer";
-      operationId: "customerControllerCustomers";
-      variables: CustomerControllerCustomersVariables | reactQuery.SkipToken;
+      path: "/manager/job";
+      operationId: "managerJobControllerJobs";
+      variables: ManagerJobControllerJobsVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/customer/{id}";
-      operationId: "customerControllerCustomer";
-      variables: CustomerControllerCustomerVariables | reactQuery.SkipToken;
+      path: "/manager/job/qr/generate";
+      operationId: "managerJobControllerGenerateQr";
+      variables: ManagerJobControllerGenerateQrVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/customers/job";
-      operationId: "customerJobControllerJobs";
-      variables: CustomerJobControllerJobsVariables | reactQuery.SkipToken;
+      path: "/manager/job/{id}";
+      operationId: "managerJobControllerJob";
+      variables: ManagerJobControllerJobVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/customers/job/{id}";
-      operationId: "customerJobControllerJob";
-      variables: CustomerJobControllerJobVariables | reactQuery.SkipToken;
+      path: "/staff/summary";
+      operationId: "staffControllerGetSummary";
+      variables: StaffControllerGetSummaryVariables | reactQuery.SkipToken;
+    }
+  | {
+      path: "/staff/job";
+      operationId: "staffJobControllerJobs";
+      variables: StaffJobControllerJobsVariables | reactQuery.SkipToken;
+    }
+  | {
+      path: "/staff/job/{id}";
+      operationId: "staffJobControllerJob";
+      variables: StaffJobControllerJobVariables | reactQuery.SkipToken;
     };

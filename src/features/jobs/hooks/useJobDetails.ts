@@ -1,14 +1,28 @@
-import { useJobControllerJob } from '@/fetchers/queriesComponents';
+import { useManagerJobControllerJob, useStaffJobControllerJob } from "@/fetchers/queriesComponents";
+import { useAuthStore } from "@/src/lib/store/authStore";
 
-export const useJobDetails = (jobId: string) => {
-  const { data, isLoading, error, refetch } = useJobControllerJob({
+export const useJobDetailsByRole = (jobId: string) => {
+
+  const user = useAuthStore((state) => state.user);
+
+  const isManager = user?.role === 'manager'
+
+  const { data: managerJob, isLoading: isLoadingManager, error: managerError, refetch: refetchManager } = useManagerJobControllerJob({
     pathParams: { id: jobId },
+  },{
+    enabled: isManager
+  });
+
+  const { data: cleanerJob, isLoading: isLoadingCleaner, error: cleanerError, refetch: refetchCleaner } = useStaffJobControllerJob({
+    pathParams: { id: jobId },
+  },{
+    enabled: !isManager
   });
 
   return {
-    job: data?.data,
-    isLoading,
-    error,
-    refetch,
+    job: isManager ? managerJob?.data : cleanerJob?.data,
+    isLoading: isLoadingManager || isLoadingCleaner,
+    error: managerError || cleanerError,
+    refetch: isManager ? refetchManager : refetchCleaner,
   };
 };

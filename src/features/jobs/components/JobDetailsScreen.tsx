@@ -1,3 +1,4 @@
+import { useManagerJobControllerGenerateQr } from "@/fetchers/queriesComponents";
 import { QRScannerModal } from "@/src/components/qr/QRScannerModal";
 import { Button, Card } from "@/src/components/ui";
 import { useAuthStore } from "@/src/lib/store/authStore";
@@ -18,11 +19,11 @@ import {
   Share,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useJobActions, useJobDetails } from "../hooks";
+import { useJobActions, useJobDetailsByRole } from "../hooks";
 import { ChecklistItem } from "./ChecklistItem";
 import { styles } from "./jobDetailScreenStyle";
 
@@ -34,15 +35,21 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
   jobId,
 }) => {
   const router = useRouter();
-  const { job, isLoading, error, refetch } = useJobDetails(jobId);
-  const { startJob, isStartingJob } = useJobActions();
-  const user = useAuthStore((state) => state.user);
-  const [showQRModal, setShowQRModal] = useState(false);
-  const [showScanner, setShowScanner] = useState(false);
-  const qrRef = useRef<any>(null);
 
+  const user = useAuthStore((state) => state.user);
   const isManager = user?.role === "manager";
   const isGeneralUser = user?.role === "general";
+
+  const { job, isLoading, error, refetch } = useJobDetailsByRole(jobId);
+  const { startJob, completeJob, isStartingJob, isCompletingJob } =
+    useJobActions();
+  const { data: qrToken, isLoading: isLoadingQrToken } =
+    useManagerJobControllerGenerateQr({}, { enabled: isManager });
+
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
+
+  const qrRef = useRef<any>(null);
 
   const handleStartJob = async () => {
     Alert.alert(
@@ -53,11 +60,12 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
         {
           text: "Continue",
           onPress: async () => {
-            const { status } = await Location.requestForegroundPermissionsAsync();
+            const { status } =
+              await Location.requestForegroundPermissionsAsync();
             if (status !== Location.PermissionStatus.GRANTED) {
               Alert.alert(
                 "Permission Required",
-                "Location permission is needed to start a job."
+                "Location permission is needed to start a job.",
               );
               return;
             }
@@ -70,38 +78,52 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
 
   const handleScanned = async (data: string) => {
     try {
-      if (data.startsWith("http://") || data.startsWith("https://")) {
-        await fetch(data, { method: "GET" });
-      } else if (data.startsWith("pristine-pnp://")) {
-        await startJob(jobId);
-      } else {
-        // Fallback: try to start job if QR contains matching job id
-        if (data.includes(`/job/${jobId}`) && data.includes("start")) {
-          await startJob(jobId);
-        } else {
-          Alert.alert("Unrecognized QR", "The scanned QR is not supported.");
-        }
+      const result = await startJob(jobId, data);
+      if (result.success) {
+        Alert.alert("Success", "Job started successfully!");
+        setShowScanner(false);
+        refetch();
       }
-      await refetch();
-      Alert.alert("Success", "Job action completed.");
-    } catch (e: any) {
-      Alert.alert("Error", e?.message || "Failed to process QR");
+    } catch (error) {
+      console.error("Error starting job:", error);
     }
+  };
+
+  const handleCompleteJob = () => {
+    Alert.alert("Complete Job", "Are you sure you want to complete this job?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Complete",
+        style: "destructive",
+        onPress: async () => {
+          const result = await completeJob(jobId);
+          if (result.success) {
+            refetch();
+          }
+        },
+      },
+    ]);
   };
 
   const getJobStatusBadge = (): { label: string; color: string } => {
     if (!job) return { label: "Unknown", color: "gray" };
 
-    const hasStarted = job.startAt !== null;
-    const allCompleted = job.checklists.every((c) => c.status === "Completed");
-    const hasInProgress = job.checklists.some((c) => c.status === "Ongoing");
+    const today = new Date();
+    const startDate = new Date(job.startAt!);
+    const isDue = startDate < today;
 
-    if (allCompleted) {
-      return { label: "Completed", color: "green" };
-    } else if (hasInProgress || hasStarted) {
-      return { label: "In Progress", color: "blue" };
-    } else {
-      return { label: "Not Started", color: "yellow" };
+    switch (job.status) {
+      case "Completed":
+        return { label: "Completed", color: "green" };
+      case "scheduled":
+        return {
+          label: isDue ? "Due" : "Scheduled",
+          color: isDue ? "red" : "blue",
+        };
+      case "In Progress":
+        return { label: "In Progress", color: "yellow" };
+      default:
+        return { label: "Not Started", color: "blue" };
     }
   };
 
@@ -112,9 +134,7 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
           <View style={styles.loadingSpinnerWrap}>
             <ActivityIndicator size="large" color="#0D9488" />
           </View>
-          <Text style={styles.loadingTitle}>
-            Loading job details
-          </Text>
+          <Text style={styles.loadingTitle}>Loading job details</Text>
           <Text style={styles.loadingSubtitle}>Please wait...</Text>
         </View>
       </View>
@@ -134,9 +154,7 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
         <Text style={styles.errorTitle}>
           {error ? "Error Loading Job" : "Job Not Found"}
         </Text>
-        <Text style={styles.errorMessage}>
-          {errorMessage}
-        </Text>
+        <Text style={styles.errorMessage}>{errorMessage}</Text>
         <View style={styles.errorActions}>
           <Button onPress={() => router.back()} variant="outline">
             <View style={styles.rowCenterPX2}>
@@ -159,6 +177,7 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
 
   const statusBadge = getJobStatusBadge();
   const canStart = job.status === "scheduled" && isGeneralUser;
+  const canComplete = job.status === "In Progress" && isGeneralUser;
   const completionPercentage =
     job.checklists.length > 0
       ? (job.checklists.filter((c) => c.status === "Completed").length /
@@ -167,12 +186,14 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
       : 0;
 
   // Generate QR code URL for job start
-  const jobStartUrl = `pristine-pnp://job/${jobId}/start`;
 
   return (
     <>
       <SafeAreaView style={styles.safeArea} edges={["top"]}>
-        <ScrollView style={styles.scrollArea} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          style={styles.scrollArea}
+          showsVerticalScrollIndicator={false}
+        >
           {/* Header with Gradient Background */}
           <View style={styles.headerWrap}>
             <View
@@ -181,7 +202,6 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
                 flexDirection: "row",
                 justifyContent: "space-between",
               }}
-              
             >
               <TouchableOpacity
                 onPress={() => router.back()}
@@ -200,23 +220,17 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
                   activeOpacity={0.8}
                 >
                   <Ionicons name="qr-code" size={20} color="#0D9488" />
-                  <Text style={styles.qrBtnText}>
-                    QR Code
-                  </Text>
+                  <Text style={styles.qrBtnText}>QR Code</Text>
                 </TouchableOpacity>
               )}
             </View>
 
             <View style={styles.headerTitleRow}>
               <View style={styles.headerTitleCol}>
-                <Text style={styles.headerTitle}>
-                  {job.title}
-                </Text>
+                <Text style={styles.headerTitle}>{job.title}</Text>
                 <View style={styles.jobNumberPill}>
                   <Ionicons name="document-text" size={14} color="#000000" />
-                  <Text style={styles.jobNumberText}>
-                    #{job.jobNumber}
-                  </Text>
+                  <Text style={styles.jobNumberText}>#{job.jobNumber}</Text>
                 </View>
                 {isManager && (
                   <View
@@ -226,11 +240,13 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
                       statusBadge.color === "green"
                         ? { backgroundColor: "#10B981" }
                         : statusBadge.color === "blue"
-                        ? { backgroundColor: "#06B6D4" }
-                        : { backgroundColor: "#F59E0B" },
+                          ? { backgroundColor: "#06B6D4" }
+                          : { backgroundColor: "#F59E0B" },
                     ]}
                   >
-                    <Text style={styles.statusBadgeText}>{statusBadge.label}</Text>
+                    <Text style={styles.statusBadgeText}>
+                      {statusBadge.label}
+                    </Text>
                   </View>
                 )}
               </View>
@@ -241,11 +257,13 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
                     statusBadge.color === "green"
                       ? { backgroundColor: "#10B981" }
                       : statusBadge.color === "blue"
-                      ? { backgroundColor: "#06B6D4" }
-                      : { backgroundColor: "#F59E0B" },
+                        ? { backgroundColor: "#06B6D4" }
+                        : { backgroundColor: "#F59E0B" },
                   ]}
                 >
-                  <Text style={styles.statusBadgeText}>{statusBadge.label}</Text>
+                  <Text style={styles.statusBadgeText}>
+                    {statusBadge.label}
+                  </Text>
                 </View>
               )}
             </View>
@@ -297,7 +315,9 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
                         {
                           width: `${completionPercentage}%`,
                           backgroundColor:
-                            completionPercentage === 100 ? "#10B981" : "#14B8A6",
+                            completionPercentage === 100
+                              ? "#10B981"
+                              : "#14B8A6",
                         },
                       ]}
                     />
@@ -306,101 +326,63 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
               </Card>
             )}
 
-            {/* Site Information */}
-            {job.site && (
+            {/* Site & Timeline (Combined) */}
+            {(job.site || job.createdAt) && (
               <Card style={styles.cardBase}>
                 <View style={styles.cardBody}>
                   <View style={styles.rowCenterMB4}>
                     <View style={styles.siteIconWrap}>
-                      <Ionicons name="location" size={24} color="#0D9488" />
+                      <Ionicons name="location" size={24} color="#1D4ED8" />
                     </View>
-                    <Text style={styles.cardTitle}>
-                      Site Location
-                    </Text>
+                    <Text style={styles.cardTitle}>Site & Timeline</Text>
                   </View>
-                  <View style={styles.infoBox}>
-                    <Text style={styles.infoBoxTitle}>
-                      {job.site.address}
-                    </Text>
-                    <View style={styles.rowCenter}>
-                      <Ionicons name="business" size={16} color="#64748B" />
-                      <Text style={styles.infoBoxSubtitle}>
-                        {job.site.city}
+
+                  {job.site && (
+                    <View style={styles.infoBox}>
+                      <Text style={styles.infoBoxTitle}>
+                        {job.site.address}
                       </Text>
+                      <View style={styles.rowCenter}>
+                        <Ionicons name="business" size={16} color="#64748B" />
+                        <Text style={styles.infoBoxSubtitle}>
+                          {job.site.city}
+                        </Text>
+                      </View>
+                    </View>
+                  )}
+
+                  <View style={{ marginTop: 12 }}>
+                    <View style={styles.metaRow}>
+                      <View style={styles.chip}>
+                        <Ionicons name="add-circle" size={14} color="#1D4ED8" />
+                        <Text style={styles.chipText}>
+                          Created:{" "}
+                          {format(new Date(job.createdAt), "MMM dd, yyyy")}
+                        </Text>
+                      </View>
+
+                      {job.startAt && (
+                        <View style={styles.chipSuccess}>
+                          <Ionicons
+                            name="play-circle"
+                            size={14}
+                            color="#047857"
+                          />
+                          <Text style={styles.chipTextSuccess}>
+                            Started:{" "}
+                            {format(new Date(job.startAt), "MMM dd, yyyy")}
+                          </Text>
+                        </View>
+                      )}
                     </View>
                   </View>
                 </View>
               </Card>
             )}
 
-            {/* Job Timeline */}
-            <Card style={styles.cardBase}>
-              <View style={styles.cardBody}>
-                <View style={styles.rowCenterMB5}>
-                  <View style={styles.siteIconWrap}>
-                    <Ionicons name="time" size={24} color="#0D9488" />
-                  </View>
-                  <Text style={styles.cardTitle}>
-                    Timeline
-                  </Text>
-                </View>
-                <View style={styles.vGap3}>
-                  <View style={styles.infoBox}>
-                    <View style={styles.rowBetweenMB2}>
-                      <View style={styles.rowCenterFlex1}>
-                        <View style={styles.timelineIconSmall}>
-                          <Ionicons
-                            name="add-circle"
-                            size={20}
-                            color="#0D9488"
-                          />
-                        </View>
-                        <Text style={styles.timelineLabel}>
-                          Created
-                        </Text>
-                      </View>
-                      <Text style={styles.timelineDate}>
-                        {format(new Date(job.createdAt), "MMM dd, yyyy")}
-                      </Text>
-                    </View>
-                    <Text style={styles.timelineTime}>
-                      {format(new Date(job.createdAt), "h:mm a")}
-                    </Text>
-                  </View>
-
-                  {job.startAt && (
-                    <View style={styles.infoBoxSuccess}>
-                      <View style={styles.rowBetweenMB2}>
-                        <View style={styles.rowCenterFlex1}>
-                          <View style={styles.timelineIconSmallSuccess}>
-                            <Ionicons
-                              name="play-circle"
-                              size={20}
-                              color="#059669"
-                            />
-                          </View>
-                          <Text style={styles.timelineLabel}>
-                            Started
-                          </Text>
-                        </View>
-                        <Text style={styles.timelineDateSuccess}>
-                          {format(new Date(job.startAt), "MMM dd, yyyy")}
-                        </Text>
-                      </View>
-                      <Text style={styles.timelineTimeSuccess}>
-                        {format(new Date(job.startAt), "h:mm a")}
-                      </Text>
-                    </View>
-                  )}
-                </View>
-              </View>
-            </Card>
-
             {/* Start Job Button */}
             {canStart && (
-              <View
-                style={styles.startWrap}
-              >
+              <View style={styles.startWrap}>
                 <TouchableOpacity
                   onPress={handleStartJob}
                   disabled={isStartingJob}
@@ -419,9 +401,36 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
                             color="white"
                           />
                         </View>
-                        <Text style={styles.startText}>
-                          Start Job
-                        </Text>
+                        <Text style={styles.startText}>Start Job</Text>
+                      </>
+                    )}
+                  </View>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {/* Complete Job Button */}
+            {canComplete && (
+              <View style={styles.startWrap}>
+                <TouchableOpacity
+                  onPress={handleCompleteJob}
+                  disabled={isCompletingJob}
+                  style={[styles.startBtn, { backgroundColor: "#10B981" }]}
+                  activeOpacity={0.9}
+                >
+                  <View style={styles.rowCenterJustifyCenter}>
+                    {isCompletingJob ? (
+                      <ActivityIndicator size="small" color="#FFFFFF" />
+                    ) : (
+                      <>
+                        <View style={styles.startIconWrap}>
+                          <Ionicons
+                            name="checkmark-done-circle"
+                            size={28}
+                            color="white"
+                          />
+                        </View>
+                        <Text style={styles.startText}>Complete Job</Text>
                       </>
                     )}
                   </View>
@@ -435,9 +444,7 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
                 <View style={styles.siteIconWrap}>
                   <Ionicons name="checkmark-circle" size={24} color="#0D9488" />
                 </View>
-                <Text style={styles.sectionTitle}>
-                  Checklist Items
-                </Text>
+                <Text style={styles.sectionTitle}>Checklist Items</Text>
               </View>
 
               <View style={styles.vGap3}>
@@ -466,21 +473,35 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
         style={{ width: "70%" }}
         onRequestClose={() => setShowQRModal(false)}
       >
-        <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setShowQRModal(false)}>
-          <TouchableOpacity activeOpacity={1} onPress={(e) => e.stopPropagation()} style={styles.modalContentWrap}>
-            <View style={styles.qrHeader}> 
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setShowQRModal(false)}
+        >
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={(e) => e.stopPropagation()}
+            style={styles.modalContentWrap}
+          >
+            <View style={styles.qrHeader}>
               <Text style={styles.qrTitle}>Start Job QR</Text>
-              <Text style={styles.qrSubtitle}>Have your staff scan this code to start the job</Text>
+              <Text style={styles.qrSubtitle}>
+                Have your staff scan this code to start the job
+              </Text>
             </View>
 
             <View style={styles.qrBox}>
-              <QRCode
-                value={jobStartUrl}
-                size={220}
-                backgroundColor="white"
-                color="black"
-                getRef={(c: any) => (qrRef.current = c)}
-              />
+              {isLoadingQrToken ? (
+                <ActivityIndicator size="large" color="#0D9488" />
+              ) : (
+                <QRCode
+                  value={qrToken?.data.token}
+                  size={220}
+                  backgroundColor="white"
+                  color="black"
+                  getRef={(c: any) => (qrRef.current = c)}
+                />
+              )}
             </View>
 
             <View style={styles.qrJobInfo}>
@@ -493,8 +514,8 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
                   statusBadge.color === "green"
                     ? { backgroundColor: "#10B981" }
                     : statusBadge.color === "blue"
-                    ? { backgroundColor: "#06B6D4" }
-                    : { backgroundColor: "#F59E0B" },
+                      ? { backgroundColor: "#06B6D4" }
+                      : { backgroundColor: "#F59E0B" },
                 ]}
               >
                 <Text style={styles.statusBadgeText}>{statusBadge.label}</Text>
@@ -510,29 +531,54 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
                     try {
                       qrRef.current.toDataURL(async (data: string) => {
                         try {
-                          const baseDir = (FileSystem as any).cacheDirectory || (FileSystem as any).documentDirectory || '';
+                          const baseDir =
+                            (FileSystem as any).cacheDirectory ||
+                            (FileSystem as any).documentDirectory ||
+                            "";
                           const fileUri = `${baseDir}job-${job.jobNumber}-qr.png`;
                           console.log(fileUri, "------", baseDir);
-                          await FileSystem.writeAsStringAsync(fileUri, data, { encoding: FileSystem.EncodingType?.Base64 || 'base64' });
+                          await FileSystem.writeAsStringAsync(fileUri, data, {
+                            encoding:
+                              FileSystem.EncodingType?.Base64 || "base64",
+                          });
                           console.log("QR Code saved to Photos");
                           try {
                             console.log("MediaLibrary");
-                            const { status } = await MediaLibrary.requestPermissionsAsync(true);
+                            const { status } =
+                              await MediaLibrary.requestPermissionsAsync(true);
                             console.log(status);
-                            if (status !== 'granted') {
-                              throw new Error('Permission to access Photos was denied');
+                            if (status !== "granted") {
+                              throw new Error(
+                                "Permission to access Photos was denied",
+                              );
                             }
-                            const asset = await MediaLibrary.createAssetAsync(fileUri);
-                            await MediaLibrary.createAlbumAsync('Pristine PNP', asset, false).catch(async () => {
-                              await MediaLibrary.addAssetsToAlbumAsync([asset], (await MediaLibrary.getAlbumAsync('Pristine PNP')) || undefined, false).catch(() => {});
+                            const asset =
+                              await MediaLibrary.createAssetAsync(fileUri);
+                            await MediaLibrary.createAlbumAsync(
+                              "Pristine PNP",
+                              asset,
+                              false,
+                            ).catch(async () => {
+                              await MediaLibrary.addAssetsToAlbumAsync(
+                                [asset],
+                                (await MediaLibrary.getAlbumAsync(
+                                  "Pristine PNP",
+                                )) || undefined,
+                                false,
+                              ).catch(() => {});
                             });
-                            Alert.alert('Saved', 'QR code saved to Photos');
+                            Alert.alert("Saved", "QR code saved to Photos");
                           } catch (saveErr) {
                             console.log(saveErr);
                             let shareUrl = fileUri;
-                            if (Platform.OS === 'android' && (FileSystem as any).getContentUriAsync) {
+                            if (
+                              Platform.OS === "android" &&
+                              (FileSystem as any).getContentUriAsync
+                            ) {
                               try {
-                                shareUrl = await (FileSystem as any).getContentUriAsync(fileUri);
+                                shareUrl = await (
+                                  FileSystem as any
+                                ).getContentUriAsync(fileUri);
                               } catch {}
                             }
                             console.log("shareUrl", shareUrl);
@@ -553,7 +599,11 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
               >
                 <Ionicons name="download" size={22} color="#FFFFFF" />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => setShowQRModal(false)} style={[styles.qrCloseBtn, styles.qrCloseBtnWide]} activeOpacity={0.9}>
+              <TouchableOpacity
+                onPress={() => setShowQRModal(false)}
+                style={[styles.qrCloseBtn, styles.qrCloseBtnWide]}
+                activeOpacity={0.9}
+              >
                 <Text style={styles.qrCloseText}>Close</Text>
               </TouchableOpacity>
             </View>
