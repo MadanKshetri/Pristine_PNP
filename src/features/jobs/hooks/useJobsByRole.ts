@@ -100,4 +100,3 @@ export const useJobsByRole = (filters?: CommonQueryParams): JobsHookResult => {
 
   return { jobs, isLoading, isRefetching, error, refetch };
 };
-

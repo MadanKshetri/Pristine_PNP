@@ -87,13 +87,11 @@ export type IdNameDto = {
   name: string;
 };
 
-export type ListManagerDto = {
+export type ListCustomerDto = {
+  email?: string | null;
   id: string;
-  email: string;
-  fullName: string;
-  createdAt: string;
+  name: string;
   createdBy: IdNameDto;
-  image: AssetDto | null;
 };
 
 export type PaginationResponseDTO = {
@@ -101,6 +99,68 @@ export type PaginationResponseDTO = {
   nextPage?: number | null;
   total: number;
   count: number;
+};
+
+export type ListCustomerResponseDto = {
+  message: string;
+  data: ListCustomerDto[];
+  pagination: PaginationResponseDTO;
+};
+
+export type CreateCustomerRequestDto = {
+  name: string;
+  email?: string;
+};
+
+export type IdDto = {
+  /**
+   * @format uuid
+   */
+  id: string;
+};
+
+export type MessageResponseWithIdDataDto = {
+  message: string;
+  data: IdDto;
+};
+
+export type GetCustomerSiteDto = {
+  address: string;
+  /**
+   * @format uuid
+   */
+  id: string;
+  name: string;
+};
+
+export type GetCustomerDto = {
+  email?: string | null;
+  id: string;
+  name: string;
+  createdBy: IdNameDto;
+  sites: GetCustomerSiteDto[];
+};
+
+export type GetCustomerResponseDto = {
+  message: string;
+  data: GetCustomerDto;
+};
+
+export type UpdateCustomerRequestDto = {
+  name?: string;
+  email?: string;
+};
+
+export type ListManagerDto = {
+  id: string;
+  email: string;
+  fullName: string;
+  /**
+   * @format date-time
+   */
+  createdAt: string;
+  createdBy: IdNameDto;
+  image: AssetDto | null;
 };
 
 export type ListManagerResponseDto = {
@@ -123,6 +183,16 @@ export type ListGeneralResponseDto = {
   pagination: PaginationResponseDTO;
 };
 
+export type GetGeneralResponseDto = {
+  message: string;
+  data: ListGeneralDto;
+};
+
+export type GetManagerResponseDto = {
+  message: string;
+  data: ListManagerDto;
+};
+
 export type CreateManagerDto = {
   email: string;
   /**
@@ -133,20 +203,9 @@ export type CreateManagerDto = {
   customerId: string;
 };
 
-export type IdDto = {
-  /**
-   * @format uuid
-   */
-  id: string;
-};
-
-export type MessageResponseWithIdDataDto = {
-  message: string;
-  data: IdDto;
-};
-
 export type UpdateManagerDto = {
   fullName?: string;
+  ended?: boolean;
   /**
    * @format binary
    */
@@ -164,6 +223,7 @@ export type CreateGeneralDto = {
 
 export type UpdateGeneralDto = {
   fullName?: string;
+  ended?: boolean;
   email?: string;
   /**
    * @format binary
@@ -383,6 +443,7 @@ export type ListJobResponseDto = {
 
 export type UpdateChecklistSowRequestDto = {
   status?: "Pending" | "Ongoing" | "Completed" | "Cancelled";
+  remarks?: string;
   /**
    * @format binary
    */

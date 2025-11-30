@@ -1,38 +1,34 @@
-import { Button, Card, ScreenHeader } from '@/src/components/ui';
-import { useAuth } from '@/src/features/auth';
-import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Button, Card, ScreenHeader } from "@/src/components/ui";
+import { useAuth } from "@/src/features/auth";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function ProfileScreen() {
   const router = useRouter();
   const { user, logout } = useAuth();
 
   const handleLogout = () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
+    Alert.alert("Logout", "Are you sure you want to logout?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Logout",
+        style: "destructive",
+        onPress: () => {
+          logout();
+          router.replace("/");
         },
-        {
-          text: 'Logout',
-          style: 'destructive',
-          onPress: () => {
-            logout();
-            router.replace('/');
-          },
-        },
-      ]
-    );
+      },
+    ]);
   };
 
   return (
     <ScrollView style={styles.container}>
       <ScreenHeader title="Profile" />
-      
+
       <View className="px-6 py-8">
         {/* User Info Card */}
         <Card variant="elevated" padding="lg" className="mb-6">
@@ -44,22 +40,21 @@ export default function ProfileScreen() {
 
             {/* Name */}
             <Text className="text-2xl font-bold text-gray-900 mb-1">
-              {user?.fullName || 'User'}
+              {user?.fullName || "User"}
             </Text>
 
             {/* Email */}
             <Text className="text-base text-gray-600 mb-2">
-              {user?.email || 'email@example.com'}
+              {user?.email || "email@example.com"}
             </Text>
 
             {/* Role Badge */}
             <View className="bg-blue-100 px-4 py-1.5 rounded-full">
               <Text className="text-sm font-semibold text-blue-600 capitalize">
-                {user?.role || 'user'}
+                {user?.role || "user"}
               </Text>
             </View>
           </View>
-
         </Card>
 
         {/* Quick Actions */}
@@ -75,7 +70,9 @@ export default function ProfileScreen() {
                 <Ionicons name="settings-outline" size={20} color="#6B7280" />
               </View>
               <View className="flex-1">
-                <Text className="text-base font-medium text-gray-900">Settings</Text>
+                <Text className="text-base font-medium text-gray-900">
+                  Settings
+                </Text>
                 <Text className="text-xs text-gray-500">App preferences</Text>
               </View>
               <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
@@ -88,7 +85,9 @@ export default function ProfileScreen() {
               <Ionicons name="help-circle-outline" size={20} color="#6B7280" />
             </View>
             <View className="flex-1">
-              <Text className="text-base font-medium text-gray-900">Help & Support</Text>
+              <Text className="text-base font-medium text-gray-900">
+                Help & Support
+              </Text>
               <Text className="text-xs text-gray-500">Get assistance</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
@@ -116,6 +115,6 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9fafb',
+    backgroundColor: "#f9fafb",
   },
 });

@@ -25,7 +25,7 @@ export default function HomeTab() {
   } = useJobsByRole({
     page: 0,
     take: 3,
-    status: "In Progress",
+    status: JSON.stringify(["In Progress"]) as any,
   });
 
   // 3. Scheduled Jobs Query
@@ -37,7 +37,7 @@ export default function HomeTab() {
   } = useJobsByRole({
     page: 0,
     take: 3,
-    status: "scheduled",
+    status: JSON.stringify(["scheduled"]) as any,
   });
 
   const handleRefresh = useCallback(() => {

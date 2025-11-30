@@ -369,7 +369,7 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
                             color="#047857"
                           />
                           <Text style={styles.chipTextSuccess}>
-                            Started:{" "}
+                            Start At:{" "}
                             {format(new Date(job.startAt), "MMM dd, yyyy")}
                           </Text>
                         </View>
@@ -453,7 +453,7 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
                     <ChecklistItem
                       checklist={checklist}
                       index={index}
-                      jobStarted={job.status !== "scheduled"}
+                      jobStatus={job.status}
                       onUpdate={refetch}
                       isReadOnly={isManager}
                     />

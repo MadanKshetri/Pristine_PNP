@@ -51,69 +51,6 @@ export const HomeScreen = ({
   const completedJobs = summary?.completed || 0;
   const pendingJobs = summary?.pending || 0;
   const inProgressJobsCount = summary?.upcomming || 0; // Assuming 'upcomming' maps to 'In Progress' or we need to check mapping.
-  // Wait, 'upcomming' usually means scheduled. 'pending' might be unassigned?
-  // Let's check the DTO: pending, completed, upcomming, cancelled.
-  // And job statuses: scheduled, In Progress, Completed, Cancelled.
-  // Usually:
-  // pending -> In Progress? Or Unassigned?
-  // upcomming -> Scheduled?
-  // Let's assume:
-  // pending = In Progress (or maybe scheduled?)
-  // upcomming = Scheduled (or maybe In Progress?)
-  // Let's look at the previous code:
-  // const pendingJobs = jobs.filter((job) => job.status === 'scheduled').length;
-  // const inProgressJobs = jobs.filter((job) => job.status === 'In Progress').length;
-
-  // If the backend summary uses different terms, we might need to guess or check.
-  // Common mapping:
-  // pending -> Scheduled (waiting to start)
-  // upcomming -> Scheduled (future)
-  // But we have 'In Progress'.
-  // Let's assume 'pending' is 'scheduled' and 'upcomming' is 'In Progress'? No, that sounds backwards.
-  // Let's assume 'pending' is 'In Progress' (pending completion) and 'upcomming' is 'Scheduled'.
-  // Or 'pending' is 'Scheduled' and 'upcomming' is 'In Progress'?
-
-  // Let's just use the values we have and map them as best as possible.
-  // If summary is missing, fall back to 0.
-
-  // RE-READING DTO:
-  // pending: number;
-  // completed: number;
-  // upcomming: number;
-  // cancelled: number;
-
-  // Previous code:
-  // pendingJobs = status === 'scheduled'
-  // inProgressJobs = status === 'In Progress'
-
-  // Let's map:
-  // pending -> Scheduled (matches 'pendingJobs' variable name)
-  // upcomming -> In Progress? (matches 'inProgressJobs' variable name?)
-  // Actually, 'upcomming' usually means future. 'pending' usually means waiting for action.
-  // Let's try:
-  // pending -> Scheduled
-  // upcomming -> In Progress (maybe? or maybe 'upcomming' is scheduled and 'pending' is unassigned?)
-
-  // Let's trust the variable names in the previous code:
-  // pendingJobs (variable) was 'scheduled'.
-  // inProgressJobs (variable) was 'In Progress'.
-
-  // Let's map summary.pending to 'Pending' card (which was 'scheduled').
-  // Let's map summary.upcomming to 'In Progress' card? Or vice versa?
-  // 'Upcomming' sounds like 'Scheduled'.
-  // 'Pending' sounds like 'In Progress' (pending completion).
-
-  // Let's swap them if needed. For now:
-  // Pending Card -> summary.pending
-  // In Progress Card -> summary.upcomming
-
-  // Wait, if I look at the card titles:
-  // Title: 'Pending', Value: pendingJobs
-  // Title: 'In Progress', Value: inProgressJobs
-
-  // So I will use:
-  // summary.pending -> Pending Card
-  // summary.upcomming -> In Progress Card
 
   const analyticsData = [
     {

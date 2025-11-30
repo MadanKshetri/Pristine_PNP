@@ -1,6 +1,11 @@
-import { useStaffJobControllerCompleteJob, useStaffJobControllerStartJob, useStaffJobControllerUpdateChecklistSow } from '@/fetchers/queriesComponents';
-import * as Location from 'expo-location';
-import { Alert } from 'react-native';
+import {
+  useStaffJobControllerCompleteJob,
+  useStaffJobControllerStartJob,
+  useStaffJobControllerUpdateChecklistSow,
+} from "@/fetchers/queriesComponents";
+import { UpdateChecklistSowRequestDto } from "@/fetchers/queriesSchemas";
+import * as Location from "expo-location";
+import { Alert } from "react-native";
 
 export const useJobActions = () => {
   const startJobMutation = useStaffJobControllerStartJob();
@@ -14,15 +19,15 @@ export const useJobActions = () => {
 
       if (status !== Location.PermissionStatus.GRANTED) {
         Alert.alert(
-          'Permission Required',
-          'Location permission is needed to start a job.'
+          "Permission Required",
+          "Location permission is needed to start a job."
         );
         return { success: false };
       }
 
       // Get current location
       const location = await Location.getCurrentPositionAsync({});
-      
+
       // Start the job
       const result = await startJobMutation.mutateAsync({
         body: {
@@ -34,10 +39,10 @@ export const useJobActions = () => {
         },
       });
 
-      Alert.alert('Success', 'Job started successfully!');
+      Alert.alert("Success", "Job started successfully!");
       return { success: true, data: result };
     } catch (error: any) {
-      Alert.alert('Error', error?.message || 'Failed to start job');
+      Alert.alert("Error", error?.message || "Failed to start job");
       return { success: false, error };
     }
   };
@@ -47,17 +52,17 @@ export const useJobActions = () => {
       const result = await completeJobMutation.mutateAsync({
         pathParams: { id: jobId },
       });
-      Alert.alert('Success', 'Job completed successfully!');
+      Alert.alert("Success", "Job completed successfully!");
       return { success: true, data: result };
     } catch (error: any) {
-      Alert.alert('Error', error?.message || 'Failed to complete job');
+      Alert.alert("Error", error?.message || "Failed to complete job");
       return { success: false, error };
     }
   };
 
   const updateChecklist = async (
     checklistId: string,
-    status: 'Pending' | 'Ongoing' | 'Completed' | 'Cancelled',
+    status: UpdateChecklistSowRequestDto["status"],
     attachment?: { uri: string; name?: string; type?: string }
   ) => {
     try {
@@ -67,17 +72,15 @@ export const useJobActions = () => {
             // cast as any to satisfy generated types; fetcher already supports FormData
             body: (() => {
               const form = new FormData();
-              form.append('id', checklistId);
-              form.append('status', status);
-              form.append(
-                'attachments',
-                {
+              form.append("id", checklistId);
+              status && form.append("status", status);
+              attachment &&
+                form.append("attachments", {
                   // React Native FormData file
                   uri: attachment.uri,
-                  name: attachment.name || 'photo.jpg',
-                  type: attachment.type || 'image/jpeg',
-                } as any
-              );
+                  name: attachment.name || "photo.jpg",
+                  type: attachment.type || "image/jpeg",
+                } as any);
               return form as any;
             })(),
           }
@@ -89,11 +92,13 @@ export const useJobActions = () => {
             },
           };
 
-      const result = await updateChecklistMutation.mutateAsync(variables as any);
+      const result = await updateChecklistMutation.mutateAsync(
+        variables as any
+      );
 
       return { success: true, data: result };
     } catch (error: any) {
-      Alert.alert('Error', error?.message || 'Failed to update checklist');
+      Alert.alert("Error", error?.message || "Failed to update checklist");
       return { success: false, error };
     }
   };

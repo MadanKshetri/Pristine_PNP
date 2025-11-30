@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight, Clock, MapPin } from "lucide-react-native";
 import React, { useMemo, useState } from "react";
 import {
   ActivityIndicator,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -61,13 +62,6 @@ export const JobListWithCalendar = ({
     const marked: MarkedDates = {};
 
     jobs.forEach((job: Job) => {
-      const createdDate = format(parseISO(job.createdAt), "yyyy-MM-dd");
-      if (!marked[createdDate]) marked[createdDate] = { dots: [] };
-      marked[createdDate].dots = [
-        ...(marked[createdDate].dots || []),
-        { key: `created-${job.id}`, color: "#3b82f6" },
-      ];
-
       if (job.startAt) {
         const startDate = format(parseISO(job.startAt), "yyyy-MM-dd");
         if (!marked[startDate]) marked[startDate] = { dots: [] };
@@ -134,219 +128,220 @@ export const JobListWithCalendar = ({
   }
 
   return (
-    <View style={styles.container}>
-      <ScreenHeader
-        title="Jobs Calendar"
-        subtitle={
-          selectedDate
-            ? `Jobs for ${formatDate(selectedDate)}`
-            : `${jobs.length} total jobs`
-        }
-      />
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl refreshing={isLoading} onRefresh={refetch} />
+      }
+    >
+      <View style={styles.container}>
+        <ScreenHeader
+          title="Jobs Calendar"
+          subtitle={
+            selectedDate
+              ? `Jobs for ${formatDate(selectedDate)}`
+              : `${jobs.length} total jobs`
+          }
+        />
 
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.searchContainer}>
-          <Input
-            placeholder="Search jobs..."
-            value={searchText}
-            className="bg-gray"
-            onChangeText={(text) => {
-              setSearchText(text);
-              handleJobSearch(text);
-            }}
-          />
-        </View>
-
-        <View style={styles.calendarContainer}>
-          <Calendar
-            onDayPress={onDayPress}
-            markedDates={markedDates}
-            markingType="multi-dot"
-            enableSwipeMonths
-            firstDay={1}
-            hideExtraDays
-            renderArrow={(direction) =>
-              direction === "left" ? (
-                <ChevronLeft size={18} color="#0f172a" />
-              ) : (
-                <ChevronRight size={18} color="#0f172a" />
-              )
-            }
-            theme={{
-              backgroundColor: "#ffffff",
-              calendarBackground: "#ffffff",
-              textSectionTitleColor: "#64748b",
-              selectedDayBackgroundColor: "#3b82f6",
-              selectedDayTextColor: "#ffffff",
-              todayTextColor: "#3b82f6",
-              dayTextColor: "#0f172a",
-              textDisabledColor: "#cbd5e1",
-              monthTextColor: "#0f172a",
-              arrowColor: "#0f172a",
-              textDayFontWeight: "600",
-              textMonthFontWeight: "700",
-              textDayHeaderFontWeight: "600",
-              textDayFontSize: 15,
-              textMonthFontSize: 18,
-              textDayHeaderFontSize: 13,
-              todayBackgroundColor: "#eff6ff",
-            }}
-            style={styles.calendar}
-          />
-
-          {selectedDate && (
-            <TouchableOpacity
-              style={styles.clearPill}
-              onPress={() => setSelectedDate(null)}
-            >
-              <Text style={styles.clearPillText}>Clear date</Text>
-            </TouchableOpacity>
-          )}
-
-          <View style={styles.legendRow}>
-            <View style={styles.legendItem}>
-              <View
-                style={[styles.legendDot, { backgroundColor: "#3b82f6" }]}
-              />
-              <Text style={styles.legendLabel}>Created</Text>
-            </View>
-            <View style={styles.legendItem}>
-              <View
-                style={[styles.legendDot, { backgroundColor: "#10b981" }]}
-              />
-              <Text style={styles.legendLabel}>Start</Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.jobsContainer}>
-          <View style={styles.jobsHeader}>
-            <Text style={styles.jobsTitle}>
-              {selectedDate ? "Jobs for Selected Date" : "All Jobs"}
-            </Text>
-            <View style={styles.countBadge}>
-              <Text style={styles.countText}>{filteredJobs.length}</Text>
-            </View>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.searchContainer}>
+            <Input
+              placeholder="Search jobs..."
+              value={searchText}
+              className="bg-gray"
+              onChangeText={(text) => {
+                setSearchText(text);
+                handleJobSearch(text);
+              }}
+            />
           </View>
 
-          {isLoading ? (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color="#3b82f6" />
-              <Text style={styles.loadingText}>Loading jobs...</Text>
-            </View>
-          ) : filteredJobs.length === 0 ? (
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>
-                {selectedDate
-                  ? "No jobs scheduled for this date"
-                  : search
-                    ? "No matching jobs found"
-                    : "No jobs assigned"}
-              </Text>
-            </View>
-          ) : (
-            filteredJobs.map((job: Job) => (
+          <View style={styles.calendarContainer}>
+            <Calendar
+              onDayPress={onDayPress}
+              markedDates={markedDates}
+              markingType="multi-dot"
+              enableSwipeMonths
+              firstDay={1}
+              hideExtraDays
+              renderArrow={(direction) =>
+                direction === "left" ? (
+                  <ChevronLeft size={18} color="#0f172a" />
+                ) : (
+                  <ChevronRight size={18} color="#0f172a" />
+                )
+              }
+              theme={{
+                backgroundColor: "#ffffff",
+                calendarBackground: "#ffffff",
+                textSectionTitleColor: "#64748b",
+                selectedDayBackgroundColor: "#3b82f6",
+                selectedDayTextColor: "#ffffff",
+                todayTextColor: "#3b82f6",
+                dayTextColor: "#0f172a",
+                textDisabledColor: "#cbd5e1",
+                monthTextColor: "#0f172a",
+                arrowColor: "#0f172a",
+                textDayFontWeight: "600",
+                textMonthFontWeight: "700",
+                textDayHeaderFontWeight: "600",
+                textDayFontSize: 15,
+                textMonthFontSize: 18,
+                textDayHeaderFontSize: 13,
+                todayBackgroundColor: "#eff6ff",
+              }}
+              style={styles.calendar}
+            />
+
+            {selectedDate && (
               <TouchableOpacity
-                key={job.id}
-                onPress={() => handleJobPress(job.id)}
-                activeOpacity={0.7}
+                style={styles.clearPill}
+                onPress={() => setSelectedDate(null)}
               >
-                <View style={styles.jobCard}>
-                  <View style={styles.jobCardHeader}>
-                    <View style={styles.jobTitleContainer}>
-                      <Text style={styles.jobTitle}>{job.title}</Text>
-                      <Text style={styles.jobDate}>
-                        {formatDate(job.createdAt)}
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: 10,
-                      }}
-                    >
-                      <View
-                        style={
-                          job.startAt
-                            ? styles.statusBadgeInProgress
-                            : styles.statusBadgeScheduled
-                        }
-                      >
-                        <Text
-                          style={
-                            job.startAt
-                              ? styles.statusTextInProgress
-                              : styles.statusTextScheduled
-                          }
-                          className="capitalize"
-                        >
-                          {job.status}
+                <Text style={styles.clearPillText}>Clear date</Text>
+              </TouchableOpacity>
+            )}
+
+            <View style={styles.legendRow}>
+              <View style={styles.legendItem}>
+                <View
+                  style={[styles.legendDot, { backgroundColor: "#10b981" }]}
+                />
+                <Text style={styles.legendLabel}>Job </Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.jobsContainer}>
+            <View style={styles.jobsHeader}>
+              <Text style={styles.jobsTitle}>
+                {selectedDate ? "Jobs for Selected Date" : "All Jobs"}
+              </Text>
+              <View style={styles.countBadge}>
+                <Text style={styles.countText}>{filteredJobs.length}</Text>
+              </View>
+            </View>
+
+            {isLoading ? (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#3b82f6" />
+                <Text style={styles.loadingText}>Loading jobs...</Text>
+              </View>
+            ) : filteredJobs.length === 0 ? (
+              <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>
+                  {selectedDate
+                    ? "No jobs scheduled for this date"
+                    : search
+                      ? "No matching jobs found"
+                      : "No jobs assigned"}
+                </Text>
+              </View>
+            ) : (
+              filteredJobs.map((job: Job) => (
+                <TouchableOpacity
+                  key={job.id}
+                  onPress={() => handleJobPress(job.id)}
+                  activeOpacity={0.7}
+                >
+                  <View style={styles.jobCard}>
+                    <View style={styles.jobCardHeader}>
+                      <View style={styles.jobTitleContainer}>
+                        <Text style={styles.jobTitle}>{job.title}</Text>
+                        <Text style={styles.jobDate}>
+                          {formatDate(job.createdAt)}
                         </Text>
                       </View>
-
-                      {job.startAt && new Date(job.startAt) < new Date() && (
+                      <View
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          gap: 10,
+                        }}
+                      >
                         <View
-                          style={{
-                            backgroundColor: "#fd170fff",
-                            padding: 5,
-                            borderRadius: 8,
-                            width: 50,
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
+                          style={
+                            job.startAt
+                              ? styles.statusBadgeInProgress
+                              : styles.statusBadgeScheduled
+                          }
                         >
                           <Text
-                            style={{
-                              color: "#ffffff",
-                            }}
+                            style={
+                              job.startAt
+                                ? styles.statusTextInProgress
+                                : styles.statusTextScheduled
+                            }
                             className="capitalize"
                           >
-                            Due
+                            {job.status}
+                          </Text>
+                        </View>
+
+                        {job.startAt && new Date(job.startAt) < new Date() && (
+                          <View
+                            style={{
+                              backgroundColor: "#fd170fff",
+                              padding: 5,
+                              borderRadius: 8,
+                              width: 50,
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <Text
+                              style={{
+                                color: "#ffffff",
+                              }}
+                              className="capitalize"
+                            >
+                              Due
+                            </Text>
+                          </View>
+                        )}
+                      </View>
+                    </View>
+
+                    <View style={styles.jobDetails}>
+                      {job.site && (
+                        <View style={styles.detailRow}>
+                          <MapPin size={16} color="#64748b" strokeWidth={2} />
+                          <Text style={styles.detailText}>
+                            {job.site.address}, {job.site.city}
+                          </Text>
+                        </View>
+                      )}
+
+                      {job.startAt && (
+                        <View style={styles.detailRow}>
+                          <Clock size={16} color="#64748b" strokeWidth={2} />
+                          <Text style={styles.detailText}>
+                            Started{" "}
+                            {format(new Date(job.startAt), "MMM dd, h:mm a")}
                           </Text>
                         </View>
                       )}
                     </View>
-                  </View>
 
-                  <View style={styles.jobDetails}>
-                    {job.site && (
-                      <View style={styles.detailRow}>
-                        <MapPin size={16} color="#64748b" strokeWidth={2} />
-                        <Text style={styles.detailText}>
-                          {job.site.address}, {job.site.city}
-                        </Text>
-                      </View>
-                    )}
-
-                    {job.startAt && (
-                      <View style={styles.detailRow}>
-                        <Clock size={16} color="#64748b" strokeWidth={2} />
-                        <Text style={styles.detailText}>
-                          Started{" "}
-                          {format(new Date(job.startAt), "MMM dd, h:mm a")}
+                    {job.description && (
+                      <View style={styles.descriptionContainer}>
+                        <Text style={styles.descriptionText} numberOfLines={2}>
+                          {job.description}
                         </Text>
                       </View>
                     )}
                   </View>
+                </TouchableOpacity>
+              ))
+            )}
+          </View>
 
-                  {job.description && (
-                    <View style={styles.descriptionContainer}>
-                      <Text style={styles.descriptionText} numberOfLines={2}>
-                        {job.description}
-                      </Text>
-                    </View>
-                  )}
-                </View>
-              </TouchableOpacity>
-            ))
-          )}
-        </View>
-
-        <View style={styles.bottomPadding} />
-      </ScrollView>
-    </View>
+          <View style={styles.bottomPadding} />
+        </ScrollView>
+      </View>
+    </ScrollView>
   );
 };
 
@@ -433,19 +428,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#475569",
     fontWeight: "600",
-  },
-  clearButton: {
-    marginHorizontal: 16,
-    marginBottom: 16,
-    backgroundColor: "#3b82f6",
-    padding: 16,
-    borderRadius: 12,
-    alignItems: "center",
-  },
-  clearButtonText: {
-    color: "#ffffff",
-    fontSize: 16,
-    fontWeight: "700",
   },
   jobsContainer: {
     paddingHorizontal: 16,

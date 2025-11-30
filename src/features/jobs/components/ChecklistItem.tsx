@@ -1,10 +1,13 @@
-import { Card } from "@/src/components/ui";
+import {
+  GetJobDto,
+  UpdateChecklistSowRequestDto,
+} from "@/fetchers/queriesSchemas";
+import { AppAlertDialog, Card } from "@/src/components/ui";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   Image,
   StyleSheet,
   Text,
@@ -13,12 +16,11 @@ import {
 } from "react-native";
 import { useJobActions } from "../hooks";
 import type { JobChecklist } from "../types";
-import { GetJobChecklistDto } from "@/fetchers/queriesSchemas";
 
 interface ChecklistItemProps {
   checklist: JobChecklist;
   index: number;
-  jobStarted: boolean;
+  jobStatus: GetJobDto["status"];
   onUpdate: () => void;
   isReadOnly?: boolean;
 }
@@ -26,14 +28,42 @@ interface ChecklistItemProps {
 export const ChecklistItem: React.FC<ChecklistItemProps> = ({
   checklist,
   index,
-  jobStarted,
+  jobStatus,
   onUpdate,
   isReadOnly = false,
 }) => {
   const { updateChecklist, isUpdatingChecklist } = useJobActions();
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [alertConfig, setAlertConfig] = useState<{
+    isOpen: boolean;
+    title: string;
+    description: string;
+    actions: any[];
+  }>({
+    isOpen: false,
+    title: "",
+    description: "",
+    actions: [],
+  });
 
-  const getStatusColor = (status: GetJobChecklistDto["status"]) => {
+  const showAlert = (
+    title: string,
+    description: string,
+    actions: any[] = [{ text: "OK" }],
+  ) => {
+    setAlertConfig({
+      isOpen: true,
+      title,
+      description,
+      actions,
+    });
+  };
+
+  const closeAlert = () => {
+    setAlertConfig((prev) => ({ ...prev, isOpen: false }));
+  };
+
+  const getStatusColor = (status: UpdateChecklistSowRequestDto["status"]) => {
     switch (status) {
       case "Completed":
         return {
@@ -61,8 +91,8 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
   const statusStyle = getStatusColor(checklist.status);
 
   const handlePickImage = async () => {
-    if (!jobStarted) {
-      Alert.alert(
+    if (jobStatus === "scheduled") {
+      showAlert(
         "Job Not Started",
         "Please start the job before uploading photos.",
       );
@@ -73,7 +103,7 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
       await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (!permissionResult.granted) {
-      Alert.alert(
+      showAlert(
         "Permission Required",
         "Camera roll permission is needed to upload photos.",
       );
@@ -100,7 +130,7 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
         }
       } catch (error) {
         console.error("Error uploading image:", error);
-        Alert.alert("Error", "Failed to upload image");
+        showAlert("Error", "Failed to upload image");
       } finally {
         setSelectedImages([]);
       }
@@ -108,8 +138,8 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
   };
 
   const handleTakePhoto = async () => {
-    if (!jobStarted) {
-      Alert.alert(
+    if (jobStatus === "scheduled") {
+      showAlert(
         "Job Not Started",
         "Please start the job before taking photos.",
       );
@@ -119,7 +149,7 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
     if (!permissionResult.granted) {
-      Alert.alert(
+      showAlert(
         "Permission Required",
         "Camera permission is needed to take photos.",
       );
@@ -145,16 +175,18 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
         }
       } catch (error) {
         console.error("Error uploading photo:", error);
-        Alert.alert("Error", "Failed to upload photo");
+        showAlert("Error", "Failed to upload photo");
       } finally {
         setSelectedImages([]);
       }
     }
   };
 
-  const handleChangeStatus = async (newStatus: JobStatus) => {
-    if (!jobStarted && newStatus !== "Pending") {
-      Alert.alert("Job Not Started", "Please start the job first.");
+  const handleChangeStatus = async (
+    newStatus: UpdateChecklistSowRequestDto["status"],
+  ) => {
+    if (jobStatus === "scheduled" && newStatus !== "Pending") {
+      showAlert("Job Not Started", "Please start the job first.");
       return;
     }
 
@@ -165,28 +197,68 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
   };
 
   const showStatusMenu = () => {
-    const options: { label: string; value: JobStatus }[] = [
+    if (jobStatus !== "In Progress") {
+      return;
+    }
+
+    const options: {
+      label: string;
+      value: UpdateChecklistSowRequestDto["status"];
+    }[] = [
       { label: "Pending", value: "Pending" },
       { label: "In Progress", value: "Ongoing" },
       { label: "Completed", value: "Completed" },
       { label: "Cancelled", value: "Cancelled" },
     ];
 
-    Alert.alert(
-      "Update Status",
-      "Select a new status for this checklist item",
-      [
-        ...options.map((option) => ({
-          text: option.label,
-          onPress: () => handleChangeStatus(option.value),
-        })),
-        { text: "Cancel", style: "cancel" },
-      ],
-    );
+    showAlert("Update Status", "Select a new status for this checklist item", [
+      ...options.map((option) => {
+        const style = getStatusColor(option.value);
+        return {
+          render: (onClose: () => void) => (
+            <TouchableOpacity
+              onPress={() => {
+                handleChangeStatus(option.value);
+                onClose();
+              }}
+              style={{
+                backgroundColor: style.bgColor,
+                paddingVertical: 12,
+                paddingHorizontal: 16,
+                borderRadius: 8,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: 8,
+                width: "100%",
+              }}
+              activeOpacity={0.8}
+            >
+              <Ionicons
+                name={style.icon as any}
+                size={18}
+                color={style.textColor}
+                style={{ marginRight: 8 }}
+              />
+              <Text
+                style={{
+                  color: style.textColor,
+                  fontSize: 16,
+                  fontWeight: "600",
+                }}
+              >
+                {option.label}
+              </Text>
+            </TouchableOpacity>
+          ),
+        };
+      }),
+      { text: "Cancel", style: "cancel" },
+    ]);
   };
 
   const showPhotoOptions = () => {
-    Alert.alert("Add Photo", "Choose an option", [
+    showAlert("Add Photo", "Choose an option", [
       { text: "Take Photo", onPress: handleTakePhoto },
       { text: "Choose from Library", onPress: handlePickImage },
       { text: "Cancel", style: "cancel" },
@@ -283,7 +355,7 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
             onPress={showPhotoOptions}
             style={[
               styles.photoBtn,
-              jobStarted && !isUpdatingChecklist
+              jobStatus !== "scheduled" && !isUpdatingChecklist
                 ? styles.photoBtnEnabled
                 : styles.photoBtnDisabled,
             ]}
@@ -297,7 +369,9 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
                   name="camera"
                   size={18}
                   color={
-                    jobStarted && !isUpdatingChecklist ? "#3B82F6" : "#9CA3AF"
+                    jobStatus !== "scheduled" && !isUpdatingChecklist
+                      ? "#3B82F6"
+                      : "#9CA3AF"
                   }
                 />
                 <Text
@@ -305,7 +379,7 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
                     styles.photoBtnText,
                     {
                       color:
-                        jobStarted && !isUpdatingChecklist
+                        jobStatus !== "scheduled" && !isUpdatingChecklist
                           ? "#2563EB"
                           : "#9CA3AF",
                     },
@@ -318,6 +392,14 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
           </TouchableOpacity>
         </View>
       )}
+
+      <AppAlertDialog
+        isOpen={alertConfig.isOpen}
+        onClose={closeAlert}
+        title={alertConfig.title}
+        description={alertConfig.description}
+        actions={alertConfig.actions}
+      />
     </Card>
   );
 };

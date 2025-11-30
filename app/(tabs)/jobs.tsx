@@ -4,7 +4,9 @@ import { useAuthStore } from "@/src/lib/store/authStore";
 import { useState } from "react";
 
 export default function JobsScreen() {
-  const [filters, setFilters] = useState<JobFilters>({});
+  const [filters, setFilters] = useState<JobFilters>({
+    status: JSON.stringify(["scheduled", "In Progress"]) as any,
+  });
   const user = useAuthStore((state) => state.user);
 
   const { jobs, error, isLoading, refetch } = useJobsByRole(filters);
