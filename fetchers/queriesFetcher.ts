@@ -1,8 +1,8 @@
 import { useAuthStore } from "@/src/lib/store/authStore";
 import type { QueriesContext } from "./queriesContext";
 
-const baseUrl = "http://192.168.1.83:5000"; 
-// const baseUrl = "https://cmsapi.poudelsudeep.com.np"; 
+// const baseUrl = "http://192.168.1.83:5000";
+const baseUrl = "https://cmsapi.poudelsudeep.com.np";
 
 // Function to get the current auth token
 const getAuthToken = (): string | null => {
@@ -13,7 +13,7 @@ const getAuthToken = (): string | null => {
 const handleUnauthorized = () => {
   const { logout } = useAuthStore.getState();
   logout();
-  
+
   // The auth state change will be picked up by the root layout
   // which will automatically redirect to login
 };
@@ -58,7 +58,7 @@ export async function queriesFetch<
   try {
     // Automatically inject auth token
     const token = getAuthToken();
-    console.log('Using token:', token);
+    console.log("Using token:", token);
     const requestHeaders: HeadersInit = {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -106,7 +106,7 @@ export async function queriesFetch<
           payload: "Your session has expired. Please log in again.",
         };
       }
-      
+
       try {
         error = await response.json();
       } catch (e) {

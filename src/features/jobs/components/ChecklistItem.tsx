@@ -2,7 +2,7 @@ import {
   GetJobDto,
   UpdateChecklistSowRequestDto,
 } from "@/fetchers/queriesSchemas";
-import { AppAlertDialog, Card } from "@/src/components/ui";
+import { AlertButton, AppAlertDialog, Card } from "@/src/components/ui";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import React, { useState } from "react";
@@ -38,24 +38,24 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
     isOpen: boolean;
     title: string;
     description: string;
-    actions: any[];
+    renderFooter?: (onClose: () => void) => React.ReactNode;
   }>({
     isOpen: false,
     title: "",
     description: "",
-    actions: [],
+    renderFooter: undefined,
   });
 
   const showAlert = (
     title: string,
     description: string,
-    actions: any[] = [{ text: "OK" }],
+    renderFooter?: (onClose: () => void) => React.ReactNode
   ) => {
     setAlertConfig({
       isOpen: true,
       title,
       description,
-      actions,
+      renderFooter,
     });
   };
 
@@ -95,9 +95,12 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
       showAlert(
         "Job Not Started",
         "Please start the job before uploading photos.",
+        (onClose) => <AlertButton onPress={onClose}>OK</AlertButton>
       );
       return;
     }
+
+    closeAlert();
 
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -106,6 +109,7 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
       showAlert(
         "Permission Required",
         "Camera roll permission is needed to upload photos.",
+        (onClose) => <AlertButton onPress={onClose}>OK</AlertButton>
       );
       return;
     }
@@ -130,7 +134,9 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
         }
       } catch (error) {
         console.error("Error uploading image:", error);
-        showAlert("Error", "Failed to upload image");
+        showAlert("Error", "Failed to upload image", (onClose) => (
+          <AlertButton onPress={onClose}>OK</AlertButton>
+        ));
       } finally {
         setSelectedImages([]);
       }
@@ -142,9 +148,12 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
       showAlert(
         "Job Not Started",
         "Please start the job before taking photos.",
+        (onClose) => <AlertButton onPress={onClose}>OK</AlertButton>
       );
       return;
     }
+
+    closeAlert();
 
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
@@ -152,6 +161,7 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
       showAlert(
         "Permission Required",
         "Camera permission is needed to take photos.",
+        (onClose) => <AlertButton onPress={onClose}>OK</AlertButton>
       );
       return;
     }
@@ -175,7 +185,9 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
         }
       } catch (error) {
         console.error("Error uploading photo:", error);
-        showAlert("Error", "Failed to upload photo");
+        showAlert("Error", "Failed to upload photo", (onClose) => (
+          <AlertButton onPress={onClose}>OK</AlertButton>
+        ));
       } finally {
         setSelectedImages([]);
       }
@@ -183,10 +195,12 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
   };
 
   const handleChangeStatus = async (
-    newStatus: UpdateChecklistSowRequestDto["status"],
+    newStatus: UpdateChecklistSowRequestDto["status"]
   ) => {
     if (jobStatus === "scheduled" && newStatus !== "Pending") {
-      showAlert("Job Not Started", "Please start the job first.");
+      showAlert("Job Not Started", "Please start the job first.", (onClose) => (
+        <AlertButton onPress={onClose}>OK</AlertButton>
+      ));
       return;
     }
 
@@ -211,58 +225,85 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
       { label: "Cancelled", value: "Cancelled" },
     ];
 
-    showAlert("Update Status", "Select a new status for this checklist item", [
-      ...options.map((option) => {
-        const style = getStatusColor(option.value);
-        return {
-          render: (onClose: () => void) => (
-            <TouchableOpacity
-              onPress={() => {
-                handleChangeStatus(option.value);
-                onClose();
-              }}
-              style={{
-                backgroundColor: style.bgColor,
-                paddingVertical: 12,
-                paddingHorizontal: 16,
-                borderRadius: 8,
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                marginBottom: 8,
-                width: "100%",
-              }}
-              activeOpacity={0.8}
-            >
-              <Ionicons
-                name={style.icon as any}
-                size={18}
-                color={style.textColor}
-                style={{ marginRight: 8 }}
-              />
-              <Text
-                style={{
-                  color: style.textColor,
-                  fontSize: 16,
-                  fontWeight: "600",
+    showAlert(
+      "Update Status",
+      "Select a new status for this checklist item",
+      (onClose) => (
+        <>
+          {options.map((option) => {
+            const style = getStatusColor(option.value);
+            return (
+              <TouchableOpacity
+                key={option.value}
+                onPress={() => {
+                  handleChangeStatus(option.value);
+                  onClose();
                 }}
+                style={{
+                  backgroundColor: style.bgColor,
+                  paddingVertical: 12,
+                  paddingHorizontal: 16,
+                  borderRadius: 8,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: 8,
+                  width: "100%",
+                }}
+                activeOpacity={0.8}
               >
-                {option.label}
-              </Text>
-            </TouchableOpacity>
-          ),
-        };
-      }),
-      { text: "Cancel", style: "cancel" },
-    ]);
+                <Ionicons
+                  name={style.icon as any}
+                  size={18}
+                  color={style.textColor}
+                  style={{ marginRight: 8 }}
+                />
+                <Text
+                  style={{
+                    color: style.textColor,
+                    fontSize: 16,
+                    fontWeight: "600",
+                  }}
+                >
+                  {option.label}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+          <AlertButton variant="ghost" onPress={onClose}>
+            Cancel
+          </AlertButton>
+        </>
+      )
+    );
   };
 
   const showPhotoOptions = () => {
-    showAlert("Add Photo", "Choose an option", [
-      { text: "Take Photo", onPress: handleTakePhoto },
-      { text: "Choose from Library", onPress: handlePickImage },
-      { text: "Cancel", style: "cancel" },
-    ]);
+    showAlert("Add Photo", "Choose an option", (onClose) => (
+      <>
+        <AlertButton
+          onPress={() => {
+            onClose();
+            handleTakePhoto();
+          }}
+          autoClose={false}
+        >
+          Take Photo
+        </AlertButton>
+        <AlertButton
+          onPress={() => {
+            onClose();
+            handlePickImage();
+          }}
+          autoClose={false}
+        >
+          Choose from Library
+        </AlertButton>
+        <AlertButton variant="ghost" onPress={onClose}>
+          Cancel
+        </AlertButton>
+      </>
+    ));
   };
 
   return (
@@ -334,7 +375,7 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
                 <TouchableOpacity
                   onPress={() =>
                     setSelectedImages(
-                      selectedImages.filter((_, i) => i !== idx),
+                      selectedImages.filter((_, i) => i !== idx)
                     )
                   }
                   style={styles.removeBtn}
@@ -398,7 +439,7 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
         onClose={closeAlert}
         title={alertConfig.title}
         description={alertConfig.description}
-        actions={alertConfig.actions}
+        renderFooter={alertConfig.renderFooter}
       />
     </Card>
   );
