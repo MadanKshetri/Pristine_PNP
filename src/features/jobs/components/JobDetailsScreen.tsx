@@ -209,7 +209,6 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
                 activeOpacity={0.7}
               >
                 <Ionicons name="arrow-back" size={20} color="#000000" />
-                <Text style={styles.backBtnText}>Back</Text>
               </TouchableOpacity>
 
               {/* QR Code Button for Managers */}

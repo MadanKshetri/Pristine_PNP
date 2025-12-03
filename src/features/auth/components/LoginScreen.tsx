@@ -1,79 +1,106 @@
-import { useAuthControllerManagerLogin, useAuthControllerStaffLogin } from '@/fetchers/queriesComponents';
-import { Button, Input } from '@/src/components/ui';
-import type { UserRole } from '@/src/lib/store/authStore';
-import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import {
+  useAuthControllerManagerLogin,
+  useAuthControllerStaffLogin,
+} from "@/fetchers/queriesComponents";
+import { Button, Input } from "@/src/components/ui";
+import type { UserRole } from "@/src/lib/store/authStore";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export const LoginScreen = () => {
   const router = useRouter();
-  const {mutateAsync: staffLogin, isPending: isStaffLoginPending} = useAuthControllerStaffLogin({});
-  const {mutateAsync: managerLogin , isPending: isManagerLoginPending} = useAuthControllerManagerLogin({});
-  
-  const [email, setEmail] = useState('');
-  const [selectedRole, setSelectedRole] = useState<UserRole>('general');
+  const { mutateAsync: staffLogin, isPending: isStaffLoginPending } =
+    useAuthControllerStaffLogin({});
+  const { mutateAsync: managerLogin, isPending: isManagerLoginPending } =
+    useAuthControllerManagerLogin({});
+
+  const [email, setEmail] = useState("");
+  const [selectedRole, setSelectedRole] = useState<UserRole>("general");
 
   const handleLogin = async () => {
     if (!email.trim()) {
-      Alert.alert('Error', 'Please enter your email');
+      Alert.alert("Error", "Please enter your email");
       return;
     }
 
-    if( selectedRole === 'general') {
-      await staffLogin({ body: { email } }, {
-        onSuccess:  () => {
-          router.push({
-            pathname: '/(auth)/otp-verify',
-            params: { email, role: selectedRole },
-          });
-        },
-        onError: (error) => {
-          Alert.alert('Error', (error as any)?.message || 'Failed to send OTP');
-        }
-      });
+    try {
+      if (selectedRole === "general") {
+        await staffLogin(
+          { body: { email } },
+          {
+            onSuccess: () => {
+              router.push({
+                pathname: "/(auth)/otp-verify",
+                params: { email, role: selectedRole },
+              });
+            },
+            onError: (error) => {
+              Alert.alert(
+                "Error",
+                (error as any)?.message || "Failed to send OTP"
+              );
+            },
+          }
+        );
+      }
+      if (selectedRole === "manager") {
+        await managerLogin(
+          { body: { email } },
+          {
+            onSuccess: () => {
+              router.push({
+                pathname: "/(auth)/otp-verify",
+                params: { email, role: selectedRole },
+              });
+            },
+            onError: (error) => {
+              Alert.alert(
+                "Error",
+                (error as any)?.message || "Failed to send OTP"
+              );
+            },
+          }
+        );
+      }
+    } catch (error) {
+      console.log("Login error caught:", error);
     }
-    if( selectedRole === 'manager') {
-      await managerLogin({ body: { email } }, {
-        onSuccess:  () => {
-          router.push({
-            pathname: '/(auth)/otp-verify',
-            params: { email, role: selectedRole },
-          });
-        },
-        onError: (error) => {
-          Alert.alert('Error', (error as any)?.message || 'Failed to send OTP');
-        }
-      });
-    }
-
-
   };
 
   const roleOptions: { value: UserRole; label: string; icon: string }[] = [
     {
-      value: 'general',
-      label: 'Cleaner',
-      icon: 'person',
+      value: "general",
+      label: "Cleaner",
+      icon: "person",
     },
     {
-      value: 'manager',
-      label: 'Manager',
-      icon: 'briefcase',
+      value: "manager",
+      label: "Manager",
+      icon: "briefcase",
     },
   ];
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      className="flex-1 bg-white"
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1, padding: 24, paddingBottom: 40 }}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+      bounces={false}
     >
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1, padding: 24, paddingBottom: 40 }}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-        bounces={false}
+      <KeyboardAvoidingView
+        behavior="padding"
+        className="flex-1 bg-transparent"
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
       >
         <View className="flex-1 justify-center py-8">
           {/* Header */}
@@ -103,12 +130,12 @@ export const LoginScreen = () => {
                     onPress={() => setSelectedRole(role.value)}
                     className={`flex-1 items-center py-8 rounded-3xl border-2 ${
                       isSelected
-                        ? 'border-blue-500 bg-blue-500 shadow-xl'
-                        : 'border-gray-200 bg-white shadow-md'
+                        ? "border-blue-500 bg-blue-500 shadow-xl"
+                        : "border-gray-200 bg-white shadow-md"
                     }`}
                     activeOpacity={0.7}
                     style={{
-                      shadowColor: isSelected ? '#3B82F6' : '#000',
+                      shadowColor: isSelected ? "#3B82F6" : "#000",
                       shadowOffset: { width: 0, height: 4 },
                       shadowOpacity: isSelected ? 0.3 : 0.1,
                       shadowRadius: 8,
@@ -118,26 +145,30 @@ export const LoginScreen = () => {
                     <View
                       className={`w-20 h-20 rounded-full items-center justify-center mb-4`}
                       style={{
-                        backgroundColor: isSelected ? '#FFFFFF' : '#EFF6FF',
+                        backgroundColor: isSelected ? "#FFFFFF" : "#EFF6FF",
                       }}
                     >
                       <Ionicons
                         name={role.icon as any}
                         size={40}
-                        color={isSelected ? '#3B82F6' : '#9CA3AF'}
+                        color={isSelected ? "#3B82F6" : "#9CA3AF"}
                       />
                     </View>
                     <Text
                       className={`text-lg font-bold`}
                       style={{
-                        color: isSelected ? '#FFFFFF' : '#111827',
+                        color: isSelected ? "#FFFFFF" : "#111827",
                       }}
                     >
                       {role.label}
                     </Text>
                     {isSelected && (
                       <View className="absolute top-3 right-3">
-                        <Ionicons name="checkmark-circle" size={24} color="#FFFFFF" />
+                        <Ionicons
+                          name="checkmark-circle"
+                          size={24}
+                          color="#FFFFFF"
+                        />
                       </View>
                     )}
                   </TouchableOpacity>
@@ -163,17 +194,16 @@ export const LoginScreen = () => {
           {/* Login Button */}
           <Button
             onPress={handleLogin}
-            isLoading={ isStaffLoginPending || isManagerLoginPending }
-            disabled={ isStaffLoginPending || isManagerLoginPending }
+            isLoading={isStaffLoginPending || isManagerLoginPending}
+            disabled={isStaffLoginPending || isManagerLoginPending}
             fullWidth
             size="lg"
             className="shadow-xl mb-6"
           >
             <Text className="text-white text-lg font-bold">Continue</Text>
           </Button>
-
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 };

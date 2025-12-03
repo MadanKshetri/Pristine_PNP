@@ -1,6 +1,7 @@
 // useJobsByRole.ts
 import {
   ManagerJobControllerJobsQueryParams,
+  StaffJobControllerJobsQueryParams,
   useManagerJobControllerJobs,
   useStaffJobControllerJobs,
 } from "@/fetchers/queriesComponents";
@@ -24,7 +25,9 @@ type JobsHookResult = {
 /**
  * A custom hook to fetch jobs based on the user's role and apply filters.
  */
-export const useJobsByRole = (filters?: CommonQueryParams): JobsHookResult => {
+export const useJobsByRole = (
+  filters?: StaffJobControllerJobsQueryParams
+): JobsHookResult => {
   const user = useAuthStore((state) => state.user);
   const isManager = !!user?.customerId && user?.role === "manager"; // Assuming managers have customerId
   const isCleaner = user?.role === "general";
@@ -34,7 +37,7 @@ export const useJobsByRole = (filters?: CommonQueryParams): JobsHookResult => {
     "isManager:",
     isManager,
     "isCleaner:",
-    isCleaner,
+    isCleaner
   );
 
   console.log({
@@ -58,7 +61,7 @@ export const useJobsByRole = (filters?: CommonQueryParams): JobsHookResult => {
         ...(filters?.status && { status: filters.status }),
       },
     },
-    { enabled: isManager },
+    { enabled: isManager }
   );
 
   // --- 2. Fetch for Cleaner (using staffId/id) ---
@@ -74,7 +77,7 @@ export const useJobsByRole = (filters?: CommonQueryParams): JobsHookResult => {
         ...filters,
       },
     },
-    { enabled: isCleaner },
+    { enabled: isCleaner }
   );
 
   // --- Unified Results ---

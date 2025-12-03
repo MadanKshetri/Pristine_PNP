@@ -1,4 +1,7 @@
-import { useStaffControllerGetSummary } from "@/fetchers/queriesComponents";
+import {
+  useManagerControllerGetSummary,
+  useStaffControllerGetSummary,
+} from "@/fetchers/queriesComponents";
 import { HomeScreen } from "@/src/features/home";
 import { useJobsByRole } from "@/src/features/jobs/hooks/useJobsByRole";
 import { useAuthStore } from "@/src/lib/store/authStore";
@@ -7,6 +10,7 @@ import { useCallback } from "react";
 export default function HomeTab() {
   const user = useAuthStore((state) => state.user);
   const isStaff = user?.role === "general";
+  const isManager = user?.role === "manager";
 
   // 1. Stats Query
   const {
@@ -15,6 +19,13 @@ export default function HomeTab() {
     isLoading: isLoadingSummary,
     isRefetching: isRefetchingSummary,
   } = useStaffControllerGetSummary({}, { enabled: isStaff });
+
+  const {
+    data: managerSummaryData,
+    refetch: refetchManagerSummary,
+    isLoading: isLoadingManagerSummary,
+    isRefetching: isRefetchingManagerSummary,
+  } = useManagerControllerGetSummary({}, { enabled: isManager });
 
   // 2. In Progress Jobs Query
   const {
@@ -41,7 +52,8 @@ export default function HomeTab() {
   });
 
   const handleRefresh = useCallback(() => {
-    refetchSummary();
+    isStaff && refetchSummary();
+    isManager && refetchManagerSummary();
     refetchInProgress();
     refetchScheduled();
   }, [refetchSummary, refetchInProgress, refetchScheduled]);
@@ -58,7 +70,7 @@ export default function HomeTab() {
 
   return (
     <HomeScreen
-      summary={summaryData?.data}
+      summary={isStaff ? summaryData?.data : managerSummaryData?.data}
       inProgressJobs={inProgressJobs}
       scheduledJobs={scheduledJobs}
       isLoading={isLoading}

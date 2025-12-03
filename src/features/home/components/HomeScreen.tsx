@@ -76,7 +76,7 @@ export const HomeScreen = ({
     },
     {
       id: 4,
-      title: "In Progress",
+      title: "Scheduled",
       value: (summary?.upcomming || 0).toString(), // Using upcomming for In Progress based on elimination
       icon: CalendarIcon,
       gradient: ["#8b5cf6", "#7c3aed"] as const,

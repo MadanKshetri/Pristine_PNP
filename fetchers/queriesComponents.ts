@@ -2446,7 +2446,10 @@ export const useAdminSiteControllerSite = <TData = Schemas.GetSiteResponseDto,>(
   });
 };
 
-export type AdminSiteControllerUpdateQueryParams = {
+export type AdminSiteControllerUpdatePathParams = {
+  /**
+   * @format uuid
+   */
   id: string;
 };
 
@@ -2454,7 +2457,7 @@ export type AdminSiteControllerUpdateError = Fetcher.ErrorWrapper<undefined>;
 
 export type AdminSiteControllerUpdateVariables = {
   body?: Schemas.UpdateSiteRequestDto;
-  queryParams: AdminSiteControllerUpdateQueryParams;
+  pathParams: AdminSiteControllerUpdatePathParams;
 } & QueriesContext["fetcherOptions"];
 
 export const fetchAdminSiteControllerUpdate = (
@@ -2466,8 +2469,8 @@ export const fetchAdminSiteControllerUpdate = (
     AdminSiteControllerUpdateError,
     Schemas.UpdateSiteRequestDto,
     {},
-    AdminSiteControllerUpdateQueryParams,
-    {}
+    {},
+    AdminSiteControllerUpdatePathParams
   >({ url: "/admin/site/{id}", method: "patch", ...variables, signal });
 
 export const useAdminSiteControllerUpdate = (
@@ -2502,6 +2505,14 @@ export type AdminJobControllerJobsQueryParams = {
    */
   page?: number;
   search?: string;
+  /**
+   * @format date-time
+   */
+  dateFrom?: string;
+  /**
+   * @format date-time
+   */
+  dateTo?: string;
   /**
    * @format uuid
    */
@@ -2655,6 +2666,130 @@ export const useAdminJobControllerCreateJob = (
     mutationFn: (variables: AdminJobControllerCreateJobVariables) =>
       fetchAdminJobControllerCreateJob(deepMerge(fetcherOptions, variables)),
     ...options,
+  });
+};
+
+export type AdminJobControllerGetJobSummaryQueryParams = {
+  /**
+   * @format date-time
+   */
+  dateFrom?: string;
+  /**
+   * @format date-time
+   */
+  dateTo?: string;
+};
+
+export type AdminJobControllerGetJobSummaryError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AdminJobControllerGetJobSummaryVariables = {
+  queryParams?: AdminJobControllerGetJobSummaryQueryParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminJobControllerGetJobSummary = (
+  variables: AdminJobControllerGetJobSummaryVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.AdminGetJobSummaryResponseDto,
+    AdminJobControllerGetJobSummaryError,
+    undefined,
+    {},
+    AdminJobControllerGetJobSummaryQueryParams,
+    {}
+  >({ url: "/admin/job/summary", method: "get", ...variables, signal });
+
+export function adminJobControllerGetJobSummaryQuery(
+  variables: AdminJobControllerGetJobSummaryVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (
+    options: QueryFnOptions,
+  ) => Promise<Schemas.AdminGetJobSummaryResponseDto>;
+};
+
+export function adminJobControllerGetJobSummaryQuery(
+  variables: AdminJobControllerGetJobSummaryVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((
+        options: QueryFnOptions,
+      ) => Promise<Schemas.AdminGetJobSummaryResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function adminJobControllerGetJobSummaryQuery(
+  variables: AdminJobControllerGetJobSummaryVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/admin/job/summary",
+      operationId: "adminJobControllerGetJobSummary",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchAdminJobControllerGetJobSummary(variables, signal),
+  };
+}
+
+export const useSuspenseAdminJobControllerGetJobSummary = <
+  TData = Schemas.AdminGetJobSummaryResponseDto,
+>(
+  variables: AdminJobControllerGetJobSummaryVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.AdminGetJobSummaryResponseDto,
+      AdminJobControllerGetJobSummaryError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.AdminGetJobSummaryResponseDto,
+    AdminJobControllerGetJobSummaryError,
+    TData
+  >({
+    ...adminJobControllerGetJobSummaryQuery(
+      deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useAdminJobControllerGetJobSummary = <
+  TData = Schemas.AdminGetJobSummaryResponseDto,
+>(
+  variables: AdminJobControllerGetJobSummaryVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.AdminGetJobSummaryResponseDto,
+      AdminJobControllerGetJobSummaryError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.AdminGetJobSummaryResponseDto,
+    AdminJobControllerGetJobSummaryError,
+    TData
+  >({
+    ...adminJobControllerGetJobSummaryQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
   });
 };
 
@@ -2937,6 +3072,14 @@ export type ManagerJobControllerJobsQueryParams = {
    */
   page?: number;
   search?: string;
+  /**
+   * @format date-time
+   */
+  dateFrom?: string;
+  /**
+   * @format date-time
+   */
+  dateTo?: string;
   /**
    * @format uuid
    */
@@ -3363,6 +3506,128 @@ export const useManagerJobControllerJob = <TData = Schemas.GetJobResponseDto,>(
   });
 };
 
+export type ManagerControllerGetSummaryError = Fetcher.ErrorWrapper<{
+  status: 401;
+  payload: {
+    /**
+     * @example 401
+     */
+    statusCode: number;
+    message: string;
+    /**
+     * @example 401
+     */
+    error: 401;
+  };
+}>;
+
+export type ManagerControllerGetSummaryVariables =
+  QueriesContext["fetcherOptions"];
+
+export const fetchManagerControllerGetSummary = (
+  variables: ManagerControllerGetSummaryVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.DashboardSummaryResponseDto,
+    ManagerControllerGetSummaryError,
+    undefined,
+    {},
+    {},
+    {}
+  >({ url: "/manager/summary", method: "get", ...variables, signal });
+
+export function managerControllerGetSummaryQuery(
+  variables: ManagerControllerGetSummaryVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (
+    options: QueryFnOptions,
+  ) => Promise<Schemas.DashboardSummaryResponseDto>;
+};
+
+export function managerControllerGetSummaryQuery(
+  variables: ManagerControllerGetSummaryVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((
+        options: QueryFnOptions,
+      ) => Promise<Schemas.DashboardSummaryResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function managerControllerGetSummaryQuery(
+  variables: ManagerControllerGetSummaryVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/manager/summary",
+      operationId: "managerControllerGetSummary",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchManagerControllerGetSummary(variables, signal),
+  };
+}
+
+export const useSuspenseManagerControllerGetSummary = <
+  TData = Schemas.DashboardSummaryResponseDto,
+>(
+  variables: ManagerControllerGetSummaryVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.DashboardSummaryResponseDto,
+      ManagerControllerGetSummaryError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.DashboardSummaryResponseDto,
+    ManagerControllerGetSummaryError,
+    TData
+  >({
+    ...managerControllerGetSummaryQuery(deepMerge(fetcherOptions, variables)),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useManagerControllerGetSummary = <
+  TData = Schemas.DashboardSummaryResponseDto,
+>(
+  variables: ManagerControllerGetSummaryVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.DashboardSummaryResponseDto,
+      ManagerControllerGetSummaryError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.DashboardSummaryResponseDto,
+    ManagerControllerGetSummaryError,
+    TData
+  >({
+    ...managerControllerGetSummaryQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
 export type StaffControllerGetSummaryError = Fetcher.ErrorWrapper<{
   status: 401;
   payload: {
@@ -3495,6 +3760,14 @@ export type StaffJobControllerJobsQueryParams = {
    */
   page?: number;
   search?: string;
+  /**
+   * @format date-time
+   */
+  dateFrom?: string;
+  /**
+   * @format date-time
+   */
+  dateTo?: string;
   /**
    * @format uuid
    */
@@ -3945,6 +4218,13 @@ export type QueryOperation =
       variables: AdminJobControllerJobsVariables | reactQuery.SkipToken;
     }
   | {
+      path: "/admin/job/summary";
+      operationId: "adminJobControllerGetJobSummary";
+      variables:
+        | AdminJobControllerGetJobSummaryVariables
+        | reactQuery.SkipToken;
+    }
+  | {
       path: "/admin/job/{id}";
       operationId: "adminJobControllerJob";
       variables: AdminJobControllerJobVariables | reactQuery.SkipToken;
@@ -3963,6 +4243,11 @@ export type QueryOperation =
       path: "/manager/job/{id}";
       operationId: "managerJobControllerJob";
       variables: ManagerJobControllerJobVariables | reactQuery.SkipToken;
+    }
+  | {
+      path: "/manager/summary";
+      operationId: "managerControllerGetSummary";
+      variables: ManagerControllerGetSummaryVariables | reactQuery.SkipToken;
     }
   | {
       path: "/staff/summary";

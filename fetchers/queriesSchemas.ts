@@ -441,6 +441,16 @@ export type ListJobResponseDto = {
   pagination: PaginationResponseDTO;
 };
 
+export type AdminGetJobSummaryDto = {
+  status: "scheduled" | "In Progress" | "Completed" | "Cancelled";
+  count: number;
+};
+
+export type AdminGetJobSummaryResponseDto = {
+  message: string;
+  data: AdminGetJobSummaryDto[];
+};
+
 export type UpdateChecklistSowRequestDto = {
   status?: "Pending" | "Ongoing" | "Completed" | "Cancelled";
   remarks?: string;

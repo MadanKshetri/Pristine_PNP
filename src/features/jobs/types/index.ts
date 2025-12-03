@@ -15,6 +15,8 @@ export interface JobFilters {
   search?: string;
   page?: number;
   take?: number;
+  startDate?: string;
+  endDate?: string;
 }
 
 // Location data for starting a job
