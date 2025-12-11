@@ -83,7 +83,6 @@ export default function JobsScreen() {
       refreshControl={
         <RefreshControl refreshing={isLoading} onRefresh={refetch} />
       }
-      contentContainerStyle={{ paddingBottom: 80 }}
     >
       <View style={styles.container}>
         <ScreenHeader title="Schedule" showBackButton={true} />
@@ -107,8 +106,6 @@ export default function JobsScreen() {
           weekEnd={currentWeekEnd}
           totalShifts={weeklyJobs.length}
         />
-
-        <View style={{ height: 100 }} />
       </View>
     </ScrollView>
   );
