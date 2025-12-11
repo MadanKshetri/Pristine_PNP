@@ -1,15 +1,18 @@
 import {
-  useStaffJobControllerCompleteJob,
   useStaffJobControllerStartJob,
   useStaffJobControllerUpdateChecklistSow,
+  useStaffJobControllerUpdateJob,
 } from "@/fetchers/queriesComponents";
-import { UpdateChecklistSowRequestDto } from "@/fetchers/queriesSchemas";
+import {
+  StaffUpdateJobStatusRequestDto,
+  UpdateChecklistSowRequestDto,
+} from "@/fetchers/queriesSchemas";
 import * as Location from "expo-location";
 import { Alert } from "react-native";
 
 export const useJobActions = () => {
   const startJobMutation = useStaffJobControllerStartJob();
-  const completeJobMutation = useStaffJobControllerCompleteJob();
+  const updateJobStatusMutation = useStaffJobControllerUpdateJob();
   const updateChecklistMutation = useStaffJobControllerUpdateChecklistSow();
 
   const startJob = async (jobId: string, token: string) => {
@@ -47,15 +50,21 @@ export const useJobActions = () => {
     }
   };
 
-  const completeJob = async (jobId: string) => {
+  const updateJobStatus = async (
+    jobId: string,
+    status: StaffUpdateJobStatusRequestDto["status"]
+  ) => {
     try {
-      const result = await completeJobMutation.mutateAsync({
+      const result = await updateJobStatusMutation.mutateAsync({
+        body: {
+          status,
+        },
         pathParams: { id: jobId },
       });
-      Alert.alert("Success", "Job completed successfully!");
+      Alert.alert("Success", "Job status updated successfully!");
       return { success: true, data: result };
     } catch (error: any) {
-      Alert.alert("Error", error?.message || "Failed to complete job");
+      Alert.alert("Error", error?.message || "Failed to update job status");
       return { success: false, error };
     }
   };
@@ -105,10 +114,10 @@ export const useJobActions = () => {
 
   return {
     startJob,
-    completeJob,
+    updateJobStatus,
     updateChecklist,
     isStartingJob: startJobMutation.isPending,
-    isCompletingJob: completeJobMutation.isPending,
+    isUpdatingJobStatus: updateJobStatusMutation.isPending,
     isUpdatingChecklist: updateChecklistMutation.isPending,
   };
 };

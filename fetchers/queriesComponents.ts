@@ -1847,6 +1847,54 @@ export const useAdminSowControllerUpdate = (
   });
 };
 
+export type AdminSowControllerDeletePathParams = {
+  /**
+   * @format uuid
+   */
+  id: string;
+};
+
+export type AdminSowControllerDeleteError = Fetcher.ErrorWrapper<undefined>;
+
+export type AdminSowControllerDeleteVariables = {
+  pathParams: AdminSowControllerDeletePathParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminSowControllerDelete = (
+  variables: AdminSowControllerDeleteVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminSowControllerDeleteError,
+    undefined,
+    {},
+    {},
+    AdminSowControllerDeletePathParams
+  >({ url: "/admin/sow/{id}", method: "delete", ...variables, signal });
+
+export const useAdminSowControllerDelete = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.MessageResponseWithIdDataDto,
+      AdminSowControllerDeleteError,
+      AdminSowControllerDeleteVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminSowControllerDeleteError,
+    AdminSowControllerDeleteVariables
+  >({
+    mutationFn: (variables: AdminSowControllerDeleteVariables) =>
+      fetchAdminSowControllerDelete(deepMerge(fetcherOptions, variables)),
+    ...options,
+  });
+};
+
 export type AdminSowGroupControllerSowsQueryParams = {
   /**
    * @minimum 0
@@ -2172,6 +2220,55 @@ export const useAdminSowGroupControllerUpdate = (
   });
 };
 
+export type AdminSowGroupControllerDeletePathParams = {
+  /**
+   * @format uuid
+   */
+  id: string;
+};
+
+export type AdminSowGroupControllerDeleteError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AdminSowGroupControllerDeleteVariables = {
+  pathParams: AdminSowGroupControllerDeletePathParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminSowGroupControllerDelete = (
+  variables: AdminSowGroupControllerDeleteVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminSowGroupControllerDeleteError,
+    undefined,
+    {},
+    {},
+    AdminSowGroupControllerDeletePathParams
+  >({ url: "/admin/sowGroup/{id}", method: "delete", ...variables, signal });
+
+export const useAdminSowGroupControllerDelete = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.MessageResponseWithIdDataDto,
+      AdminSowGroupControllerDeleteError,
+      AdminSowGroupControllerDeleteVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminSowGroupControllerDeleteError,
+    AdminSowGroupControllerDeleteVariables
+  >({
+    mutationFn: (variables: AdminSowGroupControllerDeleteVariables) =>
+      fetchAdminSowGroupControllerDelete(deepMerge(fetcherOptions, variables)),
+    ...options,
+  });
+};
+
 export type AdminSiteControllerSitesQueryParams = {
   /**
    * @minimum 0
@@ -2185,7 +2282,7 @@ export type AdminSiteControllerSitesQueryParams = {
   /**
    * @format uuid
    */
-  customerId?: string;
+  clientId?: string;
 };
 
 export type AdminSiteControllerSitesError = Fetcher.ErrorWrapper<undefined>;
@@ -2495,6 +2592,54 @@ export const useAdminSiteControllerUpdate = (
   });
 };
 
+export type AdminSiteControllerDeletePathParams = {
+  /**
+   * @format uuid
+   */
+  id: string;
+};
+
+export type AdminSiteControllerDeleteError = Fetcher.ErrorWrapper<undefined>;
+
+export type AdminSiteControllerDeleteVariables = {
+  pathParams: AdminSiteControllerDeletePathParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminSiteControllerDelete = (
+  variables: AdminSiteControllerDeleteVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminSiteControllerDeleteError,
+    undefined,
+    {},
+    {},
+    AdminSiteControllerDeletePathParams
+  >({ url: "/admin/site/{id}", method: "delete", ...variables, signal });
+
+export const useAdminSiteControllerDelete = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.MessageResponseWithIdDataDto,
+      AdminSiteControllerDeleteError,
+      AdminSiteControllerDeleteVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminSiteControllerDeleteError,
+    AdminSiteControllerDeleteVariables
+  >({
+    mutationFn: (variables: AdminSiteControllerDeleteVariables) =>
+      fetchAdminSiteControllerDelete(deepMerge(fetcherOptions, variables)),
+    ...options,
+  });
+};
+
 export type AdminJobControllerJobsQueryParams = {
   /**
    * @minimum 0
@@ -2521,7 +2666,7 @@ export type AdminJobControllerJobsQueryParams = {
    * @format uuid
    */
   customerId?: string;
-  status?: "scheduled" | "In Progress" | "Completed" | "Cancelled";
+  status?: string;
 };
 
 export type AdminJobControllerJobsError = Fetcher.ErrorWrapper<undefined>;
@@ -3021,43 +3166,51 @@ export const useAdminJobControllerJob = <TData = Schemas.GetJobResponseDto,>(
   });
 };
 
-export type AdminJobControllerStartJobError = Fetcher.ErrorWrapper<undefined>;
+export type AdminJobControllerUpdatePathParams = {
+  /**
+   * @format uuid
+   */
+  id: string;
+};
 
-export type AdminJobControllerStartJobVariables = {
-  body: Schemas.StartJobRequestDto;
+export type AdminJobControllerUpdateError = Fetcher.ErrorWrapper<undefined>;
+
+export type AdminJobControllerUpdateVariables = {
+  body?: Schemas.UpdateJobRequestDto;
+  pathParams: AdminJobControllerUpdatePathParams;
 } & QueriesContext["fetcherOptions"];
 
-export const fetchAdminJobControllerStartJob = (
-  variables: AdminJobControllerStartJobVariables,
+export const fetchAdminJobControllerUpdate = (
+  variables: AdminJobControllerUpdateVariables,
   signal?: AbortSignal,
 ) =>
   queriesFetch<
-    Schemas.MessageResponseWithIdDataDto,
-    AdminJobControllerStartJobError,
-    Schemas.StartJobRequestDto,
+    undefined,
+    AdminJobControllerUpdateError,
+    Schemas.UpdateJobRequestDto,
     {},
     {},
-    {}
-  >({ url: "/admin/job/start", method: "post", ...variables, signal });
+    AdminJobControllerUpdatePathParams
+  >({ url: "/admin/job/{id}", method: "patch", ...variables, signal });
 
-export const useAdminJobControllerStartJob = (
+export const useAdminJobControllerUpdate = (
   options?: Omit<
     reactQuery.UseMutationOptions<
-      Schemas.MessageResponseWithIdDataDto,
-      AdminJobControllerStartJobError,
-      AdminJobControllerStartJobVariables
+      undefined,
+      AdminJobControllerUpdateError,
+      AdminJobControllerUpdateVariables
     >,
     "mutationFn"
   >,
 ) => {
   const { fetcherOptions } = useQueriesContext();
   return reactQuery.useMutation<
-    Schemas.MessageResponseWithIdDataDto,
-    AdminJobControllerStartJobError,
-    AdminJobControllerStartJobVariables
+    undefined,
+    AdminJobControllerUpdateError,
+    AdminJobControllerUpdateVariables
   >({
-    mutationFn: (variables: AdminJobControllerStartJobVariables) =>
-      fetchAdminJobControllerStartJob(deepMerge(fetcherOptions, variables)),
+    mutationFn: (variables: AdminJobControllerUpdateVariables) =>
+      fetchAdminJobControllerUpdate(deepMerge(fetcherOptions, variables)),
     ...options,
   });
 };
@@ -3088,7 +3241,7 @@ export type ManagerJobControllerJobsQueryParams = {
    * @format uuid
    */
   customerId?: string;
-  status?: "scheduled" | "In Progress" | "Completed" | "Cancelled";
+  status?: string;
 };
 
 export type ManagerJobControllerJobsError = Fetcher.ErrorWrapper<
@@ -3772,7 +3925,7 @@ export type StaffJobControllerJobsQueryParams = {
    * @format uuid
    */
   customerId?: string;
-  status?: "scheduled" | "In Progress" | "Completed" | "Cancelled";
+  status?: "Scheduled" | "In Progress" | "Completed" | "Cancelled";
 };
 
 export type StaffJobControllerJobsError = Fetcher.ErrorWrapper<undefined>;
@@ -4047,6 +4200,55 @@ export const useStaffJobControllerJob = <TData = Schemas.GetJobResponseDto,>(
   });
 };
 
+export type StaffJobControllerUpdateJobPathParams = {
+  /**
+   * @format uuid
+   */
+  id: string;
+};
+
+export type StaffJobControllerUpdateJobError = Fetcher.ErrorWrapper<undefined>;
+
+export type StaffJobControllerUpdateJobVariables = {
+  body: Schemas.StaffUpdateJobStatusRequestDto;
+  pathParams: StaffJobControllerUpdateJobPathParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchStaffJobControllerUpdateJob = (
+  variables: StaffJobControllerUpdateJobVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.MessageResponseWithIdDataDto,
+    StaffJobControllerUpdateJobError,
+    Schemas.StaffUpdateJobStatusRequestDto,
+    {},
+    {},
+    StaffJobControllerUpdateJobPathParams
+  >({ url: "/staff/job/{id}", method: "patch", ...variables, signal });
+
+export const useStaffJobControllerUpdateJob = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.MessageResponseWithIdDataDto,
+      StaffJobControllerUpdateJobError,
+      StaffJobControllerUpdateJobVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.MessageResponseWithIdDataDto,
+    StaffJobControllerUpdateJobError,
+    StaffJobControllerUpdateJobVariables
+  >({
+    mutationFn: (variables: StaffJobControllerUpdateJobVariables) =>
+      fetchStaffJobControllerUpdateJob(deepMerge(fetcherOptions, variables)),
+    ...options,
+  });
+};
+
 export type StaffJobControllerStartJobError = Fetcher.ErrorWrapper<undefined>;
 
 export type StaffJobControllerStartJobVariables = {
@@ -4084,55 +4286,6 @@ export const useStaffJobControllerStartJob = (
   >({
     mutationFn: (variables: StaffJobControllerStartJobVariables) =>
       fetchStaffJobControllerStartJob(deepMerge(fetcherOptions, variables)),
-    ...options,
-  });
-};
-
-export type StaffJobControllerCompleteJobPathParams = {
-  /**
-   * @format uuid
-   */
-  id: string;
-};
-
-export type StaffJobControllerCompleteJobError =
-  Fetcher.ErrorWrapper<undefined>;
-
-export type StaffJobControllerCompleteJobVariables = {
-  pathParams: StaffJobControllerCompleteJobPathParams;
-} & QueriesContext["fetcherOptions"];
-
-export const fetchStaffJobControllerCompleteJob = (
-  variables: StaffJobControllerCompleteJobVariables,
-  signal?: AbortSignal,
-) =>
-  queriesFetch<
-    Schemas.MessageResponseWithIdDataDto,
-    StaffJobControllerCompleteJobError,
-    undefined,
-    {},
-    {},
-    StaffJobControllerCompleteJobPathParams
-  >({ url: "/staff/job/complete/{id}", method: "post", ...variables, signal });
-
-export const useStaffJobControllerCompleteJob = (
-  options?: Omit<
-    reactQuery.UseMutationOptions<
-      Schemas.MessageResponseWithIdDataDto,
-      StaffJobControllerCompleteJobError,
-      StaffJobControllerCompleteJobVariables
-    >,
-    "mutationFn"
-  >,
-) => {
-  const { fetcherOptions } = useQueriesContext();
-  return reactQuery.useMutation<
-    Schemas.MessageResponseWithIdDataDto,
-    StaffJobControllerCompleteJobError,
-    StaffJobControllerCompleteJobVariables
-  >({
-    mutationFn: (variables: StaffJobControllerCompleteJobVariables) =>
-      fetchStaffJobControllerCompleteJob(deepMerge(fetcherOptions, variables)),
     ...options,
   });
 };

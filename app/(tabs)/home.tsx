@@ -48,7 +48,7 @@ export default function HomeTab() {
   } = useJobsByRole({
     page: 0,
     take: 3,
-    status: JSON.stringify(["scheduled"]) as any,
+    status: JSON.stringify(["Scheduled"]) as any,
   });
 
   const handleRefresh = useCallback(() => {

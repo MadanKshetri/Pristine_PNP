@@ -32,7 +32,7 @@ export default function JobsScreen() {
 
   const filters: StaffJobControllerJobsQueryParams = useMemo(
     () => ({
-      status: JSON.stringify(["scheduled", "In Progress"]) as any,
+      status: JSON.stringify(["Scheduled", "In Progress"]) as any,
       dateFrom: format(currentWeekStart, "yyyy-MM-dd"),
       dateTo: format(currentWeekEnd, "yyyy-MM-dd"),
     }),

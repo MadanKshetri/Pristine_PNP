@@ -94,7 +94,7 @@ export type ListCustomerDto = {
   createdBy: IdNameDto;
 };
 
-export type PaginationResponseDTO = {
+export type PaginationResponseDto = {
   previousPage?: number | null;
   nextPage?: number | null;
   total: number;
@@ -104,7 +104,7 @@ export type PaginationResponseDTO = {
 export type ListCustomerResponseDto = {
   message: string;
   data: ListCustomerDto[];
-  pagination: PaginationResponseDTO;
+  pagination: PaginationResponseDto;
 };
 
 export type CreateCustomerRequestDto = {
@@ -166,7 +166,7 @@ export type ListManagerDto = {
 export type ListManagerResponseDto = {
   message: string;
   data: ListManagerDto[];
-  pagination: PaginationResponseDTO;
+  pagination: PaginationResponseDto;
 };
 
 export type ListGeneralDto = {
@@ -180,7 +180,7 @@ export type ListGeneralDto = {
 export type ListGeneralResponseDto = {
   message: string;
   data: ListGeneralDto[];
-  pagination: PaginationResponseDTO;
+  pagination: PaginationResponseDto;
 };
 
 export type GetGeneralResponseDto = {
@@ -244,7 +244,7 @@ export type ListSOWDto = {
 export type ListSOWResponseDto = {
   message: string;
   data: ListSOWDto[];
-  pagination: PaginationResponseDTO;
+  pagination: PaginationResponseDto;
 };
 
 export type GetSOWResponseDto = {
@@ -282,7 +282,7 @@ export type ListSOWGroupDto = {
 export type ListSOWGroupResponseDto = {
   message: string;
   data: ListSOWGroupDto[];
-  pagination: PaginationResponseDTO;
+  pagination: PaginationResponseDto;
 };
 
 export type GetSOWGroupSow = {
@@ -319,21 +319,20 @@ export type UpdateSowGroupRequestDto = {
   title?: string;
 };
 
-export type ListSiteLocationDto = {
-  /**
-   * @format uuid
-   */
-  id: string;
-  lineOne: string;
-  city: string;
-  state: string;
+export type LocationDto = {
+  postcode?: string | null;
+  placeId?: string | null;
+  latitude: number;
+  address: string;
+  longitude: number;
+  tolerableRadius: number;
 };
 
 export type ListSiteDto = {
   id: string;
   title: string;
   description: string | null;
-  location: ListSiteLocationDto;
+  location: LocationDto;
   customer: IdNameDto;
   createdBy: IdNameDto | null;
 };
@@ -341,29 +340,14 @@ export type ListSiteDto = {
 export type ListSiteResponseDto = {
   message: string;
   data: ListSiteDto[];
-  pagination: PaginationResponseDTO;
-};
-
-export type GetSiteLocationDto = {
-  placeId?: string;
-  lineTwo?: string | null;
-  /**
-   * @format uuid
-   */
-  id: string;
-  lineOne: string;
-  city: string;
-  state: string;
-  postcode: string;
-  latitude: number;
-  longitude: number;
+  pagination: PaginationResponseDto;
 };
 
 export type GetSiteDto = {
   id: string;
   title: string;
   description: string | null;
-  location: GetSiteLocationDto;
+  location: LocationDto;
   customer: IdNameDto;
   createdBy: IdNameDto | null;
 };
@@ -374,12 +358,10 @@ export type GetSiteResponseDto = {
 };
 
 export type CreateSiteLocationDto = {
+  postcode?: string;
   placeId?: string;
-  lineTwo?: string;
-  lineOne: string;
-  city: string;
-  state: string;
-  postcode: string;
+  tolerableRadius?: number;
+  address: string;
   latitude: number;
   longitude: number;
 };
@@ -390,17 +372,15 @@ export type CreateSiteRequestDto = {
   /**
    * @format uuid
    */
-  customerId: string;
+  clientId: string;
   location: CreateSiteLocationDto;
 };
 
 export type UpdateSiteLocationDto = {
-  placeId?: string;
-  lineTwo?: string;
-  lineOne?: string;
-  city?: string;
-  state?: string;
   postcode?: string;
+  placeId?: string;
+  tolerableRadius?: number;
+  address?: string;
   latitude?: number;
   longitude?: number;
 };
@@ -408,6 +388,8 @@ export type UpdateSiteLocationDto = {
 export type UpdateSiteRequestDto = {
   title?: string;
   description?: string;
+  cleanerIds?: string[];
+  managerIds?: string[];
   location?: UpdateSiteLocationDto;
 };
 
@@ -416,12 +398,12 @@ export type GetJobSiteDto = {
    * @format uuid
    */
   id: string;
-  address: string;
-  city: string;
+  address: LocationDto;
+  title: string;
 };
 
 export type ListJobDto = {
-  status: "scheduled" | "In Progress" | "Completed" | "Cancelled";
+  status: "Scheduled" | "In Progress" | "Completed" | "Cancelled";
   description?: string | null;
   /**
    * @format uuid
@@ -432,17 +414,17 @@ export type ListJobDto = {
   assignedStaff: IdNameDto | null;
   startAt: string | null;
   createdAt: string;
-  site?: GetJobSiteDto | null;
+  site: GetJobSiteDto | null;
 };
 
 export type ListJobResponseDto = {
   message: string;
   data: ListJobDto[];
-  pagination: PaginationResponseDTO;
+  pagination: PaginationResponseDto;
 };
 
 export type AdminGetJobSummaryDto = {
-  status: "scheduled" | "In Progress" | "Completed" | "Cancelled";
+  status: "Scheduled" | "In Progress" | "Completed" | "Cancelled";
   count: number;
 };
 
@@ -477,7 +459,7 @@ export type GetJobChecklistDto = {
 
 export type GetJobDto = {
   description?: string | null;
-  status: "scheduled" | "In Progress" | "Completed" | "Cancelled";
+  status: "Scheduled" | "In Progress" | "Completed" | "Cancelled";
   /**
    * @format uuid
    */
@@ -519,18 +501,14 @@ export type CreateJobRequestDto = {
   customerId: string;
 };
 
-export type StartJobRequestDto = {
-  /**
-   * @format uuid
-   */
-  jobId: string;
-  latitude: number;
-  longitude: number;
+export type UpdateJobRequestDto = {
+  title?: string;
+  description?: string;
   /**
    * @format date-time
    */
-  startedAt: string;
-  token: string;
+  startAt?: string;
+  status?: "Scheduled" | "In Progress" | "Completed" | "Cancelled";
 };
 
 export type ManagerGenerateQrTokenDto = {
@@ -552,4 +530,22 @@ export type DashboardSummaryDto = {
 export type DashboardSummaryResponseDto = {
   message: string;
   data: DashboardSummaryDto;
+};
+
+export type StartJobRequestDto = {
+  /**
+   * @format uuid
+   */
+  jobId: string;
+  latitude: number;
+  longitude: number;
+  /**
+   * @format date-time
+   */
+  startedAt: string;
+  token: string;
+};
+
+export type StaffUpdateJobStatusRequestDto = {
+  status: "Cancelled" | "Completed";
 };

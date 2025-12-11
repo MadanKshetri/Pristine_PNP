@@ -6,6 +6,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
 } from "@/components/ui/alert-dialog";
+import { cn } from "@/src/lib/utils/cn";
 import React from "react";
 import { Text } from "react-native";
 import { Button } from "./Button";
@@ -22,12 +23,14 @@ export interface AlertButtonProps {
   onPress?: () => void;
   variant?: "primary" | "danger" | "ghost";
   children: React.ReactNode;
+  className?: string;
   autoClose?: boolean;
   onClose?: () => void; // Passed automatically by render prop
 }
 
 export const AlertButton: React.FC<AlertButtonProps> = ({
   onPress,
+  className,
   variant = "primary",
   children,
   autoClose = true,
@@ -41,10 +44,10 @@ export const AlertButton: React.FC<AlertButtonProps> = ({
           onClose();
         }
       }}
+      size="sm"
       variant={variant}
-      size="lg"
       fullWidth
-      className={variant === "ghost" ? "mt-1" : "shadow-sm"}
+      className={cn(className)}
     >
       {children}
     </Button>

@@ -95,7 +95,7 @@ export async function queriesFetch<
             : JSON.stringify(body)
           : undefined,
         headers: requestHeaders,
-      },
+      }
     );
     if (!response.ok) {
       // Handle 401 Unauthorized - logout and redirect
@@ -139,7 +139,7 @@ export async function queriesFetch<
 const resolveUrl = (
   url: string,
   queryParams: Record<string, string> = {},
-  pathParams: Record<string, string> = {},
+  pathParams: Record<string, string> = {}
 ) => {
   let query = new URLSearchParams(queryParams).toString();
   if (query) query = `?${query}`;

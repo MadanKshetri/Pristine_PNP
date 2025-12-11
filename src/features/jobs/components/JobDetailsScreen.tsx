@@ -1,11 +1,15 @@
 import { useManagerJobControllerGenerateQr } from "@/fetchers/queriesComponents";
 import { QRScannerModal } from "@/src/components/qr/QRScannerModal";
 import { Button, Card } from "@/src/components/ui";
+import {
+  AlertButton,
+  AppAlertDialog,
+} from "@/src/components/ui/AppAlertDialog";
 import { useAuthStore } from "@/src/lib/store/authStore";
 import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
 import * as FileSystem from "expo-file-system/legacy";
-import * as Location from "expo-location";
+import * as ExpoLocation from "expo-location";
 import * as MediaLibrary from "expo-media-library";
 import { useRouter } from "expo-router";
 import type React from "react";
@@ -13,6 +17,7 @@ import { useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Linking,
   Modal,
   Platform,
   ScrollView,
@@ -34,6 +39,8 @@ interface JobDetailsScreenProps {
 export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
   jobId,
 }) => {
+  console.log("jobId", jobId);
+
   const router = useRouter();
 
   const user = useAuthStore((state) => state.user);
@@ -41,13 +48,21 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
   const isGeneralUser = user?.role === "general";
 
   const { job, isLoading, error, refetch } = useJobDetailsByRole(jobId);
-  const { startJob, completeJob, isStartingJob, isCompletingJob } =
+  const { startJob, updateJobStatus, isStartingJob, isUpdatingJobStatus } =
     useJobActions();
   const { data: qrToken, isLoading: isLoadingQrToken } =
     useManagerJobControllerGenerateQr({}, { enabled: isManager });
-
   const [showQRModal, setShowQRModal] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
+  const [dialogConfig, setDialogConfig] = useState({
+    isOpen: false,
+    title: "",
+    description: "",
+    action: "" as "Completed" | "Cancelled",
+    onConfirm: async () => {},
+  });
+
+  console.log(job?.site);
 
   const qrRef = useRef<any>(null);
 
@@ -61,18 +76,18 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
           text: "Continue",
           onPress: async () => {
             const { status } =
-              await Location.requestForegroundPermissionsAsync();
-            if (status !== Location.PermissionStatus.GRANTED) {
+              await ExpoLocation.requestForegroundPermissionsAsync();
+            if (status !== ExpoLocation.PermissionStatus.GRANTED) {
               Alert.alert(
                 "Permission Required",
-                "Location permission is needed to start a job.",
+                "Location permission is needed to start a job."
               );
               return;
             }
             setShowScanner(true);
           },
         },
-      ],
+      ]
     );
   };
 
@@ -89,20 +104,25 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
     }
   };
 
-  const handleCompleteJob = () => {
-    Alert.alert("Complete Job", "Are you sure you want to complete this job?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Complete",
-        style: "destructive",
-        onPress: async () => {
-          const result = await completeJob(jobId);
-          if (result.success) {
-            refetch();
+  const handleJobStatusChange = (status: "Completed" | "Cancelled") => {
+    const action = status === "Completed" ? "Complete" : "Cancel";
+    const actionLower = action.toLowerCase();
+
+    setDialogConfig({
+      isOpen: true,
+      title: `${action} Job`,
+      description: `Are you sure you want to ${actionLower} this job?`,
+      action: status,
+      onConfirm: async () => {
+        const result = await updateJobStatus(jobId, status);
+        if (result.success) {
+          refetch();
+          if (status === "Cancelled") {
+            router.back();
           }
-        },
+        }
       },
-    ]);
+    });
   };
 
   const getJobStatusBadge = (): { label: string; color: string } => {
@@ -115,7 +135,7 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
     switch (job.status) {
       case "Completed":
         return { label: "Completed", color: "green" };
-      case "scheduled":
+      case "Scheduled":
         return {
           label: isDue ? "Due" : "Scheduled",
           color: isDue ? "red" : "blue",
@@ -176,7 +196,7 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
   }
 
   const statusBadge = getJobStatusBadge();
-  const canStart = job.status === "scheduled" && isGeneralUser;
+  const canStart = job.status === "Scheduled" && isGeneralUser;
   const canComplete = job.status === "In Progress" && isGeneralUser;
   const completionPercentage =
     job.checklists.length > 0
@@ -187,6 +207,25 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
 
   // Generate QR code URL for job start
 
+  const handleOpenMaps = () => {
+    if (!job.site?.address) return;
+
+    const { latitude, longitude, address } = job.site.address;
+    let url = "";
+
+    if (latitude && longitude) {
+      url = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+    } else {
+      url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+        address
+      )}`;
+    }
+
+    Linking.openURL(url).catch((err) =>
+      console.error("An error occurred", err)
+    );
+  };
+
   return (
     <>
       <SafeAreaView style={styles.safeArea} edges={["top"]}>
@@ -195,7 +234,9 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
           showsVerticalScrollIndicator={false}
         >
           {/* Header with Gradient Background */}
+          {/* ... (header content remains same) ... */}
           <View style={styles.headerWrap}>
+            {/* ... existing header code ... */}
             <View
               style={{
                 flex: 1,
@@ -294,7 +335,7 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
                         <Text style={styles.progressSubtitle}>
                           {
                             job.checklists.filter(
-                              (c) => c.status === "Completed",
+                              (c) => c.status === "Completed"
                             ).length
                           }{" "}
                           of {job.checklists.length} tasks completed
@@ -338,15 +379,38 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
 
                   {job.site && (
                     <View style={styles.infoBox}>
-                      <Text style={styles.infoBoxTitle}>
-                        {job.site.address}
-                      </Text>
+                      <Text style={styles.infoBoxTitle}>{job.site.title}</Text>
                       <View style={styles.rowCenter}>
                         <Ionicons name="business" size={16} color="#64748B" />
                         <Text style={styles.infoBoxSubtitle}>
-                          {job.site.city}
+                          {job.site.address.address}
                         </Text>
                       </View>
+                      <TouchableOpacity
+                        onPress={handleOpenMaps}
+                        style={{
+                          marginTop: 12,
+                          flexDirection: "row",
+                          alignItems: "center",
+                          backgroundColor: "#EFF6FF",
+                          paddingHorizontal: 12,
+                          paddingVertical: 8,
+                          borderRadius: 8,
+                          alignSelf: "flex-start",
+                        }}
+                      >
+                        <Ionicons name="map" size={16} color="#2563EB" />
+                        <Text
+                          style={{
+                            marginLeft: 6,
+                            color: "#2563EB",
+                            fontWeight: "600",
+                            fontSize: 13,
+                          }}
+                        >
+                          Open in Maps
+                        </Text>
+                      </TouchableOpacity>
                     </View>
                   )}
 
@@ -410,30 +474,86 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
 
             {/* Complete Job Button */}
             {canComplete && (
-              <View style={styles.startWrap}>
-                <TouchableOpacity
-                  onPress={handleCompleteJob}
-                  disabled={isCompletingJob}
-                  style={[styles.startBtn, { backgroundColor: "#10B981" }]}
-                  activeOpacity={0.9}
-                >
-                  <View style={styles.rowCenterJustifyCenter}>
-                    {isCompletingJob ? (
-                      <ActivityIndicator size="small" color="#FFFFFF" />
-                    ) : (
-                      <>
-                        <View style={styles.startIconWrap}>
-                          <Ionicons
-                            name="checkmark-done-circle"
-                            size={28}
-                            color="white"
-                          />
-                        </View>
-                        <Text style={styles.startText}>Complete Job</Text>
-                      </>
-                    )}
-                  </View>
-                </TouchableOpacity>
+              <View style={{ marginTop: 8, marginBottom: 8 }}>
+                <View style={{ flexDirection: "row", gap: 12 }}>
+                  <TouchableOpacity
+                    onPress={() => handleJobStatusChange("Cancelled")}
+                    disabled={isUpdatingJobStatus}
+                    style={[
+                      styles.startBtn,
+                      { flex: 1, backgroundColor: "#EF4444", padding: 12 },
+                    ]}
+                    activeOpacity={0.9}
+                  >
+                    <View style={styles.rowCenterJustifyCenter}>
+                      {isUpdatingJobStatus ? (
+                        <ActivityIndicator size="small" color="#FFFFFF" />
+                      ) : (
+                        <>
+                          <View
+                            style={[
+                              styles.startIconWrap,
+                              { width: 32, height: 32 },
+                            ]}
+                          >
+                            <Ionicons
+                              name="close-circle"
+                              size={20}
+                              color="white"
+                            />
+                          </View>
+                          <Text
+                            style={[
+                              styles.startText,
+                              { fontSize: 16, marginLeft: 8 },
+                            ]}
+                          >
+                            Cancel
+                          </Text>
+                        </>
+                      )}
+                    </View>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() => handleJobStatusChange("Completed")}
+                    disabled={isUpdatingJobStatus}
+                    style={[
+                      styles.startBtn,
+                      { flex: 1, backgroundColor: "#10B981", padding: 12 },
+                    ]}
+                    activeOpacity={0.9}
+                  >
+                    <View style={styles.rowCenterJustifyCenter}>
+                      {isUpdatingJobStatus ? (
+                        <ActivityIndicator size="small" color="#FFFFFF" />
+                      ) : (
+                        <>
+                          <View
+                            style={[
+                              styles.startIconWrap,
+                              { width: 32, height: 32 },
+                            ]}
+                          >
+                            <Ionicons
+                              name="checkmark-done-circle"
+                              size={20}
+                              color="white"
+                            />
+                          </View>
+                          <Text
+                            style={[
+                              styles.startText,
+                              { fontSize: 16, marginLeft: 8 },
+                            ]}
+                          >
+                            Complete
+                          </Text>
+                        </>
+                      )}
+                    </View>
+                  </TouchableOpacity>
+                </View>
               </View>
             )}
 
@@ -548,7 +668,7 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
                             console.log(status);
                             if (status !== "granted") {
                               throw new Error(
-                                "Permission to access Photos was denied",
+                                "Permission to access Photos was denied"
                               );
                             }
                             const asset =
@@ -556,14 +676,14 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
                             await MediaLibrary.createAlbumAsync(
                               "Pristine PNP",
                               asset,
-                              false,
+                              false
                             ).catch(async () => {
                               await MediaLibrary.addAssetsToAlbumAsync(
                                 [asset],
                                 (await MediaLibrary.getAlbumAsync(
-                                  "Pristine PNP",
+                                  "Pristine PNP"
                                 )) || undefined,
-                                false,
+                                false
                               ).catch(() => {});
                             });
                             Alert.alert("Saved", "QR code saved to Photos");
@@ -610,11 +730,38 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
         </TouchableOpacity>
       </Modal>
 
-      {/* QR Scanner Modal */}
       <QRScannerModal
         visible={showScanner}
         onClose={() => setShowScanner(false)}
         onScanned={handleScanned}
+      />
+
+      <AppAlertDialog
+        isOpen={dialogConfig.isOpen}
+        onClose={() => setDialogConfig((prev) => ({ ...prev, isOpen: false }))}
+        title={dialogConfig.title}
+        description={dialogConfig.description}
+        renderFooter={(onClose) => (
+          <View className="flex flex-row items-baseline justify-between gap-2 ">
+            <AlertButton
+              variant={
+                dialogConfig.action === "Cancelled" ? "danger" : "primary"
+              }
+              className="flex-1"
+              onPress={dialogConfig.onConfirm}
+              autoClose={true}
+            >
+              Yes
+            </AlertButton>
+            <AlertButton
+              variant="ghost"
+              className="flex-1 border-none bg-gray-200"
+              onPress={onClose}
+            >
+              No
+            </AlertButton>
+          </View>
+        )}
       />
     </>
   );

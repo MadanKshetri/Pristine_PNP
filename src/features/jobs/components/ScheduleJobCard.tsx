@@ -55,7 +55,7 @@ export const ScheduleJobCard: React.FC<ScheduleJobCardProps> = ({
         <View style={styles.details}>
           {job.site && (
             <Text style={styles.addressText} numberOfLines={2}>
-              {job.site.address}, {job.site.city}
+              {job.site.address.address}
             </Text>
           )}
           {job.title && <Text style={styles.titleText}>{job.title}</Text>}
