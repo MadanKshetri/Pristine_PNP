@@ -99,6 +99,42 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </Card>
 
+        {/* Job Management Menu (Managers Only) */}
+        {user?.role === "manager" && (
+          <>
+            <Text className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 ml-1">
+              Job Management
+            </Text>
+            <Card
+              variant="default"
+              padding="none"
+              className="mb-6 overflow-hidden border border-gray-100 bg-white"
+            >
+              <TouchableOpacity
+                onPress={() => router.push("/jobs/requests" as any)}
+                className="flex-row items-center p-4 active:bg-gray-50"
+              >
+                <View className="w-9 h-9 bg-blue-50 rounded-lg items-center justify-center mr-3">
+                  <Ionicons
+                    name="briefcase-outline"
+                    size={20}
+                    color="#3B82F6"
+                  />
+                </View>
+                <View className="flex-1">
+                  <Text className="text-base font-medium text-gray-900">
+                    Job Requests
+                  </Text>
+                  <Text className="text-xs text-gray-500">
+                    View your requested jobs
+                  </Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#D1D5DB" />
+              </TouchableOpacity>
+            </Card>
+          </>
+        )}
+
         {/* Account Menu */}
         <Text className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 ml-1">
           Account

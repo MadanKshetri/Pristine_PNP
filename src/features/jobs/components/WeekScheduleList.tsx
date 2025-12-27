@@ -1,7 +1,7 @@
 import { addDays, format, isSameDay, parseISO } from "date-fns";
 
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Job } from "../types";
 import { ScheduleJobCard } from "./ScheduleJobCard";
 
@@ -9,12 +9,14 @@ interface WeekScheduleListProps {
   weekStart: Date;
   jobs: Job[];
   onJobPress: (jobId: string) => void;
+  onRequestJob?: (date: Date) => void;
 }
 
 export const WeekScheduleList: React.FC<WeekScheduleListProps> = ({
   weekStart,
   jobs,
   onJobPress,
+  onRequestJob,
 }) => {
   const weekDays = Array.from({ length: 7 }).map((_, index) =>
     addDays(weekStart, index)
@@ -51,6 +53,16 @@ export const WeekScheduleList: React.FC<WeekScheduleListProps> = ({
               ) : (
                 <View style={styles.emptyState}>
                   <Text style={styles.emptyText}>No jobs scheduled</Text>
+                  {onRequestJob && (
+                    <TouchableOpacity
+                      style={styles.requestButton}
+                      onPress={() => onRequestJob(date)}
+                    >
+                      <Text style={styles.requestButtonText}>
+                        + Request Job
+                      </Text>
+                    </TouchableOpacity>
+                  )}
                 </View>
               )}
             </View>
@@ -97,5 +109,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#8E8E93",
     fontStyle: "italic",
+    marginBottom: 8,
+  },
+  requestButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: "#EFF6FF",
+    borderRadius: 8,
+    alignSelf: "flex-start",
+  },
+  requestButtonText: {
+    color: "#3B82F6",
+    fontSize: 14,
+    fontWeight: "600",
   },
 });

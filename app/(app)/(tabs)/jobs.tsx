@@ -99,6 +99,15 @@ export default function JobsScreen() {
           weekStart={currentWeekStart}
           jobs={jobs}
           onJobPress={handleJobPress}
+          onRequestJob={
+            user?.role === "manager"
+              ? (date) =>
+                  router.push({
+                    pathname: "/jobs/request",
+                    params: { date: date.toISOString() },
+                  })
+              : undefined
+          }
         />
 
         <WeekSummary

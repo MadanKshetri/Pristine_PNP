@@ -748,7 +748,10 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
                 dialogConfig.action === "Cancelled" ? "danger" : "primary"
               }
               className="flex-1"
-              onPress={dialogConfig.onConfirm}
+              onPress={() => {
+                dialogConfig.onConfirm();
+                onClose();
+              }}
               autoClose={true}
             >
               Yes
