@@ -3215,6 +3215,382 @@ export const useAdminJobControllerUpdate = (
   });
 };
 
+export type ManagerIncidentConrollerIncidentsQueryParams = {
+  search?: string;
+  /**
+   * @minimum 0
+   */
+  take?: number;
+  /**
+   * @minimum 0
+   */
+  page?: number;
+};
+
+export type ManagerIncidentConrollerIncidentsError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: {
+        /**
+         * @example 401
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 401
+         */
+        error: 401;
+      };
+    }
+  | {
+      status: 406;
+      payload: {
+        /**
+         * @example 406
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 406
+         */
+        error: 406;
+      };
+    }
+>;
+
+export type ManagerIncidentConrollerIncidentsVariables = {
+  queryParams?: ManagerIncidentConrollerIncidentsQueryParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchManagerIncidentConrollerIncidents = (
+  variables: ManagerIncidentConrollerIncidentsVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.ManagerListIncidentResponseDto,
+    ManagerIncidentConrollerIncidentsError,
+    undefined,
+    {},
+    ManagerIncidentConrollerIncidentsQueryParams,
+    {}
+  >({ url: "/manager/incident", method: "get", ...variables, signal });
+
+export function managerIncidentConrollerIncidentsQuery(
+  variables: ManagerIncidentConrollerIncidentsVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (
+    options: QueryFnOptions,
+  ) => Promise<Schemas.ManagerListIncidentResponseDto>;
+};
+
+export function managerIncidentConrollerIncidentsQuery(
+  variables: ManagerIncidentConrollerIncidentsVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((
+        options: QueryFnOptions,
+      ) => Promise<Schemas.ManagerListIncidentResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function managerIncidentConrollerIncidentsQuery(
+  variables: ManagerIncidentConrollerIncidentsVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/manager/incident",
+      operationId: "managerIncidentConrollerIncidents",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchManagerIncidentConrollerIncidents(variables, signal),
+  };
+}
+
+export const useSuspenseManagerIncidentConrollerIncidents = <
+  TData = Schemas.ManagerListIncidentResponseDto,
+>(
+  variables: ManagerIncidentConrollerIncidentsVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ManagerListIncidentResponseDto,
+      ManagerIncidentConrollerIncidentsError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.ManagerListIncidentResponseDto,
+    ManagerIncidentConrollerIncidentsError,
+    TData
+  >({
+    ...managerIncidentConrollerIncidentsQuery(
+      deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useManagerIncidentConrollerIncidents = <
+  TData = Schemas.ManagerListIncidentResponseDto,
+>(
+  variables: ManagerIncidentConrollerIncidentsVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ManagerListIncidentResponseDto,
+      ManagerIncidentConrollerIncidentsError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.ManagerListIncidentResponseDto,
+    ManagerIncidentConrollerIncidentsError,
+    TData
+  >({
+    ...managerIncidentConrollerIncidentsQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type ManagerIncidentConrollerIncidentPathParams = {
+  /**
+   * @format uuid
+   */
+  id: string;
+};
+
+export type ManagerIncidentConrollerIncidentError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: {
+        /**
+         * @example 401
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 401
+         */
+        error: 401;
+      };
+    }
+  | {
+      status: 406;
+      payload: {
+        /**
+         * @example 406
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 406
+         */
+        error: 406;
+      };
+    }
+>;
+
+export type ManagerIncidentConrollerIncidentVariables = {
+  pathParams: ManagerIncidentConrollerIncidentPathParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchManagerIncidentConrollerIncident = (
+  variables: ManagerIncidentConrollerIncidentVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.GetIncidentResponseDto,
+    ManagerIncidentConrollerIncidentError,
+    undefined,
+    {},
+    {},
+    ManagerIncidentConrollerIncidentPathParams
+  >({ url: "/manager/incident/{id}", method: "get", ...variables, signal });
+
+export function managerIncidentConrollerIncidentQuery(
+  variables: ManagerIncidentConrollerIncidentVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (options: QueryFnOptions) => Promise<Schemas.GetIncidentResponseDto>;
+};
+
+export function managerIncidentConrollerIncidentQuery(
+  variables: ManagerIncidentConrollerIncidentVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((options: QueryFnOptions) => Promise<Schemas.GetIncidentResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function managerIncidentConrollerIncidentQuery(
+  variables: ManagerIncidentConrollerIncidentVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/manager/incident/{id}",
+      operationId: "managerIncidentConrollerIncident",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchManagerIncidentConrollerIncident(variables, signal),
+  };
+}
+
+export const useSuspenseManagerIncidentConrollerIncident = <
+  TData = Schemas.GetIncidentResponseDto,
+>(
+  variables: ManagerIncidentConrollerIncidentVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.GetIncidentResponseDto,
+      ManagerIncidentConrollerIncidentError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.GetIncidentResponseDto,
+    ManagerIncidentConrollerIncidentError,
+    TData
+  >({
+    ...managerIncidentConrollerIncidentQuery(
+      deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useManagerIncidentConrollerIncident = <
+  TData = Schemas.GetIncidentResponseDto,
+>(
+  variables: ManagerIncidentConrollerIncidentVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.GetIncidentResponseDto,
+      ManagerIncidentConrollerIncidentError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.GetIncidentResponseDto,
+    ManagerIncidentConrollerIncidentError,
+    TData
+  >({
+    ...managerIncidentConrollerIncidentQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type AdminIncidentConrollerDeleteIncidentPathParams = {
+  /**
+   * @format uuid
+   */
+  id: string;
+};
+
+export type AdminIncidentConrollerDeleteIncidentError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: {
+        /**
+         * @example 401
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 401
+         */
+        error: 401;
+      };
+    }
+  | {
+      status: 406;
+      payload: {
+        /**
+         * @example 406
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 406
+         */
+        error: 406;
+      };
+    }
+>;
+
+export type AdminIncidentConrollerDeleteIncidentVariables = {
+  pathParams: AdminIncidentConrollerDeleteIncidentPathParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminIncidentConrollerDeleteIncident = (
+  variables: AdminIncidentConrollerDeleteIncidentVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.MessageResponseDto,
+    AdminIncidentConrollerDeleteIncidentError,
+    undefined,
+    {},
+    {},
+    AdminIncidentConrollerDeleteIncidentPathParams
+  >({ url: "/manager/incident/{id}", method: "delete", ...variables, signal });
+
+export const useAdminIncidentConrollerDeleteIncident = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.MessageResponseDto,
+      AdminIncidentConrollerDeleteIncidentError,
+      AdminIncidentConrollerDeleteIncidentVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.MessageResponseDto,
+    AdminIncidentConrollerDeleteIncidentError,
+    AdminIncidentConrollerDeleteIncidentVariables
+  >({
+    mutationFn: (variables: AdminIncidentConrollerDeleteIncidentVariables) =>
+      fetchAdminIncidentConrollerDeleteIncident(
+        deepMerge(fetcherOptions, variables),
+      ),
+    ...options,
+  });
+};
+
 export type ManagerJobControllerJobsQueryParams = {
   /**
    * @minimum 0
@@ -3781,6 +4157,141 @@ export const useManagerControllerGetSummary = <
   });
 };
 
+export type ManagerControllerGetSiteSummaryQueryParams = {
+  /**
+   * @minimum 0
+   */
+  take?: number;
+  /**
+   * @minimum 0
+   */
+  page?: number;
+  search?: string;
+};
+
+export type ManagerControllerGetSiteSummaryError = Fetcher.ErrorWrapper<{
+  status: 401;
+  payload: {
+    /**
+     * @example 401
+     */
+    statusCode: number;
+    message: string;
+    /**
+     * @example 401
+     */
+    error: 401;
+  };
+}>;
+
+export type ManagerControllerGetSiteSummaryVariables = {
+  queryParams?: ManagerControllerGetSiteSummaryQueryParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchManagerControllerGetSiteSummary = (
+  variables: ManagerControllerGetSiteSummaryVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.ManagerListSiteResponseDto,
+    ManagerControllerGetSiteSummaryError,
+    undefined,
+    {},
+    ManagerControllerGetSiteSummaryQueryParams,
+    {}
+  >({ url: "/manager/site", method: "get", ...variables, signal });
+
+export function managerControllerGetSiteSummaryQuery(
+  variables: ManagerControllerGetSiteSummaryVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (
+    options: QueryFnOptions,
+  ) => Promise<Schemas.ManagerListSiteResponseDto>;
+};
+
+export function managerControllerGetSiteSummaryQuery(
+  variables: ManagerControllerGetSiteSummaryVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((options: QueryFnOptions) => Promise<Schemas.ManagerListSiteResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function managerControllerGetSiteSummaryQuery(
+  variables: ManagerControllerGetSiteSummaryVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/manager/site",
+      operationId: "managerControllerGetSiteSummary",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchManagerControllerGetSiteSummary(variables, signal),
+  };
+}
+
+export const useSuspenseManagerControllerGetSiteSummary = <
+  TData = Schemas.ManagerListSiteResponseDto,
+>(
+  variables: ManagerControllerGetSiteSummaryVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ManagerListSiteResponseDto,
+      ManagerControllerGetSiteSummaryError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.ManagerListSiteResponseDto,
+    ManagerControllerGetSiteSummaryError,
+    TData
+  >({
+    ...managerControllerGetSiteSummaryQuery(
+      deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useManagerControllerGetSiteSummary = <
+  TData = Schemas.ManagerListSiteResponseDto,
+>(
+  variables: ManagerControllerGetSiteSummaryVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ManagerListSiteResponseDto,
+      ManagerControllerGetSiteSummaryError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.ManagerListSiteResponseDto,
+    ManagerControllerGetSiteSummaryError,
+    TData
+  >({
+    ...managerControllerGetSiteSummaryQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
 export type StaffControllerGetSummaryError = Fetcher.ErrorWrapper<{
   status: 401;
   payload: {
@@ -3894,6 +4405,510 @@ export const useStaffControllerGetSummary = <
     TData
   >({
     ...staffControllerGetSummaryQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type StaffControllerGetSiteSummaryQueryParams = {
+  /**
+   * @minimum 0
+   */
+  take?: number;
+  /**
+   * @minimum 0
+   */
+  page?: number;
+  search?: string;
+};
+
+export type StaffControllerGetSiteSummaryError = Fetcher.ErrorWrapper<{
+  status: 401;
+  payload: {
+    /**
+     * @example 401
+     */
+    statusCode: number;
+    message: string;
+    /**
+     * @example 401
+     */
+    error: 401;
+  };
+}>;
+
+export type StaffControllerGetSiteSummaryVariables = {
+  queryParams?: StaffControllerGetSiteSummaryQueryParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchStaffControllerGetSiteSummary = (
+  variables: StaffControllerGetSiteSummaryVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.StaffListSiteResponseDto,
+    StaffControllerGetSiteSummaryError,
+    undefined,
+    {},
+    StaffControllerGetSiteSummaryQueryParams,
+    {}
+  >({ url: "/staff/site", method: "get", ...variables, signal });
+
+export function staffControllerGetSiteSummaryQuery(
+  variables: StaffControllerGetSiteSummaryVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (
+    options: QueryFnOptions,
+  ) => Promise<Schemas.StaffListSiteResponseDto>;
+};
+
+export function staffControllerGetSiteSummaryQuery(
+  variables: StaffControllerGetSiteSummaryVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((options: QueryFnOptions) => Promise<Schemas.StaffListSiteResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function staffControllerGetSiteSummaryQuery(
+  variables: StaffControllerGetSiteSummaryVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/staff/site",
+      operationId: "staffControllerGetSiteSummary",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchStaffControllerGetSiteSummary(variables, signal),
+  };
+}
+
+export const useSuspenseStaffControllerGetSiteSummary = <
+  TData = Schemas.StaffListSiteResponseDto,
+>(
+  variables: StaffControllerGetSiteSummaryVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.StaffListSiteResponseDto,
+      StaffControllerGetSiteSummaryError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.StaffListSiteResponseDto,
+    StaffControllerGetSiteSummaryError,
+    TData
+  >({
+    ...staffControllerGetSiteSummaryQuery(deepMerge(fetcherOptions, variables)),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useStaffControllerGetSiteSummary = <
+  TData = Schemas.StaffListSiteResponseDto,
+>(
+  variables: StaffControllerGetSiteSummaryVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.StaffListSiteResponseDto,
+      StaffControllerGetSiteSummaryError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.StaffListSiteResponseDto,
+    StaffControllerGetSiteSummaryError,
+    TData
+  >({
+    ...staffControllerGetSiteSummaryQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type StaffIncidentConrollerIncidentsQueryParams = {
+  search?: string;
+  /**
+   * @minimum 0
+   */
+  take?: number;
+  /**
+   * @minimum 0
+   */
+  page?: number;
+};
+
+export type StaffIncidentConrollerIncidentsError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: {
+        /**
+         * @example 401
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 401
+         */
+        error: 401;
+      };
+    }
+  | {
+      status: 406;
+      payload: {
+        /**
+         * @example 406
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 406
+         */
+        error: 406;
+      };
+    }
+>;
+
+export type StaffIncidentConrollerIncidentsVariables = {
+  queryParams?: StaffIncidentConrollerIncidentsQueryParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchStaffIncidentConrollerIncidents = (
+  variables: StaffIncidentConrollerIncidentsVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.StaffListIncidentResponseDto,
+    StaffIncidentConrollerIncidentsError,
+    undefined,
+    {},
+    StaffIncidentConrollerIncidentsQueryParams,
+    {}
+  >({ url: "/staff/incident", method: "get", ...variables, signal });
+
+export function staffIncidentConrollerIncidentsQuery(
+  variables: StaffIncidentConrollerIncidentsVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (
+    options: QueryFnOptions,
+  ) => Promise<Schemas.StaffListIncidentResponseDto>;
+};
+
+export function staffIncidentConrollerIncidentsQuery(
+  variables: StaffIncidentConrollerIncidentsVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((
+        options: QueryFnOptions,
+      ) => Promise<Schemas.StaffListIncidentResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function staffIncidentConrollerIncidentsQuery(
+  variables: StaffIncidentConrollerIncidentsVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/staff/incident",
+      operationId: "staffIncidentConrollerIncidents",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchStaffIncidentConrollerIncidents(variables, signal),
+  };
+}
+
+export const useSuspenseStaffIncidentConrollerIncidents = <
+  TData = Schemas.StaffListIncidentResponseDto,
+>(
+  variables: StaffIncidentConrollerIncidentsVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.StaffListIncidentResponseDto,
+      StaffIncidentConrollerIncidentsError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.StaffListIncidentResponseDto,
+    StaffIncidentConrollerIncidentsError,
+    TData
+  >({
+    ...staffIncidentConrollerIncidentsQuery(
+      deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useStaffIncidentConrollerIncidents = <
+  TData = Schemas.StaffListIncidentResponseDto,
+>(
+  variables: StaffIncidentConrollerIncidentsVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.StaffListIncidentResponseDto,
+      StaffIncidentConrollerIncidentsError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.StaffListIncidentResponseDto,
+    StaffIncidentConrollerIncidentsError,
+    TData
+  >({
+    ...staffIncidentConrollerIncidentsQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type StaffIncidentConrollerCreateError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: {
+        /**
+         * @example 401
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 401
+         */
+        error: 401;
+      };
+    }
+  | {
+      status: 406;
+      payload: {
+        /**
+         * @example 406
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 406
+         */
+        error: 406;
+      };
+    }
+>;
+
+export type StaffIncidentConrollerCreateVariables = {
+  body: Schemas.StaffCreateIncidentReportRequestDTO;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchStaffIncidentConrollerCreate = (
+  variables: StaffIncidentConrollerCreateVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.MessageResponseWithIdDataDto,
+    StaffIncidentConrollerCreateError,
+    Schemas.StaffCreateIncidentReportRequestDTO,
+    {},
+    {},
+    {}
+  >({ url: "/staff/incident", method: "post", ...variables, signal });
+
+export const useStaffIncidentConrollerCreate = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.MessageResponseWithIdDataDto,
+      StaffIncidentConrollerCreateError,
+      StaffIncidentConrollerCreateVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.MessageResponseWithIdDataDto,
+    StaffIncidentConrollerCreateError,
+    StaffIncidentConrollerCreateVariables
+  >({
+    mutationFn: (variables: StaffIncidentConrollerCreateVariables) =>
+      fetchStaffIncidentConrollerCreate(deepMerge(fetcherOptions, variables)),
+    ...options,
+  });
+};
+
+export type StaffIncidentConrollerIncidentPathParams = {
+  /**
+   * @format uuid
+   */
+  id: string;
+};
+
+export type StaffIncidentConrollerIncidentError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: {
+        /**
+         * @example 401
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 401
+         */
+        error: 401;
+      };
+    }
+  | {
+      status: 406;
+      payload: {
+        /**
+         * @example 406
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 406
+         */
+        error: 406;
+      };
+    }
+>;
+
+export type StaffIncidentConrollerIncidentVariables = {
+  pathParams: StaffIncidentConrollerIncidentPathParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchStaffIncidentConrollerIncident = (
+  variables: StaffIncidentConrollerIncidentVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.StaffGetIncidentResponseDto,
+    StaffIncidentConrollerIncidentError,
+    undefined,
+    {},
+    {},
+    StaffIncidentConrollerIncidentPathParams
+  >({ url: "/staff/incident/{id}", method: "get", ...variables, signal });
+
+export function staffIncidentConrollerIncidentQuery(
+  variables: StaffIncidentConrollerIncidentVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (
+    options: QueryFnOptions,
+  ) => Promise<Schemas.StaffGetIncidentResponseDto>;
+};
+
+export function staffIncidentConrollerIncidentQuery(
+  variables: StaffIncidentConrollerIncidentVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((
+        options: QueryFnOptions,
+      ) => Promise<Schemas.StaffGetIncidentResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function staffIncidentConrollerIncidentQuery(
+  variables: StaffIncidentConrollerIncidentVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/staff/incident/{id}",
+      operationId: "staffIncidentConrollerIncident",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchStaffIncidentConrollerIncident(variables, signal),
+  };
+}
+
+export const useSuspenseStaffIncidentConrollerIncident = <
+  TData = Schemas.StaffGetIncidentResponseDto,
+>(
+  variables: StaffIncidentConrollerIncidentVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.StaffGetIncidentResponseDto,
+      StaffIncidentConrollerIncidentError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.StaffGetIncidentResponseDto,
+    StaffIncidentConrollerIncidentError,
+    TData
+  >({
+    ...staffIncidentConrollerIncidentQuery(
+      deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useStaffIncidentConrollerIncident = <
+  TData = Schemas.StaffGetIncidentResponseDto,
+>(
+  variables: StaffIncidentConrollerIncidentVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.StaffGetIncidentResponseDto,
+      StaffIncidentConrollerIncidentError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.StaffGetIncidentResponseDto,
+    StaffIncidentConrollerIncidentError,
+    TData
+  >({
+    ...staffIncidentConrollerIncidentQuery(
       variables === reactQuery.skipToken
         ? variables
         : deepMerge(fetcherOptions, variables),
@@ -4383,6 +5398,20 @@ export type QueryOperation =
       variables: AdminJobControllerJobVariables | reactQuery.SkipToken;
     }
   | {
+      path: "/manager/incident";
+      operationId: "managerIncidentConrollerIncidents";
+      variables:
+        | ManagerIncidentConrollerIncidentsVariables
+        | reactQuery.SkipToken;
+    }
+  | {
+      path: "/manager/incident/{id}";
+      operationId: "managerIncidentConrollerIncident";
+      variables:
+        | ManagerIncidentConrollerIncidentVariables
+        | reactQuery.SkipToken;
+    }
+  | {
       path: "/manager/job";
       operationId: "managerJobControllerJobs";
       variables: ManagerJobControllerJobsVariables | reactQuery.SkipToken;
@@ -4403,9 +5432,33 @@ export type QueryOperation =
       variables: ManagerControllerGetSummaryVariables | reactQuery.SkipToken;
     }
   | {
+      path: "/manager/site";
+      operationId: "managerControllerGetSiteSummary";
+      variables:
+        | ManagerControllerGetSiteSummaryVariables
+        | reactQuery.SkipToken;
+    }
+  | {
       path: "/staff/summary";
       operationId: "staffControllerGetSummary";
       variables: StaffControllerGetSummaryVariables | reactQuery.SkipToken;
+    }
+  | {
+      path: "/staff/site";
+      operationId: "staffControllerGetSiteSummary";
+      variables: StaffControllerGetSiteSummaryVariables | reactQuery.SkipToken;
+    }
+  | {
+      path: "/staff/incident";
+      operationId: "staffIncidentConrollerIncidents";
+      variables:
+        | StaffIncidentConrollerIncidentsVariables
+        | reactQuery.SkipToken;
+    }
+  | {
+      path: "/staff/incident/{id}";
+      operationId: "staffIncidentConrollerIncident";
+      variables: StaffIncidentConrollerIncidentVariables | reactQuery.SkipToken;
     }
   | {
       path: "/staff/job";

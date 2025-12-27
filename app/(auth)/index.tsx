@@ -1,18 +1,11 @@
-import { useAuthStore } from "@/src/lib/store/authStore";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { Redirect, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import React from "react";
 import { Image, StatusBar, Text, TouchableOpacity, View } from "react-native";
 
 const Index = () => {
   const router = useRouter();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-
-  // Redirect authenticated users to home
-  if (isAuthenticated) {
-    return <Redirect href="/(tabs)/home" />;
-  }
 
   return (
     <View className="flex-1 bg-white">

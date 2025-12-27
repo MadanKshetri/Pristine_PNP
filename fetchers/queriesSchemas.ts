@@ -15,6 +15,7 @@ export type AssetDto = {
 export type GetMeDto = {
   id: string;
   fullName: string;
+  oneSignalId: string;
   email: string;
   image: AssetDto | null;
 };
@@ -43,6 +44,7 @@ export type LoginUserUserDto = {
    */
   id: string;
   fullName: string;
+  oneSignalId: string;
   email: string;
 };
 
@@ -62,6 +64,7 @@ export type LoginManagerManagerDto = {
    */
   id: string;
   fullName: string;
+  oneSignalId: string;
   email: string;
   /**
    * @format uuid
@@ -511,6 +514,41 @@ export type UpdateJobRequestDto = {
   status?: "Scheduled" | "In Progress" | "Completed" | "Cancelled";
 };
 
+export type AdminGetIncidentSiteDto = {
+  /**
+   * @format uuid
+   */
+  id: string;
+  title: string;
+  address: string;
+};
+
+export type AdminGetIncidentDto = {
+  /**
+   * @format uuid
+   */
+  id: string;
+  title: string;
+  description: string | null;
+  site: AdminGetIncidentSiteDto;
+  reportedBy: IdNameDto | null;
+  /**
+   * @format date-time
+   */
+  createdAt: string;
+};
+
+export type AdminListIncidentResponseDto = {
+  message: string;
+  data: AdminGetIncidentDto[];
+  pagination: PaginationResponseDto;
+};
+
+export type GetIncidentResponseDto = {
+  message: string;
+  data: ManagerGetIncidentDto;
+};
+
 export type ManagerGenerateQrTokenDto = {
   token: string;
 };
@@ -530,6 +568,109 @@ export type DashboardSummaryDto = {
 export type DashboardSummaryResponseDto = {
   message: string;
   data: DashboardSummaryDto;
+};
+
+export type ManagerListSiteDto = {
+  id: string;
+  title: string;
+  description: string | null;
+  location: LocationDto;
+  customer: IdNameDto | null;
+};
+
+export type ManagerListSiteResponseDto = {
+  message: string;
+  data: ManagerListSiteDto[];
+  pagination: PaginationResponseDto;
+};
+
+export type ManagerGetIncidentSiteDto = {
+  /**
+   * @format uuid
+   */
+  id: string;
+  title: string;
+  address: string;
+};
+
+export type ManagerGetIncidentDto = {
+  /**
+   * @format uuid
+   */
+  id: string;
+  title: string;
+  description: string | null;
+  site: ManagerGetIncidentSiteDto;
+  reportedBy: IdNameDto | null;
+  /**
+   * @format date-time
+   */
+  createdAt: string;
+};
+
+export type ManagerListIncidentResponseDto = {
+  message: string;
+  data: ManagerGetIncidentDto[];
+  pagination: PaginationResponseDto;
+};
+
+export type StaffListSiteDto = {
+  id: string;
+  title: string;
+  description: string | null;
+  location: LocationDto;
+  customer: IdNameDto | null;
+};
+
+export type StaffListSiteResponseDto = {
+  message: string;
+  data: StaffListSiteDto[];
+  pagination: PaginationResponseDto;
+};
+
+export type StaffGetIncidentSiteDto = {
+  /**
+   * @format uuid
+   */
+  id: string;
+  title: string;
+  address: string;
+};
+
+export type StaffGetIncidentDto = {
+  /**
+   * @format uuid
+   */
+  id: string;
+  title: string;
+  description: string | null;
+  reportedBy: IdNameDto | null;
+  site: StaffGetIncidentSiteDto;
+  /**
+   * @format date-time
+   */
+  createdAt: string;
+};
+
+export type StaffListIncidentResponseDto = {
+  message: string;
+  data: StaffGetIncidentDto[];
+  pagination: PaginationResponseDto;
+};
+
+export type StaffGetIncidentResponseDto = {
+  message: string;
+  data: StaffGetIncidentDto;
+};
+
+export type StaffCreateIncidentReportRequestDTO = {
+  description?: string;
+  attachments?: Blob[];
+  title: string;
+  /**
+   * @format uuid
+   */
+  siteId: string;
 };
 
 export type StartJobRequestDto = {

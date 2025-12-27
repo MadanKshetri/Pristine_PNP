@@ -1,5 +1,5 @@
-import { useAuthStore } from '@/src/lib/store/authStore';
-import { Redirect, Stack } from 'expo-router';
+import { useAuthStore } from "@/src/lib/store/authStore";
+import { Redirect, Stack } from "expo-router";
 
 export default function AuthLayout() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -13,9 +13,10 @@ export default function AuthLayout() {
     <Stack
       screenOptions={{
         headerShown: false,
-        animation: 'slide_from_right',
+        animation: "slide_from_right",
       }}
     >
+      <Stack.Screen name="index" />
       <Stack.Screen name="login" />
       <Stack.Screen name="otp-verify" />
     </Stack>

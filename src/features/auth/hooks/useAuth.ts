@@ -4,40 +4,49 @@ import {
   useAuthControllerManagerLogin,
   useAuthControllerStaffLogin,
   useAuthControllerVerifyManagerOtp,
-  useAuthControllerVerifyUserOtp
-} from '@/fetchers/queriesComponents';
-import type { LoginUserRequestDto, VerrifyOtpDto } from '@/fetchers/queriesSchemas';
-import { useAuthStore, type User, type UserRole } from '@/src/lib/store/authStore';
+  useAuthControllerVerifyUserOtp,
+} from "@/fetchers/queriesComponents";
+import type {
+  LoginUserRequestDto,
+  VerrifyOtpDto,
+} from "@/fetchers/queriesSchemas";
+import {
+  useAuthStore,
+  type User,
+  type UserRole,
+} from "@/src/lib/store/authStore";
 
 export const useAuth = () => {
-  const { user, token, isAuthenticated, setAuth, logout: storeLogout } = useAuthStore();
+  const {
+    user,
+    token,
+    isAuthenticated,
+    setAuth,
+    logout: storeLogout,
+  } = useAuthStore();
 
   const staffLoginMutation = useAuthControllerStaffLogin({});
   const managerLoginMutation = useAuthControllerManagerLogin({});
 
   const verifyUserOtpMutation = useAuthControllerVerifyUserOtp({});
   const verifyManagerOtpMutation = useAuthControllerVerifyManagerOtp({});
-  const isManager = user?.role==='manager';
+  const isManager = user?.role === "manager";
 
-  const {
-    isLoading: isLoadingUser,
-    refetch: refetchUser,
-  } = useAuthControllerGetMeUser(
-    {},
-    {
-      enabled: !isManager &&isAuthenticated && !!token,
-    }
-  );
+  const { isLoading: isLoadingUser, refetch: refetchUser } =
+    useAuthControllerGetMeUser(
+      {},
+      {
+        enabled: !isManager && isAuthenticated && !!token,
+      }
+    );
 
-  const {
-    isLoading: isLoadingManager,
-    refetch: refetchManager,
-  } = useAuthControllerGetMeCustomer(
-    {},
-    {
-      enabled: isManager && isAuthenticated && !!token,
-    }
-  );
+  const { isLoading: isLoadingManager, refetch: refetchManager } =
+    useAuthControllerGetMeCustomer(
+      {},
+      {
+        enabled: isManager && isAuthenticated && !!token,
+      }
+    );
 
   /**
    * Send OTP to user's email
@@ -48,8 +57,9 @@ export const useAuth = () => {
         email,
       };
 
-      const loginMutation = role === 'manager' ? managerLoginMutation : staffLoginMutation;
-      
+      const loginMutation =
+        role === "manager" ? managerLoginMutation : staffLoginMutation;
+
       const response = await loginMutation.mutateAsync({
         body: payload,
       });
@@ -58,7 +68,7 @@ export const useAuth = () => {
     } catch (error: any) {
       return {
         success: false,
-        message: error?.message || 'Failed to send OTP',
+        message: error?.message || "Failed to send OTP",
       };
     }
   };
@@ -73,54 +83,56 @@ export const useAuth = () => {
         otp,
       };
 
-      if(role === 'manager'){
-      const response = await verifyManagerOtpMutation.mutateAsync({
-        body: payload,
-      });
+      if (role === "manager") {
+        const response = await verifyManagerOtpMutation.mutateAsync({
+          body: payload,
+        });
 
-      if (response.data) {
-        const user = {
-          id: response.data.user.id,
-          email: response.data.user.email,
-          fullName: response.data.user.fullName,
-          customerId: response.data.user.customerId,
-          role: role, // Use the role passed from login screen
-        };
+        if (response.data) {
+          const user = {
+            id: response.data.user.id,
+            email: response.data.user.email,
+            oneSignalId: response.data.user.oneSignalId,
+            fullName: response.data.user.fullName,
+            customerId: response.data.user.customerId,
+            role: role, // Use the role passed from login screen
+          };
 
-        // Save to Zustand store
-        setAuth(user, response.data.token);
+          // Save to Zustand store
+          setAuth(user, response.data.token);
 
-        // Navigation will be handled by the component
-        return { success: true };
+          // Navigation will be handled by the component
+          return { success: true, userId: user.id };
+        }
       }
-    }
 
-    if(role === 'general'){
-      const response = await verifyUserOtpMutation.mutateAsync({
-        body: payload,
-      });
+      if (role === "general") {
+        const response = await verifyUserOtpMutation.mutateAsync({
+          body: payload,
+        });
 
-      if (response.data) {
-        const user: User = {
-          id: response.data.user.id,
-          email: response.data.user.email,
-          fullName: response.data.user.fullName,
-          role: role, // Use the role passed from login screen
-        };
+        if (response.data) {
+          const user: User = {
+            id: response.data.user.id,
+            email: response.data.user.email,
+            oneSignalId: response.data.user.oneSignalId,
+            fullName: response.data.user.fullName,
+            role: role, // Use the role passed from login screen
+          };
 
-        // Save to Zustand store
-        setAuth(user, response.data.token);
+          // Save to Zustand store
+          setAuth(user, response.data.token);
 
-        // Navigation will be handled by the component
-        return { success: true };
+          // Navigation will be handled by the component
+          return { success: true, userId: user.id };
+        }
       }
-    }
 
-      return { success: false, message: 'Invalid OTP' };
+      return { success: false, message: "Invalid OTP" };
     } catch (error: any) {
       return {
         success: false,
-        message: error?.message || 'Failed to verify OTP',
+        message: error?.message || "Failed to verify OTP",
       };
     }
   };
@@ -144,10 +156,12 @@ export const useAuth = () => {
     sendOtp,
     verifyOtp,
     logout,
-    refetchUser : isManager ? refetchManager : refetchUser,
+    refetchUser: isManager ? refetchManager : refetchUser,
 
     // Mutation states
-    isSendingOtp: staffLoginMutation.isPending || managerLoginMutation.isPending,
-    isVerifyingOtp: verifyUserOtpMutation.isPending || verifyManagerOtpMutation.isPending,
+    isSendingOtp:
+      staffLoginMutation.isPending || managerLoginMutation.isPending,
+    isVerifyingOtp:
+      verifyUserOtpMutation.isPending || verifyManagerOtpMutation.isPending,
   };
 };
