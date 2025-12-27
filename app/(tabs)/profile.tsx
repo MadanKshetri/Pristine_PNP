@@ -1,8 +1,15 @@
-import { Button, Card, ScreenHeader } from "@/src/components/ui";
+import { Card, ScreenHeader } from "@/src/components/ui";
 import { useAuth } from "@/src/features/auth";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -10,10 +17,7 @@ export default function ProfileScreen() {
 
   const handleLogout = () => {
     Alert.alert("Logout", "Are you sure you want to logout?", [
-      {
-        text: "Cancel",
-        style: "cancel",
-      },
+      { text: "Cancel", style: "cancel" },
       {
         text: "Logout",
         style: "destructive",
@@ -25,88 +29,119 @@ export default function ProfileScreen() {
     ]);
   };
 
+  const navigateToIncidents = () => {
+    if (user?.role === "manager") {
+      router.push("/incidents/manager-list" as any);
+    } else {
+      router.push("/incidents/staff-list" as any);
+    }
+  };
+
   return (
-    <ScrollView style={styles.container}>
-      <ScreenHeader title="Profile" />
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <ScreenHeader title="Profile" showBackButton={false} />
 
-      <View className="px-6 py-8">
-        {/* User Info Card */}
-        <Card variant="elevated" padding="lg" className="mb-6">
-          <View className="items-center mb-6">
-            {/* Avatar */}
-            <View className="w-24 h-24 bg-blue-100 rounded-full items-center justify-center mb-4 mt-4">
-              <Ionicons name="person" size={48} color="#3B82F6" />
-            </View>
+      <View className="px-5 py-6">
+        {/* Compact User Info Card */}
+        <Card
+          variant="elevated"
+          padding="sm"
+          className="mb-6 flex-row items-center p-4"
+        >
+          <View className="w-16 h-16 bg-blue-100 rounded-full items-center justify-center mr-4">
+            <Ionicons name="person" size={32} color="#3B82F6" />
+          </View>
 
-            {/* Name */}
-            <Text className="text-2xl font-bold text-gray-900 mb-1">
+          <View className="flex-1">
+            <Text className="text-lg font-bold text-gray-900 leading-tight">
               {user?.fullName || "User"}
             </Text>
-
-            {/* Email */}
-            <Text className="text-base text-gray-600 mb-2">
+            <Text className="text-sm text-gray-500 mb-1">
               {user?.email || "email@example.com"}
             </Text>
-
-            {/* Role Badge */}
-            <View className="bg-blue-100 px-4 py-1.5 rounded-full">
-              <Text className="text-sm font-semibold text-blue-600 capitalize">
-                {user?.role || "user"}
-              </Text>
+            <View className="flex-row">
+              <View className="bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-100">
+                <Text className="text-xs font-semibold text-blue-600 capitalize">
+                  {user?.role || "user"}
+                </Text>
+              </View>
             </View>
           </View>
         </Card>
 
-        {/* Quick Actions */}
-        <Card variant="elevated" padding="md" className="mb-6 p-4">
-          <Text className="text-xl font-semibold text-gray-900 mb-3">
-            Quick Actions
-          </Text>
-
-          {/* Settings Button */}
-          <View className="border-b border-gray-100 pb-3 mb-3">
-            <View className="flex-row items-center">
-              <View className="w-10 h-10 bg-gray-100 rounded-full items-center justify-center mr-3">
-                <Ionicons name="settings-outline" size={20} color="#6B7280" />
-              </View>
-              <View className="flex-1">
-                <Text className="text-base font-medium text-gray-900">
-                  Settings
-                </Text>
-                <Text className="text-xs text-gray-500">App preferences</Text>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
+        {/* Workplace Menu */}
+        <Text className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 ml-1">
+          Workplace
+        </Text>
+        <Card
+          variant="default"
+          padding="none"
+          className="mb-6 overflow-hidden border border-gray-100 bg-white"
+        >
+          <TouchableOpacity
+            onPress={navigateToIncidents}
+            className="flex-row items-center p-4 border-b border-gray-50 active:bg-gray-50"
+          >
+            <View className="w-9 h-9 bg-red-50 rounded-lg items-center justify-center mr-3">
+              <Ionicons name="warning-outline" size={20} color="#EF4444" />
             </View>
-          </View>
+            <View className="flex-1">
+              <Text className="text-base font-medium text-gray-900">
+                Incident Reports
+              </Text>
+              <Text className="text-xs text-gray-500">
+                {user?.role === "manager"
+                  ? "View and manage reports"
+                  : "Report an issue at a site"}
+              </Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#D1D5DB" />
+          </TouchableOpacity>
+        </Card>
 
-          {/* Help Button */}
-          <View className="flex-row items-center">
-            <View className="w-10 h-10 bg-gray-100 rounded-full items-center justify-center mr-3">
+        {/* Account Menu */}
+        <Text className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 ml-1">
+          Account
+        </Text>
+        <Card
+          variant="default"
+          padding="none"
+          className="mb-6 overflow-hidden border border-gray-100 bg-white"
+        >
+          <TouchableOpacity className="flex-row items-center p-4 border-b border-gray-50 active:bg-gray-50">
+            <View className="w-9 h-9 bg-gray-50 rounded-lg items-center justify-center mr-3">
+              <Ionicons name="settings-outline" size={20} color="#6B7280" />
+            </View>
+            <View className="flex-1">
+              <Text className="text-base font-medium text-gray-900">
+                Settings
+              </Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#D1D5DB" />
+          </TouchableOpacity>
+
+          <TouchableOpacity className="flex-row items-center p-4 active:bg-gray-50">
+            <View className="w-9 h-9 bg-gray-50 rounded-lg items-center justify-center mr-3">
               <Ionicons name="help-circle-outline" size={20} color="#6B7280" />
             </View>
             <View className="flex-1">
               <Text className="text-base font-medium text-gray-900">
                 Help & Support
               </Text>
-              <Text className="text-xs text-gray-500">Get assistance</Text>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
-          </View>
+            <Ionicons name="chevron-forward" size={20} color="#D1D5DB" />
+          </TouchableOpacity>
         </Card>
 
-        {/* Logout Button */}
-        <Button
-          variant="danger"
+        <TouchableOpacity
           onPress={handleLogout}
-          fullWidth
-          size="lg"
-          className="bg-red-500"
+          className="flex-row items-center justify-center p-4 rounded-xl bg-red-50 active:bg-red-100"
         >
-          <View className="flex-row items-center justify-center">
-            <Ionicons name="log-out-outline" size={20} color="#000000" />
-            <Text className="text-lg font-bold ml-2">Logout</Text>
-          </View>
-        </Button>
+          <Ionicons name="log-out-outline" size={20} color="#EF4444" />
+          <Text className="text-base font-semibold text-red-600 ml-2">
+            Log Out
+          </Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );

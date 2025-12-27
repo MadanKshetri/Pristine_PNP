@@ -1,10 +1,19 @@
-import { Button, LoadingSpinner } from '@/src/components/ui';
-import { useAuth } from '@/src/features/auth/hooks/useAuth';
-import type { UserRole } from '@/src/lib/store/authStore';
-import { Ionicons } from '@expo/vector-icons';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useEffect, useRef, useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Button, LoadingSpinner } from "@/src/components/ui";
+import { useAuth } from "@/src/features/auth/hooks/useAuth";
+import type { UserRole } from "@/src/lib/store/authStore";
+import { Ionicons } from "@expo/vector-icons";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { OneSignal } from "react-native-onesignal";
 
 const OTP_LENGTH = 6;
 
@@ -12,8 +21,8 @@ export const OtpVerifyScreen = () => {
   const router = useRouter();
   const params = useLocalSearchParams<{ email: string; role: UserRole }>();
   const { verifyOtp, sendOtp, isVerifyingOtp, isSendingOtp } = useAuth();
-  
-  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [timer, setTimer] = useState(60);
   const [canResend, setCanResend] = useState(false);
   const inputRefs = useRef<(TextInput | null)[]>([]);
@@ -43,33 +52,37 @@ export const OtpVerifyScreen = () => {
     }
 
     // Auto-submit when all filled
-    if (newOtp.every((digit) => digit !== '') && !isVerifyingOtp) {
-      handleVerify(newOtp.join(''));
+    if (newOtp.every((digit) => digit !== "") && !isVerifyingOtp) {
+      handleVerify(newOtp.join(""));
     }
   };
 
   const handleKeyPress = (e: any, index: number) => {
-    if (e.nativeEvent.key === 'Backspace' && !otp[index] && index > 0) {
+    if (e.nativeEvent.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
   };
 
   const handleVerify = async (otpCode?: string) => {
-    const code = otpCode || otp.join('');
+    const code = otpCode || otp.join("");
 
     if (code.length !== OTP_LENGTH) {
-      Alert.alert('Error', 'Please enter complete OTP');
+      Alert.alert("Error", "Please enter complete OTP");
       return;
     }
 
     const result = await verifyOtp(params.email, code, params.role as UserRole);
 
-    if (result.success) {
+    if (result.success && result.userId) {
+      // Login to OneSignal
+      OneSignal.login(result.userId);
+      console.log("Logged in to OneSignal with External ID:", result.userId);
+
       // Navigate to main app after successful verification
-      router.replace('/(tabs)/jobs');
+      router.replace("/(tabs)/jobs");
     } else {
-      Alert.alert('Error', result.message || 'Invalid OTP');
-      setOtp(['', '', '', '', '', '']);
+      Alert.alert("Error", result.message || "Invalid OTP");
+      setOtp(["", "", "", "", "", ""]);
       inputRefs.current[0]?.focus();
     }
   };
@@ -80,12 +93,12 @@ export const OtpVerifyScreen = () => {
     const result = await sendOtp(params.email, params.role as UserRole);
 
     if (result.success) {
-      Alert.alert('Success', 'OTP sent successfully');
+      Alert.alert("Success", "OTP sent successfully");
       setTimer(60);
       setCanResend(false);
-      setOtp(['', '', '', '', '', '']);
+      setOtp(["", "", "", "", "", ""]);
     } else {
-      Alert.alert('Error', result.message || 'Failed to resend OTP');
+      Alert.alert("Error", result.message || "Failed to resend OTP");
     }
   };
 
@@ -99,9 +112,9 @@ export const OtpVerifyScreen = () => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
       className="flex-1 bg-white"
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
     >
       <View className="flex-1 px-6 justify-center py-8">
         {/* Header */}
@@ -136,15 +149,15 @@ export const OtpVerifyScreen = () => {
                   width: 48,
                   height: 64,
                   borderWidth: 2,
-                  borderColor: otp[index] ? '#3B82F6' : '#D1D5DB',
-                  backgroundColor: otp[index] ? '#EFF6FF' : '#FFFFFF',
+                  borderColor: otp[index] ? "#3B82F6" : "#D1D5DB",
+                  backgroundColor: otp[index] ? "#EFF6FF" : "#FFFFFF",
                   borderRadius: 16,
-                  textAlign: 'center',
+                  textAlign: "center",
                   fontSize: 24,
                   marginBottom: 24,
-                  fontWeight: '700',
-                  color: '#111827',
-                  shadowColor: otp[index] ? '#3B82F6' : '#000',
+                  fontWeight: "700",
+                  color: "#111827",
+                  shadowColor: otp[index] ? "#3B82F6" : "#000",
                   shadowOffset: { width: 0, height: 2 },
                   shadowOpacity: otp[index] ? 0.2 : 0.05,
                   shadowRadius: 4,
@@ -169,7 +182,9 @@ export const OtpVerifyScreen = () => {
           size="lg"
           className="mb-8 shadow-xl"
         >
-          <Text className="text-white text-lg font-bold">Verify & Continue</Text>
+          <Text className="text-white text-lg font-bold">
+            Verify & Continue
+          </Text>
         </Button>
 
         {/* Resend OTP */}
