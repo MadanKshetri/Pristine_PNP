@@ -11,6 +11,7 @@ import {
 } from "lucide-react-native";
 import React from "react";
 import {
+  Platform,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -95,10 +96,19 @@ export const HomeScreen = ({
       }
     >
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Dashboard</Text>
-        <Text style={styles.headerSubtitle}>
-          Welcome back, {user?.fullName || user?.email || "User"}!
-        </Text>
+        <View style={styles.headerContent}>
+          <View>
+            <Text style={styles.headerSubtitle}>Welcome back,</Text>
+            <Text style={styles.headerTitle}>
+              {user?.fullName?.split(" ")[0] || "User"}
+            </Text>
+          </View>
+          <View style={styles.profileButton}>
+            <Text style={styles.profileInitials}>
+              {(user?.fullName?.[0] || user?.email?.[0] || "U").toUpperCase()}
+            </Text>
+          </View>
+        </View>
       </View>
 
       <View style={styles.analyticsContainer}>
@@ -136,7 +146,7 @@ export const HomeScreen = ({
                   <View style={styles.jobTitleContainer}>
                     <Text style={styles.jobTitle}>{job.title}</Text>
                     <Text style={styles.jobClient}>
-                      {job.site?.city || "No location"}
+                      {job.site?.address.address || "No location"}
                     </Text>
                   </View>
                   <View style={styles.statusBadgeRunning}>
@@ -180,7 +190,7 @@ export const HomeScreen = ({
                   <View style={styles.jobTitleContainer}>
                     <Text style={styles.jobTitle}>{job.title}</Text>
                     <Text style={styles.jobClient}>
-                      {job.site?.city || "No location"}
+                      {job.site?.address.address || "No location"}
                     </Text>
                   </View>
                   <View style={styles.statusBadgeScheduled}>
@@ -233,28 +243,44 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8fafc",
   },
   header: {
-    paddingHorizontal: 16,
-    paddingTop: 60,
-    paddingBottom: 24,
+    paddingHorizontal: 20,
+    paddingTop: Platform.OS === "android" ? 20 : 40,
+    paddingBottom: 20,
     backgroundColor: "#ffffff",
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 3,
+    borderBottomWidth: 1,
+    borderBottomColor: "#f1f5f9",
+  },
+  headerContent: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   headerTitle: {
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: "700",
     color: "#0f172a",
-    marginBottom: 4,
+    letterSpacing: -0.5,
   },
   headerSubtitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#64748b",
     fontWeight: "500",
+    marginBottom: 4,
+  },
+  profileButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#eff6ff",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#dbeafe",
+  },
+  profileInitials: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#3b82f6",
   },
   analyticsContainer: {
     flexDirection: "row",

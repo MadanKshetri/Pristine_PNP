@@ -39,7 +39,7 @@ export default function ProfileScreen() {
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <ScreenHeader title="Profile" showBackButton={false} />
+      <ScreenHeader title="Profile" showBackButton={true} />
 
       <View className="px-5 py-6">
         {/* Compact User Info Card */}

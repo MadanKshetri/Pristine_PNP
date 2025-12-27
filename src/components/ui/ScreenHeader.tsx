@@ -1,7 +1,13 @@
 import { useRouter } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export interface ScreenHeaderProps {
   title: string;
@@ -62,48 +68,44 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
-    paddingTop: 60,
-    paddingBottom: 24,
+    paddingHorizontal: 20,
+    paddingTop: Platform.OS === "android" ? 15 : 30,
+    paddingBottom: 20,
     backgroundColor: "#ffffff",
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 3,
+    borderBottomWidth: 1,
+    borderBottomColor: "#f1f5f9",
   },
   backButton: {
     width: 40,
     height: 40,
-    borderRadius: 12,
-    backgroundColor: "#f1f5f9",
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 12,
+    marginRight: 8,
+    borderRadius: 20,
+    // Removing background color for cleaner look
   },
   textContainer: {
     flex: 1,
+    justifyContent: "center",
   },
   title: {
-    fontSize: 28,
-    fontWeight: "700",
+    fontSize: 20,
+    fontWeight: "600",
     color: "#0f172a",
-    marginBottom: 4,
+    letterSpacing: -0.5,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 13,
     color: "#64748b",
-    fontWeight: "500",
+    marginTop: 2,
+    fontWeight: "400",
   },
   rightButton: {
     width: 40,
     height: 40,
-    borderRadius: 12,
-    backgroundColor: "#f1f5f9",
     alignItems: "center",
     justifyContent: "center",
-    marginLeft: 12,
+    marginLeft: 8,
+    borderRadius: 20,
   },
 });
