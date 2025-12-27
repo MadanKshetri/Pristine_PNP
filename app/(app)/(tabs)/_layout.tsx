@@ -1,13 +1,8 @@
-import { useAuthStore } from "@/src/lib/store/authStore";
 import { Ionicons } from "@expo/vector-icons";
-import { Redirect, Tabs } from "expo-router";
+import { Tabs } from "expo-router";
 
 export default function TabsLayout() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-
-  if (!isAuthenticated) {
-    return <Redirect href="/(auth)/login" />;
-  }
+  // Redirect logic is handled in the root layout
 
   return (
     <Tabs

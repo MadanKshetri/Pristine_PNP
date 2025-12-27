@@ -1,7 +1,9 @@
 import { useAuthStore } from "@/src/lib/store/authStore";
 import type { QueriesContext } from "./queriesContext";
 
-const baseUrl = "http://192.168.1.83:5000";
+// const baseUrl = "http://192.168.1.83:5000";
+const baseUrl = "http://192.168.100.103:5000";
+
 // const baseUrl = "https://cmsapi.poudelsudeep.com.np";
 
 // Function to get the current auth token

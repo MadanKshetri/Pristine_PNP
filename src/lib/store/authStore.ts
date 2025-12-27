@@ -19,7 +19,7 @@ export interface User {
   customerId?: string;
 }
 
-interface AuthState {
+export interface AuthState {
   // State
   user: User | null;
   token: string | null;

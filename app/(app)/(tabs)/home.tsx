@@ -2,10 +2,12 @@ import {
   useManagerControllerGetSummary,
   useStaffControllerGetSummary,
 } from "@/fetchers/queriesComponents";
+import { LoadingSpinner } from "@/src/components/ui";
 import { HomeScreen } from "@/src/features/home";
 import { useJobsByRole } from "@/src/features/jobs/hooks/useJobsByRole";
 import { useAuthStore } from "@/src/lib/store/authStore";
-import { useCallback } from "react";
+import React, { useCallback } from "react";
+import { View } from "react-native";
 
 export default function HomeTab() {
   const user = useAuthStore((state) => state.user);
@@ -65,7 +67,11 @@ export default function HomeTab() {
     false;
 
   if (!user) {
-    return <div>Loading...</div>;
+    return (
+      <View>
+        <LoadingSpinner />;
+      </View>
+    );
   }
 
   return (
