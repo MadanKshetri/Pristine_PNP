@@ -13,7 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { OneSignal } from "react-native-onesignal";
+// import { OneSignal } from "react-native-onesignal";
 
 const OTP_LENGTH = 6;
 
@@ -75,11 +75,11 @@ export const OtpVerifyScreen = () => {
 
     if (result.success && result.userId) {
       // Login to OneSignal
-      OneSignal.login(result.userId);
+      // OneSignal.login(result.userId);
       console.log("Logged in to OneSignal with External ID:", result.userId);
 
       // Navigate to main app after successful verification
-      router.replace("/(tabs)/jobs");
+      router.replace("/(app)/(tabs)/jobs");
     } else {
       Alert.alert("Error", result.message || "Invalid OTP");
       setOtp(["", "", "", "", "", ""]);

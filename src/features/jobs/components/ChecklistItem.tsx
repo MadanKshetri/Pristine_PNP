@@ -91,7 +91,7 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
   const statusStyle = getStatusColor(checklist.status);
 
   const handlePickImage = async () => {
-    if (jobStatus === "scheduled") {
+    if (jobStatus === "Scheduled") {
       showAlert(
         "Job Not Started",
         "Please start the job before uploading photos.",
@@ -144,7 +144,7 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
   };
 
   const handleTakePhoto = async () => {
-    if (jobStatus === "scheduled") {
+    if (jobStatus === "Scheduled") {
       showAlert(
         "Job Not Started",
         "Please start the job before taking photos.",
@@ -197,7 +197,7 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
   const handleChangeStatus = async (
     newStatus: UpdateChecklistSowRequestDto["status"]
   ) => {
-    if (jobStatus === "scheduled" && newStatus !== "Pending") {
+    if (jobStatus === "Scheduled" && newStatus !== "Pending") {
       showAlert("Job Not Started", "Please start the job first.", (onClose) => (
         <AlertButton onPress={onClose}>OK</AlertButton>
       ));
@@ -396,7 +396,7 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
             onPress={showPhotoOptions}
             style={[
               styles.photoBtn,
-              jobStatus !== "scheduled" && !isUpdatingChecklist
+              jobStatus !== "Scheduled" && !isUpdatingChecklist
                 ? styles.photoBtnEnabled
                 : styles.photoBtnDisabled,
             ]}
@@ -410,7 +410,7 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
                   name="camera"
                   size={18}
                   color={
-                    jobStatus !== "scheduled" && !isUpdatingChecklist
+                    jobStatus !== "Scheduled" && !isUpdatingChecklist
                       ? "#3B82F6"
                       : "#9CA3AF"
                   }
@@ -420,7 +420,7 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
                     styles.photoBtnText,
                     {
                       color:
-                        jobStatus !== "scheduled" && !isUpdatingChecklist
+                        jobStatus !== "Scheduled" && !isUpdatingChecklist
                           ? "#2563EB"
                           : "#9CA3AF",
                     },

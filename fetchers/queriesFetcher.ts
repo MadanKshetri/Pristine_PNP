@@ -2,7 +2,8 @@ import { useAuthStore } from "@/src/lib/store/authStore";
 import type { QueriesContext } from "./queriesContext";
 
 // const baseUrl = "http://192.168.1.83:5000";
-const baseUrl = "http://192.168.100.103:5000";
+// const baseUrl = "http://192.168.100.103:5000";
+const baseUrl = process.env.EXPO_PUBLIC_API_URL ;
 
 // const baseUrl = "https://cmsapi.poudelsudeep.com.np";
 
@@ -97,7 +98,7 @@ export async function queriesFetch<
             : JSON.stringify(body)
           : undefined,
         headers: requestHeaders,
-      }
+      },
     );
     if (!response.ok) {
       // Handle 401 Unauthorized - logout and redirect
@@ -141,7 +142,7 @@ export async function queriesFetch<
 const resolveUrl = (
   url: string,
   queryParams: Record<string, string> = {},
-  pathParams: Record<string, string> = {}
+  pathParams: Record<string, string> = {},
 ) => {
   let query = new URLSearchParams(queryParams).toString();
   if (query) query = `?${query}`;

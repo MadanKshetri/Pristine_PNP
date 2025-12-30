@@ -1,8 +1,7 @@
-import { useManagerJobControllerJobs } from "@/fetchers/queriesComponents";
+import { useManagerJobRequestControllerJobRequests } from "@/fetchers/queriesComponents";
 import { ScreenHeader } from "@/src/components/ui";
 import { useAuth } from "@/src/features/auth/hooks/useAuth";
-import { ScheduleJobCard } from "@/src/features/jobs/components/ScheduleJobCard";
-import { Job } from "@/src/features/jobs/types";
+import { JobRequestCard } from "@/src/features/jobs/components/JobRequestCard";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
@@ -23,19 +22,16 @@ export default function JobRequestsScreen() {
     if (user && user.role !== "manager") {
       router.replace("/" as any);
     }
-  }, [user]);
+  }, [user, router]);
 
-  const { data, isLoading, refetch } = useManagerJobControllerJobs({
-    queryParams: {
-      // We can add filters here if needed, but for now fetch all
-    },
-  });
+  const { data, isLoading, refetch } =
+    useManagerJobRequestControllerJobRequests({
+      queryParams: {
+        // We can add filters here if needed, but for now fetch all
+      },
+    });
 
-  const jobs = (data?.data as Job[]) || [];
-
-  const handleJobPress = (jobId: string) => {
-    router.push(`/job/${jobId}` as any);
-  };
+  const jobs = data?.data || [];
 
   const handleAddRequest = () => {
     router.push("/jobs/request" as any);
@@ -51,9 +47,7 @@ export default function JobRequestsScreen() {
       />
       <FlatList
         data={jobs}
-        renderItem={({ item }) => (
-          <ScheduleJobCard job={item} onPress={handleJobPress} />
-        )}
+        renderItem={({ item }) => <JobRequestCard request={item} />}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
         refreshControl={

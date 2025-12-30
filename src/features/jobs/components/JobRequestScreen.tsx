@@ -1,10 +1,9 @@
 import {
-  useAdminJobControllerCreateJob,
   useManagerControllerGetSiteSummary,
+  useManagerJobRequestControllerRequestJob
 } from "@/fetchers/queriesComponents";
 import {
-  CreateJobRequestDto,
-  ManagerListSiteDto,
+  ManagerListSiteDto
 } from "@/fetchers/queriesSchemas";
 import { Button, Input, ScreenHeader } from "@/src/components/ui";
 import { useAuth } from "@/src/features/auth/hooks/useAuth";
@@ -44,7 +43,7 @@ export const JobRequestScreen: React.FC = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [selectedSite, setSelectedSite] = useState<ManagerListSiteDto | null>(
-    null
+    null,
   );
   const [showSitePicker, setShowSitePicker] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -54,7 +53,7 @@ export const JobRequestScreen: React.FC = () => {
 
   const { data: sitesData, isLoading: isLoadingSites } =
     useManagerControllerGetSiteSummary({});
-  const createJobMutation = useAdminJobControllerCreateJob();
+  const createJobMutation = useManagerJobRequestControllerRequestJob();
 
   const sites = sitesData?.data || [];
 
@@ -74,17 +73,13 @@ export const JobRequestScreen: React.FC = () => {
     }
 
     try {
-      const payload: CreateJobRequestDto = {
-        title,
-        description,
-        siteId: selectedSite.id,
-        customerId: selectedSite.customer.id,
-        startAt: date.toISOString(),
-        checklists: [],
-      };
-
       await createJobMutation.mutateAsync({
-        body: payload,
+        body: {
+          siteId: selectedSite.id,
+          description: description,
+          title: title,
+          startAt: date.toISOString(),
+        },
       });
 
       Alert.alert("Success", "Job request submitted successfully", [

@@ -351,6 +351,8 @@ export type GetSiteDto = {
   title: string;
   description: string | null;
   location: LocationDto;
+  siteCleaners: IdNameDto[];
+  siteManagers: IdNameDto[];
   customer: IdNameDto;
   createdBy: IdNameDto | null;
 };
@@ -414,6 +416,7 @@ export type ListJobDto = {
   id: string;
   title: string;
   jobNumber: number;
+  customer: IdNameDto | null;
   assignedStaff: IdNameDto | null;
   startAt: string | null;
   createdAt: string;
@@ -491,6 +494,10 @@ export type CreateJobChecklistDto = {
 
 export type CreateJobRequestDto = {
   description?: string;
+  /**
+   * @format uuid
+   */
+  jobRequestId?: string;
   title: string;
   siteId: string;
   /**
@@ -512,6 +519,46 @@ export type UpdateJobRequestDto = {
    */
   startAt?: string;
   status?: "Scheduled" | "In Progress" | "Completed" | "Cancelled";
+};
+
+export type AdminListJobRequestsSiteDto = {
+  /**
+   * @format uuid
+   */
+  id: string;
+  title: string;
+  location: LocationDto;
+};
+
+export type AdminListJobRequestsDto = {
+  description?: string | null;
+  /**
+   * @format uuid
+   */
+  id: string;
+  title: string;
+  isApproved: boolean;
+  /**
+   * @format date-time
+   */
+  startAt: string;
+  site: AdminListJobRequestsSiteDto;
+};
+
+export type AdminListJobRequestResponseDto = {
+  message: string;
+  data: AdminListJobRequestsDto[];
+  pagination: PaginationResponseDto;
+};
+
+export type JobRequestDto = {
+  description?: string;
+  title: string;
+  startAt: string;
+  /**
+   * @format uuid
+   */
+  siteId: string;
 };
 
 export type AdminGetIncidentSiteDto = {
@@ -581,6 +628,32 @@ export type ManagerListSiteDto = {
 export type ManagerListSiteResponseDto = {
   message: string;
   data: ManagerListSiteDto[];
+  pagination: PaginationResponseDto;
+};
+
+export type ManagerListJobRequestsSiteDto = {
+  /**
+   * @format uuid
+   */
+  id: string;
+  title: string;
+  location: LocationDto;
+};
+
+export type ManagerListJobRequestsDto = {
+  description?: string | null;
+  id: string;
+  title: string;
+  /**
+   * @format date-time
+   */
+  startAt: string;
+  site: ManagerListJobRequestsSiteDto;
+};
+
+export type ManagerListJobRequestResponseDto = {
+  message: string;
+  data: ManagerListJobRequestsDto[];
   pagination: PaginationResponseDto;
 };
 

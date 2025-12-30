@@ -1,13 +1,8 @@
 import { useRouter } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import React from "react";
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Edge, SafeAreaView } from "react-native-safe-area-context";
 
 export interface ScreenHeaderProps {
   title: string;
@@ -16,6 +11,7 @@ export interface ScreenHeaderProps {
   onBackPress?: () => void;
   rightAction?: React.ReactNode;
   onRightAction?: () => void;
+  edges?: Edge[];
 }
 
 export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
@@ -25,6 +21,7 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
   onBackPress,
   rightAction,
   onRightAction,
+  edges = ["top"],
 }) => {
   const router = useRouter();
 
@@ -37,43 +34,46 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
   };
 
   return (
-    <View style={styles.header}>
-      {showBackButton && (
-        <TouchableOpacity
-          onPress={handleBackPress}
-          style={styles.backButton}
-          activeOpacity={0.7}
-        >
-          <ArrowLeft size={24} color="#1F2937" strokeWidth={2} />
-        </TouchableOpacity>
-      )}
-      <View style={styles.textContainer}>
-        <Text style={styles.title}>{title}</Text>
-        {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
+    <SafeAreaView edges={edges} style={styles.safeArea}>
+      <View style={styles.header}>
+        {showBackButton && (
+          <TouchableOpacity
+            onPress={handleBackPress}
+            style={styles.backButton}
+            activeOpacity={0.7}
+          >
+            <ArrowLeft size={24} color="#1F2937" strokeWidth={2} />
+          </TouchableOpacity>
+        )}
+        <View style={styles.textContainer}>
+          <Text style={styles.title}>{title}</Text>
+          {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
+        </View>
+        {rightAction && (
+          <TouchableOpacity
+            onPress={onRightAction}
+            style={styles.rightButton}
+            activeOpacity={0.7}
+          >
+            {rightAction}
+          </TouchableOpacity>
+        )}
       </View>
-      {rightAction && (
-        <TouchableOpacity
-          onPress={onRightAction}
-          style={styles.rightButton}
-          activeOpacity={0.7}
-        >
-          {rightAction}
-        </TouchableOpacity>
-      )}
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    backgroundColor: "#ffffff",
+    borderBottomWidth: 1,
+    borderBottomColor: "#f1f5f9",
+  },
   header: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === "android" ? 15 : 30,
-    paddingBottom: 20,
-    backgroundColor: "#ffffff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#f1f5f9",
+    paddingVertical: 16,
   },
   backButton: {
     width: 40,
