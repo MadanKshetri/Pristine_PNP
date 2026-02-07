@@ -93,7 +93,7 @@ export const useSuspenseAuthControllerGetMeUser = <
   });
 };
 
-export const useAuthControllerGetMeUser = <TData = Schemas.GetMeResponseDto>(
+export const useAuthControllerGetMeUser = <TData = Schemas.GetMeResponseDto,>(
   variables: AuthControllerGetMeUserVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -375,6 +375,150 @@ export const useAdminCustomerControllerCreate = (
   });
 };
 
+export type AdminCustomerControllerCustomerManagersPathParams = {
+  /**
+   * @format uuid
+   */
+  customerId: string;
+};
+
+export type AdminCustomerControllerCustomerManagersQueryParams = {
+  /**
+   * @minimum 0
+   */
+  take?: number;
+  /**
+   * @minimum 0
+   */
+  page?: number;
+  search?: string;
+};
+
+export type AdminCustomerControllerCustomerManagersError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AdminCustomerControllerCustomerManagersVariables = {
+  pathParams: AdminCustomerControllerCustomerManagersPathParams;
+  queryParams?: AdminCustomerControllerCustomerManagersQueryParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminCustomerControllerCustomerManagers = (
+  variables: AdminCustomerControllerCustomerManagersVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.ListCustomerManagersResponseDto,
+    AdminCustomerControllerCustomerManagersError,
+    undefined,
+    {},
+    AdminCustomerControllerCustomerManagersQueryParams,
+    AdminCustomerControllerCustomerManagersPathParams
+  >({
+    url: "/admin/customer/managers/{customerId}",
+    method: "get",
+    ...variables,
+    signal,
+  });
+
+export function adminCustomerControllerCustomerManagersQuery(
+  variables: AdminCustomerControllerCustomerManagersVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (
+    options: QueryFnOptions,
+  ) => Promise<Schemas.ListCustomerManagersResponseDto>;
+};
+
+export function adminCustomerControllerCustomerManagersQuery(
+  variables:
+    | AdminCustomerControllerCustomerManagersVariables
+    | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((
+        options: QueryFnOptions,
+      ) => Promise<Schemas.ListCustomerManagersResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function adminCustomerControllerCustomerManagersQuery(
+  variables:
+    | AdminCustomerControllerCustomerManagersVariables
+    | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/admin/customer/managers/{customerId}",
+      operationId: "adminCustomerControllerCustomerManagers",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchAdminCustomerControllerCustomerManagers(variables, signal),
+  };
+}
+
+export const useSuspenseAdminCustomerControllerCustomerManagers = <
+  TData = Schemas.ListCustomerManagersResponseDto,
+>(
+  variables: AdminCustomerControllerCustomerManagersVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListCustomerManagersResponseDto,
+      AdminCustomerControllerCustomerManagersError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.ListCustomerManagersResponseDto,
+    AdminCustomerControllerCustomerManagersError,
+    TData
+  >({
+    ...adminCustomerControllerCustomerManagersQuery(
+      deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useAdminCustomerControllerCustomerManagers = <
+  TData = Schemas.ListCustomerManagersResponseDto,
+>(
+  variables:
+    | AdminCustomerControllerCustomerManagersVariables
+    | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListCustomerManagersResponseDto,
+      AdminCustomerControllerCustomerManagersError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.ListCustomerManagersResponseDto,
+    AdminCustomerControllerCustomerManagersError,
+    TData
+  >({
+    ...adminCustomerControllerCustomerManagersQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
 export type AdminCustomerControllerCustomerPathParams = {
   /**
    * @format uuid
@@ -502,7 +646,7 @@ export type AdminCustomerControllerUpdateError =
   Fetcher.ErrorWrapper<undefined>;
 
 export type AdminCustomerControllerUpdateVariables = {
-  body?: Schemas.UpdateCustomerRequestDto;
+  body: Schemas.UpdateCustomerRequestDto;
   pathParams: AdminCustomerControllerUpdatePathParams;
 } & QueriesContext["fetcherOptions"];
 
@@ -608,10 +752,6 @@ export type AdminUserControllerGetManagersQueryParams = {
    * @format date-time
    */
   dateTo?: string;
-  /**
-   * @format uuid
-   */
-  customerId?: string;
 };
 
 export type AdminUserControllerGetManagersError =
@@ -723,7 +863,7 @@ export const useAdminUserControllerGetManagers = <
   });
 };
 
-export type AdminUserControllerGetGeneralsQueryParams = {
+export type AdminUserControllerGetCustomerUsersQueryParams = {
   /**
    * @minimum 0
    */
@@ -745,6 +885,145 @@ export type AdminUserControllerGetGeneralsQueryParams = {
    * @format uuid
    */
   customerId?: string;
+};
+
+export type AdminUserControllerGetCustomerUsersError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AdminUserControllerGetCustomerUsersVariables = {
+  queryParams?: AdminUserControllerGetCustomerUsersQueryParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminUserControllerGetCustomerUsers = (
+  variables: AdminUserControllerGetCustomerUsersVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.ListCustomerUserResponseDto,
+    AdminUserControllerGetCustomerUsersError,
+    undefined,
+    {},
+    AdminUserControllerGetCustomerUsersQueryParams,
+    {}
+  >({ url: "/admin/user/customerUsers", method: "get", ...variables, signal });
+
+export function adminUserControllerGetCustomerUsersQuery(
+  variables: AdminUserControllerGetCustomerUsersVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (
+    options: QueryFnOptions,
+  ) => Promise<Schemas.ListCustomerUserResponseDto>;
+};
+
+export function adminUserControllerGetCustomerUsersQuery(
+  variables:
+    | AdminUserControllerGetCustomerUsersVariables
+    | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((
+        options: QueryFnOptions,
+      ) => Promise<Schemas.ListCustomerUserResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function adminUserControllerGetCustomerUsersQuery(
+  variables:
+    | AdminUserControllerGetCustomerUsersVariables
+    | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/admin/user/customerUsers",
+      operationId: "adminUserControllerGetCustomerUsers",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchAdminUserControllerGetCustomerUsers(variables, signal),
+  };
+}
+
+export const useSuspenseAdminUserControllerGetCustomerUsers = <
+  TData = Schemas.ListCustomerUserResponseDto,
+>(
+  variables: AdminUserControllerGetCustomerUsersVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListCustomerUserResponseDto,
+      AdminUserControllerGetCustomerUsersError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.ListCustomerUserResponseDto,
+    AdminUserControllerGetCustomerUsersError,
+    TData
+  >({
+    ...adminUserControllerGetCustomerUsersQuery(
+      deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useAdminUserControllerGetCustomerUsers = <
+  TData = Schemas.ListCustomerUserResponseDto,
+>(
+  variables:
+    | AdminUserControllerGetCustomerUsersVariables
+    | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListCustomerUserResponseDto,
+      AdminUserControllerGetCustomerUsersError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.ListCustomerUserResponseDto,
+    AdminUserControllerGetCustomerUsersError,
+    TData
+  >({
+    ...adminUserControllerGetCustomerUsersQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type AdminUserControllerGetGeneralsQueryParams = {
+  /**
+   * @minimum 0
+   */
+  take?: number;
+  /**
+   * @minimum 0
+   */
+  page?: number;
+  search?: string;
+  /**
+   * @format date-time
+   */
+  dateFrom?: string;
+  /**
+   * @format date-time
+   */
+  dateTo?: string;
 };
 
 export type AdminUserControllerGetGeneralsError =
@@ -860,7 +1139,7 @@ export type AdminUserControllerGetGeneralPathParams = {
   /**
    * @format uuid
    */
-  id: string;
+  cleanerId: string;
 };
 
 export type AdminUserControllerGetGeneralError =
@@ -881,7 +1160,12 @@ export const fetchAdminUserControllerGetGeneral = (
     {},
     {},
     AdminUserControllerGetGeneralPathParams
-  >({ url: "/admin/user/cleaner/{id}", method: "get", ...variables, signal });
+  >({
+    url: "/admin/user/cleaner/{cleanerId}",
+    method: "get",
+    ...variables,
+    signal,
+  });
 
 export function adminUserControllerGetGeneralQuery(
   variables: AdminUserControllerGetGeneralVariables,
@@ -904,7 +1188,7 @@ export function adminUserControllerGetGeneralQuery(
 ) {
   return {
     queryKey: queryKeyFn({
-      path: "/admin/user/cleaner/{id}",
+      path: "/admin/user/cleaner/{cleanerId}",
       operationId: "adminUserControllerGetGeneral",
       variables,
     }),
@@ -974,7 +1258,7 @@ export type AdminUserControllerUpdateGeneralPathParams = {
   /**
    * @format uuid
    */
-  id: string;
+  cleanerId: string;
 };
 
 export type AdminUserControllerUpdateGeneralError =
@@ -996,7 +1280,12 @@ export const fetchAdminUserControllerUpdateGeneral = (
     {},
     {},
     AdminUserControllerUpdateGeneralPathParams
-  >({ url: "/admin/user/cleaner/{id}", method: "patch", ...variables, signal });
+  >({
+    url: "/admin/user/cleaner/{cleanerId}",
+    method: "patch",
+    ...variables,
+    signal,
+  });
 
 export const useAdminUserControllerUpdateGeneral = (
   options?: Omit<
@@ -1022,11 +1311,189 @@ export const useAdminUserControllerUpdateGeneral = (
   });
 };
 
+export type AdminUserControllerGetCustomerUserPathParams = {
+  /**
+   * @format uuid
+   */
+  customerUserId: string;
+};
+
+export type AdminUserControllerGetCustomerUserError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AdminUserControllerGetCustomerUserVariables = {
+  pathParams: AdminUserControllerGetCustomerUserPathParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminUserControllerGetCustomerUser = (
+  variables: AdminUserControllerGetCustomerUserVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.GetManagerResponseDto,
+    AdminUserControllerGetCustomerUserError,
+    undefined,
+    {},
+    {},
+    AdminUserControllerGetCustomerUserPathParams
+  >({
+    url: "/admin/user/customerUser/{customerUserId}",
+    method: "get",
+    ...variables,
+    signal,
+  });
+
+export function adminUserControllerGetCustomerUserQuery(
+  variables: AdminUserControllerGetCustomerUserVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (options: QueryFnOptions) => Promise<Schemas.GetManagerResponseDto>;
+};
+
+export function adminUserControllerGetCustomerUserQuery(
+  variables: AdminUserControllerGetCustomerUserVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((options: QueryFnOptions) => Promise<Schemas.GetManagerResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function adminUserControllerGetCustomerUserQuery(
+  variables: AdminUserControllerGetCustomerUserVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/admin/user/customerUser/{customerUserId}",
+      operationId: "adminUserControllerGetCustomerUser",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchAdminUserControllerGetCustomerUser(variables, signal),
+  };
+}
+
+export const useSuspenseAdminUserControllerGetCustomerUser = <
+  TData = Schemas.GetManagerResponseDto,
+>(
+  variables: AdminUserControllerGetCustomerUserVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.GetManagerResponseDto,
+      AdminUserControllerGetCustomerUserError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.GetManagerResponseDto,
+    AdminUserControllerGetCustomerUserError,
+    TData
+  >({
+    ...adminUserControllerGetCustomerUserQuery(
+      deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useAdminUserControllerGetCustomerUser = <
+  TData = Schemas.GetManagerResponseDto,
+>(
+  variables: AdminUserControllerGetCustomerUserVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.GetManagerResponseDto,
+      AdminUserControllerGetCustomerUserError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.GetManagerResponseDto,
+    AdminUserControllerGetCustomerUserError,
+    TData
+  >({
+    ...adminUserControllerGetCustomerUserQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type AdminUserControllerUpdateCustomerUserPathParams = {
+  /**
+   * @format uuid
+   */
+  customerUserId: string;
+};
+
+export type AdminUserControllerUpdateCustomerUserError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AdminUserControllerUpdateCustomerUserVariables = {
+  body?: Schemas.UpdateCleanerDto;
+  pathParams: AdminUserControllerUpdateCustomerUserPathParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminUserControllerUpdateCustomerUser = (
+  variables: AdminUserControllerUpdateCustomerUserVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminUserControllerUpdateCustomerUserError,
+    Schemas.UpdateCleanerDto,
+    {},
+    {},
+    AdminUserControllerUpdateCustomerUserPathParams
+  >({
+    url: "/admin/user/customerUser/{customerUserId}",
+    method: "patch",
+    ...variables,
+    signal,
+  });
+
+export const useAdminUserControllerUpdateCustomerUser = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.MessageResponseWithIdDataDto,
+      AdminUserControllerUpdateCustomerUserError,
+      AdminUserControllerUpdateCustomerUserVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminUserControllerUpdateCustomerUserError,
+    AdminUserControllerUpdateCustomerUserVariables
+  >({
+    mutationFn: (variables: AdminUserControllerUpdateCustomerUserVariables) =>
+      fetchAdminUserControllerUpdateCustomerUser(
+        deepMerge(fetcherOptions, variables),
+      ),
+    ...options,
+  });
+};
+
 export type AdminUserControllerGetManagerPathParams = {
   /**
    * @format uuid
    */
-  id: string;
+  managerId: string;
 };
 
 export type AdminUserControllerGetManagerError =
@@ -1047,7 +1514,12 @@ export const fetchAdminUserControllerGetManager = (
     {},
     {},
     AdminUserControllerGetManagerPathParams
-  >({ url: "/admin/user/manager/{id}", method: "get", ...variables, signal });
+  >({
+    url: "/admin/user/manager/{managerId}",
+    method: "get",
+    ...variables,
+    signal,
+  });
 
 export function adminUserControllerGetManagerQuery(
   variables: AdminUserControllerGetManagerVariables,
@@ -1070,7 +1542,7 @@ export function adminUserControllerGetManagerQuery(
 ) {
   return {
     queryKey: queryKeyFn({
-      path: "/admin/user/manager/{id}",
+      path: "/admin/user/manager/{managerId}",
       operationId: "adminUserControllerGetManager",
       variables,
     }),
@@ -1140,7 +1612,7 @@ export type AdminUserControllerUpdateManagerPathParams = {
   /**
    * @format uuid
    */
-  id: string;
+  managerId: string;
 };
 
 export type AdminUserControllerUpdateManagerError =
@@ -1162,7 +1634,12 @@ export const fetchAdminUserControllerUpdateManager = (
     {},
     {},
     AdminUserControllerUpdateManagerPathParams
-  >({ url: "/admin/user/manager/{id}", method: "patch", ...variables, signal });
+  >({
+    url: "/admin/user/manager/{managerId}",
+    method: "patch",
+    ...variables,
+    signal,
+  });
 
 export const useAdminUserControllerUpdateManager = (
   options?: Omit<
@@ -1325,63 +1802,6 @@ export const useAdminUserControllerCreateCustomerUser = (
   });
 };
 
-export type AdminUserControllerUpdateCustomerUserPathParams = {
-  /**
-   * @format uuid
-   */
-  id: string;
-};
-
-export type AdminUserControllerUpdateCustomerUserError =
-  Fetcher.ErrorWrapper<undefined>;
-
-export type AdminUserControllerUpdateCustomerUserVariables = {
-  body?: Schemas.UpdateCleanerDto;
-  pathParams: AdminUserControllerUpdateCustomerUserPathParams;
-} & QueriesContext["fetcherOptions"];
-
-export const fetchAdminUserControllerUpdateCustomerUser = (
-  variables: AdminUserControllerUpdateCustomerUserVariables,
-  signal?: AbortSignal,
-) =>
-  queriesFetch<
-    Schemas.MessageResponseWithIdDataDto,
-    AdminUserControllerUpdateCustomerUserError,
-    Schemas.UpdateCleanerDto,
-    {},
-    {},
-    AdminUserControllerUpdateCustomerUserPathParams
-  >({
-    url: "/admin/user/customerUser/{id}",
-    method: "patch",
-    ...variables,
-    signal,
-  });
-
-export const useAdminUserControllerUpdateCustomerUser = (
-  options?: Omit<
-    reactQuery.UseMutationOptions<
-      Schemas.MessageResponseWithIdDataDto,
-      AdminUserControllerUpdateCustomerUserError,
-      AdminUserControllerUpdateCustomerUserVariables
-    >,
-    "mutationFn"
-  >,
-) => {
-  const { fetcherOptions } = useQueriesContext();
-  return reactQuery.useMutation<
-    Schemas.MessageResponseWithIdDataDto,
-    AdminUserControllerUpdateCustomerUserError,
-    AdminUserControllerUpdateCustomerUserVariables
-  >({
-    mutationFn: (variables: AdminUserControllerUpdateCustomerUserVariables) =>
-      fetchAdminUserControllerUpdateCustomerUser(
-        deepMerge(fetcherOptions, variables),
-      ),
-    ...options,
-  });
-};
-
 export type AdminUserControllerDeleteUserPathParams = {
   /**
    * @format uuid
@@ -1528,7 +1948,7 @@ export const useSuspenseAdminSowControllerSows = <
   });
 };
 
-export const useAdminSowControllerSows = <TData = Schemas.ListSOWResponseDto>(
+export const useAdminSowControllerSows = <TData = Schemas.ListSOWResponseDto,>(
   variables: AdminSowControllerSowsVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -1680,7 +2100,7 @@ export const useSuspenseAdminSowControllerSow = <
   });
 };
 
-export const useAdminSowControllerSow = <TData = Schemas.GetSOWResponseDto>(
+export const useAdminSowControllerSow = <TData = Schemas.GetSOWResponseDto,>(
   variables: AdminSowControllerSowVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -2570,7 +2990,7 @@ export const useSuspenseAdminSiteControllerSite = <
   });
 };
 
-export const useAdminSiteControllerSite = <TData = Schemas.GetSiteResponseDto>(
+export const useAdminSiteControllerSite = <TData = Schemas.GetSiteResponseDto,>(
   variables: AdminSiteControllerSiteVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -2813,7 +3233,7 @@ export const useSuspenseAdminJobControllerJobs = <
   });
 };
 
-export const useAdminJobControllerJobs = <TData = Schemas.ListJobResponseDto>(
+export const useAdminJobControllerJobs = <TData = Schemas.ListJobResponseDto,>(
   variables: AdminJobControllerJobsVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -3206,7 +3626,7 @@ export const useSuspenseAdminJobControllerJob = <
   });
 };
 
-export const useAdminJobControllerJob = <TData = Schemas.GetJobResponseDto>(
+export const useAdminJobControllerJob = <TData = Schemas.GetJobResponseDto,>(
   variables: AdminJobControllerJobVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -4259,7 +4679,9 @@ export const useSuspenseManagerJobControllerJobs = <
   });
 };
 
-export const useManagerJobControllerJobs = <TData = Schemas.ListJobResponseDto>(
+export const useManagerJobControllerJobs = <
+  TData = Schemas.ListJobResponseDto,
+>(
   variables: ManagerJobControllerJobsVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -4539,7 +4961,7 @@ export const useSuspenseManagerJobControllerJob = <
   });
 };
 
-export const useManagerJobControllerJob = <TData = Schemas.GetJobResponseDto>(
+export const useManagerJobControllerJob = <TData = Schemas.GetJobResponseDto,>(
   variables: ManagerJobControllerJobVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -6036,7 +6458,7 @@ export const useSuspenseStaffJobControllerJobs = <
   });
 };
 
-export const useStaffJobControllerJobs = <TData = Schemas.ListJobResponseDto>(
+export const useStaffJobControllerJobs = <TData = Schemas.ListJobResponseDto,>(
   variables: StaffJobControllerJobsVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -6204,7 +6626,7 @@ export const useSuspenseStaffJobControllerJob = <
   });
 };
 
-export const useStaffJobControllerJob = <TData = Schemas.GetJobResponseDto>(
+export const useStaffJobControllerJob = <TData = Schemas.GetJobResponseDto,>(
   variables: StaffJobControllerJobVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -6335,6 +6757,13 @@ export type QueryOperation =
         | reactQuery.SkipToken;
     }
   | {
+      path: "/admin/customer/managers/{customerId}";
+      operationId: "adminCustomerControllerCustomerManagers";
+      variables:
+        | AdminCustomerControllerCustomerManagersVariables
+        | reactQuery.SkipToken;
+    }
+  | {
       path: "/admin/customer/{id}";
       operationId: "adminCustomerControllerCustomer";
       variables:
@@ -6347,17 +6776,31 @@ export type QueryOperation =
       variables: AdminUserControllerGetManagersVariables | reactQuery.SkipToken;
     }
   | {
+      path: "/admin/user/customerUsers";
+      operationId: "adminUserControllerGetCustomerUsers";
+      variables:
+        | AdminUserControllerGetCustomerUsersVariables
+        | reactQuery.SkipToken;
+    }
+  | {
       path: "/admin/user/cleaner";
       operationId: "adminUserControllerGetGenerals";
       variables: AdminUserControllerGetGeneralsVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/admin/user/cleaner/{id}";
+      path: "/admin/user/cleaner/{cleanerId}";
       operationId: "adminUserControllerGetGeneral";
       variables: AdminUserControllerGetGeneralVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/admin/user/manager/{id}";
+      path: "/admin/user/customerUser/{customerUserId}";
+      operationId: "adminUserControllerGetCustomerUser";
+      variables:
+        | AdminUserControllerGetCustomerUserVariables
+        | reactQuery.SkipToken;
+    }
+  | {
+      path: "/admin/user/manager/{managerId}";
       operationId: "adminUserControllerGetManager";
       variables: AdminUserControllerGetManagerVariables | reactQuery.SkipToken;
     }

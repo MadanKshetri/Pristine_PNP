@@ -30,7 +30,7 @@ export default function ProfileScreen() {
   };
 
   const navigateToIncidents = () => {
-    if (user?.role === "manager") {
+    if (user?.role === "manager" || user?.role === "customer manager") {
       router.push("/incidents/manager-list" as any);
     } else {
       router.push("/incidents/staff-list" as any);
@@ -90,7 +90,7 @@ export default function ProfileScreen() {
                 Incident Reports
               </Text>
               <Text className="text-xs text-gray-500">
-                {user?.role === "manager"
+                {user?.role === "manager" || user?.role === "customer manager"
                   ? "View and manage reports"
                   : "Report an issue at a site"}
               </Text>
@@ -100,7 +100,7 @@ export default function ProfileScreen() {
         </Card>
 
         {/* Job Management Menu (Managers Only) */}
-        {user?.role === "manager" && (
+        {(user?.role === "manager" || user?.role === "customer manager") && (
           <>
             <Text className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 ml-1">
               Job Management

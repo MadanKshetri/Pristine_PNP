@@ -11,8 +11,9 @@ import { View } from "react-native";
 
 export default function HomeTab() {
   const user = useAuthStore((state) => state.user);
-  const isStaff = user?.role === "general";
-  const isManager = user?.role === "manager";
+  const isStaff = user?.role === "cleaner";
+  const isManager =
+    user?.role === "manager" || user?.role === "customer manager";
 
   // 1. Stats Query
   const {
@@ -58,7 +59,7 @@ export default function HomeTab() {
     isManager && refetchManagerSummary();
     refetchInProgress();
     refetchScheduled();
-  }, [refetchSummary, refetchInProgress, refetchScheduled]);
+  }, [isStaff, isManager, refetchSummary, refetchManagerSummary, refetchInProgress, refetchScheduled]);
 
   const isLoading =
     isLoadingSummary || isLoadingInProgress || isLoadingScheduled;

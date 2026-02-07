@@ -44,8 +44,9 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
   const router = useRouter();
 
   const user = useAuthStore((state) => state.user);
-  const isManager = user?.role === "manager";
-  const isGeneralUser = user?.role === "general";
+  const isManager =
+    user?.role === "manager" || user?.role === "customer manager";
+  const isCleaner = user?.role === "cleaner";
 
   const { job, isLoading, error, refetch } = useJobDetailsByRole(jobId);
   const { startJob, updateJobStatus, isStartingJob, isUpdatingJobStatus } =
@@ -196,8 +197,8 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
   }
 
   const statusBadge = getJobStatusBadge();
-  const canStart = job.status === "Scheduled" && isGeneralUser;
-  const canComplete = job.status === "In Progress" && isGeneralUser;
+  const canStart = job.status === "Scheduled" && isCleaner;
+  const canComplete = job.status === "In Progress" && isCleaner;
   const completionPercentage =
     job.checklists.length > 0
       ? (job.checklists.filter((c) => c.status === "Completed").length /

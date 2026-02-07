@@ -100,7 +100,7 @@ export default function JobsScreen() {
           jobs={jobs}
           onJobPress={handleJobPress}
           onRequestJob={
-            user?.role === "manager"
+            user?.role === "manager" || user?.role === "customer manager"
               ? (date) =>
                   router.push({
                     pathname: "/jobs/request",

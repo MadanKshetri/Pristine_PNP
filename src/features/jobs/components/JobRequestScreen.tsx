@@ -30,7 +30,11 @@ export const JobRequestScreen: React.FC = () => {
   const { user } = useAuth();
 
   React.useEffect(() => {
-    if (user && user.role !== "manager") {
+    if (
+      user &&
+      user.role !== "manager" &&
+      user.role !== "customer manager"
+    ) {
       router.replace("/" as any);
     }
   }, [user]);

@@ -10,9 +10,7 @@ import type {
 } from "@/fetchers/queriesSchemas";
 import {
   useAuthStore,
-  type ApiUserRole,
   type User,
-  type UserRole,
 } from "@/src/lib/store/authStore";
 
 export const useAuth = () => {
@@ -29,14 +27,15 @@ export const useAuth = () => {
 
   const verifyUserOtpMutation = useAuthControllerVerifyUserOtp({});
   const verifyManagerOtpMutation = useAuthControllerVerifyUserOtp({});
-  const isManager = user?.role === "manager";
+  const isManager =
+    user?.role === "manager" || user?.role === "customer manager";
 
   const { isLoading: isLoadingUser, refetch: refetchUser } =
     useAuthControllerGetMeUser(
       {},
       {
         enabled: !isManager && isAuthenticated && !!token,
-      }
+      },
     );
 
   const { isLoading: isLoadingManager, refetch: refetchManager } =
@@ -44,7 +43,7 @@ export const useAuth = () => {
       {},
       {
         enabled: isManager && isAuthenticated && !!token,
-      }
+      },
     );
 
   /**
@@ -85,20 +84,12 @@ export const useAuth = () => {
       });
 
       if (response.data) {
-        const apiRole = response.data.user.role as ApiUserRole;
-        const mappedRole: UserRole =
-          apiRole === "cleaner"
-            ? "general"
-            : apiRole === "admin"
-              ? "manager"
-              : apiRole;
         const user: User = {
           id: response.data.user.id,
           email: response.data.user.email,
           oneSignalId: response.data.user.oneSignalId,
           fullName: response.data.user.fullName,
-          role: mappedRole,
-          apiRole,
+          role: response.data.user.role,
         };
 
         // Save to Zustand store
@@ -126,20 +117,12 @@ export const useAuth = () => {
   };
 
   const mapProfileToUser = (profile: GetMeDto): User => {
-    const apiRole = profile.role as ApiUserRole;
-    const mappedRole: UserRole =
-      apiRole === "cleaner"
-        ? "general"
-        : apiRole === "admin"
-          ? "manager"
-          : apiRole;
     return {
       id: profile.id,
       email: profile.email,
       oneSignalId: profile.oneSignalId,
       fullName: profile.fullName,
-      role: mappedRole,
-      apiRole,
+      role: profile.role,
       image: profile.image
         ? {
             id: profile.image.id,

@@ -29,8 +29,10 @@ export const useJobsByRole = (
   filters?: StaffJobControllerJobsQueryParams
 ): JobsHookResult => {
   const user = useAuthStore((state) => state.user);
-  const isManager = !!user?.customerId && user?.role === "manager"; // Assuming managers have customerId
-  const isCleaner = user?.role === "general";
+  const isManager =
+    !!user?.customerId &&
+    (user?.role === "manager" || user?.role === "customer manager");
+  const isCleaner = user?.role === "cleaner";
   console.log(
     "User Role:",
     user?.role,

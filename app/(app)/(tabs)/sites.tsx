@@ -14,8 +14,9 @@ import { FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
 
 export default function SitesScreen() {
   const { user } = useAuth();
-  const isManager = user?.role === "manager";
-  const isStaff = user?.role === "general";
+  const isManager =
+    user?.role === "manager" || user?.role === "customer manager";
+  const isStaff = user?.role === "cleaner";
 
   const {
     data: staffSitesData,

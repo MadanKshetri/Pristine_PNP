@@ -19,7 +19,11 @@ export default function JobRequestsScreen() {
   const { user } = useAuth(); // Assuming useAuth hook is available and provides user
 
   React.useEffect(() => {
-    if (user && user.role !== "manager") {
+    if (
+      user &&
+      user.role !== "manager" &&
+      user.role !== "customer manager"
+    ) {
       router.replace("/" as any);
     }
   }, [user, router]);
