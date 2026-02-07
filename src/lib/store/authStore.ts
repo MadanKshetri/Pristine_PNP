@@ -3,13 +3,15 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 // Types based on your API schema
-export type UserRole = "manager" | "general";
+export type ApiUserRole = "admin" | "cleaner" | "manager" | "customer manager";
+export type UserRole = "manager" | "general" | "customer manager";
 
 export interface User {
   id: string;
   fullName: string;
   email: string;
   role: UserRole;
+  apiRole?: ApiUserRole;
   oneSignalId: string;
   image?: {
     id: string;

@@ -31,7 +31,7 @@ export const AnalyticsCard = ({ item }: AnalyticsCardProps) => {
     <View key={item.id} style={[analyticsStyles.analyticsCardWrapper]}>
       <TouchableOpacity
         activeOpacity={0.8}
-        onPress={() => router.push("/(tabs)/jobs")}
+        onPress={() => router.push("/(app)/(tabs)/jobs")}
       >
         <LinearGradient
           colors={item.gradient}

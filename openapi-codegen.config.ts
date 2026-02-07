@@ -4,8 +4,8 @@ import {
   generateSchemaTypes,
 } from "@openapi-codegen/typescript";
 
-const BACKEND_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:5000";
-// const BACKEND_URL = "https://cmsapi.poudelsudeep.com.np";
+// const BACKEND_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:5000";
+const BACKEND_URL = "https://cmsapi.poudelsudeep.com.np";
 
 console.log("Generating code from BACKEND_URL:", BACKEND_URL);
 export default defineConfig({
@@ -13,6 +13,10 @@ export default defineConfig({
     from: {
       source: "url",
       url: `${BACKEND_URL}/api-json`,
+      headers: {
+        //TODO: use env
+        Authorization: `Basic YWRtaW46cGFzc3dvcmQ=`,
+      },
       method: "get",
     },
     outputDir: "./fetchers",
@@ -28,3 +32,4 @@ export default defineConfig({
     },
   },
 });
+

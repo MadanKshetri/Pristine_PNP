@@ -1,27 +1,46 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
-import DocumentPicker from "react-native-document-picker";
+import type { StyleProp, TextStyle, ViewStyle } from "react-native";
+import * as DocumentPicker from "expo-document-picker";
+
+type PickedFile = DocumentPicker.DocumentPickerAsset;
+
+type FileUploadProps = {
+  onFileSelect?: (files: PickedFile[]) => void;
+  maxFiles?: number;
+  allowedTypes?: string[];
+  maxSizeInMB?: number;
+  buttonText?: string;
+  buttonStyle?: StyleProp<ViewStyle>;
+  buttonTextStyle?: StyleProp<TextStyle>;
+  containerStyle?: StyleProp<ViewStyle>;
+};
 
 const FileUpload = ({
   onFileSelect,
   maxFiles = 5,
-  allowedTypes = [DocumentPicker.types.allFiles],
+  allowedTypes = ["*/*"],
   maxSizeInMB = 10,
   buttonText = "Choose File",
   buttonStyle,
   buttonTextStyle,
   containerStyle,
-}) => {
-  const [selectedFiles, setSelectedFiles] = useState([]);
+}: FileUploadProps) => {
+  const [selectedFiles, setSelectedFiles] = useState<PickedFile[]>([]);
 
   const handleFilePick = async () => {
     try {
-      const result = await DocumentPicker.pick({
+      const result = await DocumentPicker.getDocumentAsync({
         type: allowedTypes,
-        allowMultiSelection: maxFiles > 1,
+        multiple: maxFiles > 1,
+        copyToCacheDirectory: true,
       });
 
-      const files = Array.isArray(result) ? result : [result];
+      if (result.canceled) {
+        return;
+      }
+
+      const files = result.assets ?? [];
 
       if (selectedFiles.length + files.length > maxFiles) {
         Alert.alert(
@@ -32,7 +51,9 @@ const FileUpload = ({
       }
 
       const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
-      const invalidFiles = files.filter((f) => f.size > maxSizeInBytes);
+      const invalidFiles = files.filter(
+        (f: PickedFile) => (f.size ?? 0) > maxSizeInBytes,
+      );
 
       if (invalidFiles.length > 0) {
         Alert.alert(
@@ -48,14 +69,12 @@ const FileUpload = ({
       if (onFileSelect) {
         onFileSelect(newFiles);
       }
-    } catch (err) {
-      if (!DocumentPicker.isCancel(err)) {
-        Alert.alert("Error", "Failed to pick file");
-      }
+    } catch (_err) {
+      Alert.alert("Error", "Failed to pick file");
     }
   };
 
-  const removeFile = (index) => {
+  const removeFile = (index: number) => {
     const newFiles = selectedFiles.filter((_, i) => i !== index);
     setSelectedFiles(newFiles);
     if (onFileSelect) {
@@ -63,10 +82,11 @@ const FileUpload = ({
     }
   };
 
-  const formatFileSize = (bytes) => {
-    if (bytes < 1024) return bytes + " B";
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
-    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  const formatFileSize = (bytes?: number | null) => {
+    if (!bytes || bytes <= 0) return "Unknown size";
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
   return (
@@ -88,9 +108,11 @@ const FileUpload = ({
             <View key={index} style={styles.fileItem}>
               <View style={styles.fileInfo}>
                 <Text style={styles.fileName} numberOfLines={1}>
-                  {file.name}
+                  {file.name ?? "Untitled"}
                 </Text>
-                <Text style={styles.fileSize}>{formatFileSize(file.size)}</Text>
+                <Text style={styles.fileSize}>
+                  {formatFileSize(file.size)}
+                </Text>
               </View>
               <TouchableOpacity
                 style={styles.removeButton}

@@ -1,17 +1,16 @@
 import {
-  useAuthControllerGetMeCustomer,
   useAuthControllerGetMeUser,
-  useAuthControllerManagerLogin,
-  useAuthControllerStaffLogin,
-  useAuthControllerVerifyManagerOtp,
+  useAuthControllerLogin,
   useAuthControllerVerifyUserOtp,
 } from "@/fetchers/queriesComponents";
 import type {
+  GetMeDto,
   LoginUserRequestDto,
   VerrifyOtpDto,
 } from "@/fetchers/queriesSchemas";
 import {
   useAuthStore,
+  type ApiUserRole,
   type User,
   type UserRole,
 } from "@/src/lib/store/authStore";
@@ -25,11 +24,11 @@ export const useAuth = () => {
     logout: storeLogout,
   } = useAuthStore();
 
-  const staffLoginMutation = useAuthControllerStaffLogin({});
-  const managerLoginMutation = useAuthControllerManagerLogin({});
+  const staffLoginMutation = useAuthControllerLogin({});
+  const managerLoginMutation = useAuthControllerLogin({});
 
   const verifyUserOtpMutation = useAuthControllerVerifyUserOtp({});
-  const verifyManagerOtpMutation = useAuthControllerVerifyManagerOtp({});
+  const verifyManagerOtpMutation = useAuthControllerVerifyUserOtp({});
   const isManager = user?.role === "manager";
 
   const { isLoading: isLoadingUser, refetch: refetchUser } =
@@ -41,7 +40,7 @@ export const useAuth = () => {
     );
 
   const { isLoading: isLoadingManager, refetch: refetchManager } =
-    useAuthControllerGetMeCustomer(
+    useAuthControllerGetMeUser(
       {},
       {
         enabled: isManager && isAuthenticated && !!token,
@@ -51,14 +50,13 @@ export const useAuth = () => {
   /**
    * Send OTP to user's email
    */
-  const sendOtp = async (email: string, role: UserRole) => {
+  const sendOtp = async (email: string) => {
     try {
       const payload: LoginUserRequestDto = {
         email,
       };
 
-      const loginMutation =
-        role === "manager" ? managerLoginMutation : staffLoginMutation;
+      const loginMutation = staffLoginMutation;
 
       const response = await loginMutation.mutateAsync({
         body: payload,
@@ -76,56 +74,38 @@ export const useAuth = () => {
   /**
    * Verify OTP and login
    */
-  const verifyOtp = async (email: string, otp: string, role: UserRole) => {
+  const verifyOtp = async (email: string, otp: string) => {
     try {
       const payload: VerrifyOtpDto = {
         email,
         otp,
       };
+      const response = await verifyUserOtpMutation.mutateAsync({
+        body: payload,
+      });
 
-      if (role === "manager") {
-        const response = await verifyManagerOtpMutation.mutateAsync({
-          body: payload,
-        });
+      if (response.data) {
+        const apiRole = response.data.user.role as ApiUserRole;
+        const mappedRole: UserRole =
+          apiRole === "cleaner"
+            ? "general"
+            : apiRole === "admin"
+              ? "manager"
+              : apiRole;
+        const user: User = {
+          id: response.data.user.id,
+          email: response.data.user.email,
+          oneSignalId: response.data.user.oneSignalId,
+          fullName: response.data.user.fullName,
+          role: mappedRole,
+          apiRole,
+        };
 
-        if (response.data) {
-          const user = {
-            id: response.data.user.id,
-            email: response.data.user.email,
-            oneSignalId: response.data.user.oneSignalId,
-            fullName: response.data.user.fullName,
-            customerId: response.data.user.customerId,
-            role: role, // Use the role passed from login screen
-          };
+        // Save to Zustand store
+        setAuth(user, response.data.token);
 
-          // Save to Zustand store
-          setAuth(user, response.data.token);
-
-          // Navigation will be handled by the component
-          return { success: true, userId: user.id };
-        }
-      }
-
-      if (role === "general") {
-        const response = await verifyUserOtpMutation.mutateAsync({
-          body: payload,
-        });
-
-        if (response.data) {
-          const user: User = {
-            id: response.data.user.id,
-            email: response.data.user.email,
-            oneSignalId: response.data.user.oneSignalId,
-            fullName: response.data.user.fullName,
-            role: role, // Use the role passed from login screen
-          };
-
-          // Save to Zustand store
-          setAuth(user, response.data.token);
-
-          // Navigation will be handled by the component
-          return { success: true, userId: user.id };
-        }
+        // Navigation will be handled by the component
+        return { success: true, userId: user.id };
       }
 
       return { success: false, message: "Invalid OTP" };
@@ -145,6 +125,50 @@ export const useAuth = () => {
     // Navigation will be handled by the component
   };
 
+  const mapProfileToUser = (profile: GetMeDto): User => {
+    const apiRole = profile.role as ApiUserRole;
+    const mappedRole: UserRole =
+      apiRole === "cleaner"
+        ? "general"
+        : apiRole === "admin"
+          ? "manager"
+          : apiRole;
+    return {
+      id: profile.id,
+      email: profile.email,
+      oneSignalId: profile.oneSignalId,
+      fullName: profile.fullName,
+      role: mappedRole,
+      apiRole,
+      image: profile.image
+        ? {
+            id: profile.image.id,
+            name: profile.image.name,
+            url: profile.image.url,
+          }
+        : null,
+    };
+  };
+
+  const refreshProfile = async () => {
+    try {
+      const response = await refetchUser();
+      if (response.data?.data) {
+        const nextUser = mapProfileToUser(response.data.data);
+        if (token) {
+          setAuth(nextUser, token);
+        }
+        return { success: true };
+      }
+      return { success: false, message: "Failed to load profile" };
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error?.message || "Failed to load profile",
+      };
+    }
+  };
+
   return {
     // State
     user,
@@ -155,6 +179,7 @@ export const useAuth = () => {
     // Actions
     sendOtp,
     verifyOtp,
+    refreshProfile,
     logout,
     refetchUser: isManager ? refetchManager : refetchUser,
 

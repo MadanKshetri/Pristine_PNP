@@ -3,7 +3,7 @@ import type { QueriesContext } from "./queriesContext";
 
 // const baseUrl = "http://192.168.1.83:5000";
 // const baseUrl = "http://192.168.100.103:5000";
-const baseUrl = process.env.EXPO_PUBLIC_API_URL ;
+const baseUrl = "https://cmsapi.poudelsudeep.com.np";
 
 // const baseUrl = "https://cmsapi.poudelsudeep.com.np";
 

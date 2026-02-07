@@ -3,6 +3,13 @@
  *
  * @version 1.0.0
  */
+export type IdDto = {
+  /**
+   * @format uuid
+   */
+  id: string;
+};
+
 export type AssetDto = {
   /**
    * @format uuid
@@ -13,10 +20,14 @@ export type AssetDto = {
 };
 
 export type GetMeDto = {
+  role: "admin" | "cleaner" | "manager" | "customer manager";
   id: string;
   fullName: string;
   oneSignalId: string;
   email: string;
+  cleaner: IdDto | null;
+  manager: IdDto | null;
+  customerUser: IdDto | null;
   image: AssetDto | null;
 };
 
@@ -39,6 +50,7 @@ export type VerrifyOtpDto = {
 };
 
 export type LoginUserUserDto = {
+  role: "admin" | "cleaner" | "manager" | "customer manager";
   /**
    * @format uuid
    */
@@ -56,30 +68,6 @@ export type LoginUserDto = {
 export type LoginUserResponseDto = {
   message: string;
   data: LoginUserDto;
-};
-
-export type LoginManagerManagerDto = {
-  /**
-   * @format uuid
-   */
-  id: string;
-  fullName: string;
-  oneSignalId: string;
-  email: string;
-  /**
-   * @format uuid
-   */
-  customerId: string;
-};
-
-export type LoginManagerDto = {
-  token: string;
-  user: LoginManagerManagerDto;
-};
-
-export type LoginManagerResponseDto = {
-  message: string;
-  data: LoginManagerDto;
 };
 
 export type IdNameDto = {
@@ -113,13 +101,6 @@ export type ListCustomerResponseDto = {
 export type CreateCustomerRequestDto = {
   name: string;
   email?: string;
-};
-
-export type IdDto = {
-  /**
-   * @format uuid
-   */
-  id: string;
 };
 
 export type MessageResponseWithIdDataDto = {
@@ -162,7 +143,7 @@ export type ListManagerDto = {
    * @format date-time
    */
   createdAt: string;
-  createdBy: IdNameDto;
+  createdBy: IdNameDto | null;
   image: AssetDto | null;
 };
 
@@ -177,16 +158,17 @@ export type ListGeneralDto = {
   email: string;
   fullName: string;
   createdAt: string;
+  createdBy: IdNameDto | null;
   image: AssetDto | null;
 };
 
-export type ListGeneralResponseDto = {
+export type ListCleanerResponseDto = {
   message: string;
   data: ListGeneralDto[];
   pagination: PaginationResponseDto;
 };
 
-export type GetGeneralResponseDto = {
+export type GetCleanerResponseDto = {
   message: string;
   data: ListGeneralDto;
 };
@@ -203,7 +185,6 @@ export type CreateManagerDto = {
    */
   photo?: Blob;
   fullName: string;
-  customerId: string;
 };
 
 export type UpdateManagerDto = {
@@ -215,7 +196,7 @@ export type UpdateManagerDto = {
   photo?: Blob;
 };
 
-export type CreateGeneralDto = {
+export type CreateCleanerDto = {
   email: string;
   /**
    * @format binary
@@ -224,7 +205,7 @@ export type CreateGeneralDto = {
   fullName: string;
 };
 
-export type UpdateGeneralDto = {
+export type UpdateCleanerDto = {
   fullName?: string;
   ended?: boolean;
   email?: string;
@@ -232,6 +213,16 @@ export type UpdateGeneralDto = {
    * @format binary
    */
   photo?: Blob;
+};
+
+export type CreateCustomerUserRequestDto = {
+  email: string;
+  /**
+   * @format binary
+   */
+  photo?: Blob;
+  fullName: string;
+  customerId: string;
 };
 
 export type ListSOWDto = {
@@ -346,6 +337,17 @@ export type ListSiteResponseDto = {
   pagination: PaginationResponseDto;
 };
 
+export type ListSiteCleanersDto = {
+  id: string;
+  name: string;
+};
+
+export type ListSiteCleanersResponseDto = {
+  message: string;
+  data: ListSiteCleanersDto[];
+  pagination: PaginationResponseDto;
+};
+
 export type GetSiteDto = {
   id: string;
   title: string;
@@ -395,6 +397,7 @@ export type UpdateSiteRequestDto = {
   description?: string;
   cleanerIds?: string[];
   managerIds?: string[];
+  customerUserIds?: string[];
   location?: UpdateSiteLocationDto;
 };
 
@@ -543,12 +546,35 @@ export type AdminListJobRequestsDto = {
    */
   startAt: string;
   site: AdminListJobRequestsSiteDto;
+  requestedBy: IdNameDto;
 };
 
 export type AdminListJobRequestResponseDto = {
   message: string;
   data: AdminListJobRequestsDto[];
   pagination: PaginationResponseDto;
+};
+
+export type AdminGetJobRequestsDto = {
+  description?: string | null;
+  /**
+   * @format uuid
+   */
+  id: string;
+  title: string;
+  isApproved: boolean;
+  /**
+   * @format date-time
+   */
+  startAt: string;
+  site: AdminListJobRequestsSiteDto;
+  requestedBy: IdNameDto;
+  customer: IdNameDto;
+};
+
+export type AdminGetJobRequestResponseDto = {
+  message: string;
+  data: AdminGetJobRequestsDto;
 };
 
 export type JobRequestDto = {
@@ -571,6 +597,9 @@ export type AdminGetIncidentSiteDto = {
 };
 
 export type AdminGetIncidentDto = {
+  type: "Issue" | "Request" | "Seeking Information";
+  priority: "Low" | "Medium" | "High";
+  status: "Open" | "Resolved" | "Closed" | "Rejected";
   /**
    * @format uuid
    */
@@ -594,6 +623,12 @@ export type AdminListIncidentResponseDto = {
 export type GetIncidentResponseDto = {
   message: string;
   data: ManagerGetIncidentDto;
+};
+
+export type AdminUpdateIncidentRequestDto = {
+  status: "Open" | "Resolved" | "Closed" | "Rejected";
+  priority: "Low" | "Medium" | "High";
+  description: string | null;
 };
 
 export type ManagerGenerateQrTokenDto = {
@@ -667,6 +702,9 @@ export type ManagerGetIncidentSiteDto = {
 };
 
 export type ManagerGetIncidentDto = {
+  type: "Issue" | "Request" | "Seeking Information";
+  priority: "Low" | "Medium" | "High";
+  status: "Open" | "Resolved" | "Closed" | "Rejected";
   /**
    * @format uuid
    */
@@ -711,6 +749,9 @@ export type StaffGetIncidentSiteDto = {
 };
 
 export type StaffGetIncidentDto = {
+  type: "Issue" | "Request" | "Seeking Information";
+  priority: "Low" | "Medium" | "High";
+  status: "Open" | "Resolved" | "Closed" | "Rejected";
   /**
    * @format uuid
    */
@@ -738,6 +779,8 @@ export type StaffGetIncidentResponseDto = {
 
 export type StaffCreateIncidentReportRequestDTO = {
   description?: string;
+  type?: "Issue" | "Request" | "Seeking Information";
+  priority?: "Low" | "Medium" | "High";
   attachments?: Blob[];
   title: string;
   /**

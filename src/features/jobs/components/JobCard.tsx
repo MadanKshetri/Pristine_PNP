@@ -38,9 +38,8 @@ export const JobCard: React.FC<JobCardProps> = ({ job, onPress }) => {
             <MapPin size={16} color="#64748b" strokeWidth={2} />
             <View style={styles.siteTextContainer}>
               <Text style={styles.siteAddress} numberOfLines={1}>
-                {job.site.address}
+                {job.site.address.address}
               </Text>
-              <Text style={styles.siteCity}>{job.site.city}</Text>
             </View>
           </View>
         )}

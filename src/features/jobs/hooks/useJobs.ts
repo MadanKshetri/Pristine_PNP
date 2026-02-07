@@ -1,10 +1,9 @@
-import { useJobControllerJobs } from '@/fetchers/queriesComponents';
+import { useAdminJobControllerJobs } from '@/fetchers/queriesComponents';
 import { useMemo, useState } from 'react';
 import type { JobFilters } from '../types';
 
 export const useJobs = () => {
   const [filters, setFilters] = useState<JobFilters>({
-    status: 'all',
     page: 0,
     take: 25,
   });
@@ -21,9 +20,7 @@ export const useJobs = () => {
 
     return { queryParams };
   }, [filters]);
-  console.log(queryVariables)
-
-  const { data, isLoading, error, refetch } = useJobControllerJobs(queryVariables);
+  const { data, isLoading, error, refetch } = useAdminJobControllerJobs(queryVariables);
 
   // Check if error is actually a "no data" situation (not a real error)
   const hasRealError = error && !data;
@@ -44,7 +41,6 @@ export const useJobs = () => {
 
   const resetFilters = () => {
     setFilters({
-      status: 'all',
       page: 0,
       take: 25,
     });

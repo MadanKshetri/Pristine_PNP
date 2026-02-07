@@ -1,6 +1,5 @@
 import { Button, LoadingSpinner } from "@/src/components/ui";
 import { useAuth } from "@/src/features/auth/hooks/useAuth";
-import type { UserRole } from "@/src/lib/store/authStore";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
@@ -19,7 +18,7 @@ const OTP_LENGTH = 6;
 
 export const OtpVerifyScreen = () => {
   const router = useRouter();
-  const params = useLocalSearchParams<{ email: string; role: UserRole }>();
+  const params = useLocalSearchParams<{ email: string }>();
   const { verifyOtp, sendOtp, isVerifyingOtp, isSendingOtp } = useAuth();
 
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -71,7 +70,7 @@ export const OtpVerifyScreen = () => {
       return;
     }
 
-    const result = await verifyOtp(params.email, code, params.role as UserRole);
+    const result = await verifyOtp(params.email, code);
 
     if (result.success && result.userId) {
       // Login to OneSignal
@@ -79,7 +78,7 @@ export const OtpVerifyScreen = () => {
       console.log("Logged in to OneSignal with External ID:", result.userId);
 
       // Navigate to main app after successful verification
-      router.replace("/(app)/(tabs)/jobs");
+      router.replace("/(app)/(tabs)/home");
     } else {
       Alert.alert("Error", result.message || "Invalid OTP");
       setOtp(["", "", "", "", "", ""]);
@@ -90,7 +89,7 @@ export const OtpVerifyScreen = () => {
   const handleResend = async () => {
     if (!canResend) return;
 
-    const result = await sendOtp(params.email, params.role as UserRole);
+    const result = await sendOtp(params.email);
 
     if (result.success) {
       Alert.alert("Success", "OTP sent successfully");
