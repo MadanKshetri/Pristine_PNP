@@ -380,6 +380,22 @@ export const styles = StyleSheet.create({
     gap: 12,
     marginTop: 16,
   },
+  qrEmptyState: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 24,
+    gap: 8,
+  },
+  qrEmptyTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#1f2937",
+  },
+  qrEmptyText: {
+    fontSize: 12,
+    color: "#64748b",
+    textAlign: "center",
+  },
   qrDownloadIconBtn: {
     width: 46,
     height: 46,

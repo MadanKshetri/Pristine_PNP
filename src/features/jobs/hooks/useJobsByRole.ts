@@ -1,18 +1,15 @@
 // useJobsByRole.ts
 import {
-  ManagerJobControllerJobsQueryParams,
+  AdminJobControllerJobsQueryParams,
   StaffJobControllerJobsQueryParams,
-  useManagerJobControllerJobs,
+  useAdminJobControllerJobs,
   useStaffJobControllerJobs,
 } from "@/fetchers/queriesComponents";
 import type { Job } from "@/src/features/jobs/types";
 import { useAuthStore } from "@/src/lib/store/authStore";
 
 // Define a common type for your API query parameters
-type CommonQueryParams = Omit<
-  ManagerJobControllerJobsQueryParams,
-  "customerId" | "staffId"
->;
+type CommonQueryParams = Omit<AdminJobControllerJobsQueryParams, "staffId">;
 
 type JobsHookResult = {
   jobs: Job[];
@@ -26,12 +23,11 @@ type JobsHookResult = {
  * A custom hook to fetch jobs based on the user's role and apply filters.
  */
 export const useJobsByRole = (
-  filters?: StaffJobControllerJobsQueryParams
+  filters?: StaffJobControllerJobsQueryParams,
 ): JobsHookResult => {
   const user = useAuthStore((state) => state.user);
   const isManager =
-    !!user?.customerId &&
-    (user?.role === "manager" || user?.role === "customer manager");
+    user?.role === "manager" || user?.role === "customer manager";
   const isCleaner = user?.role === "cleaner";
   console.log(
     "User Role:",
@@ -39,7 +35,7 @@ export const useJobsByRole = (
     "isManager:",
     isManager,
     "isCleaner:",
-    isCleaner
+    isCleaner,
   );
 
   console.log({
@@ -56,14 +52,14 @@ export const useJobsByRole = (
     isRefetching: isManagerRefetching,
     error: managerError,
     refetch: refetchManager,
-  } = useManagerJobControllerJobs(
+  } = useAdminJobControllerJobs(
     {
       queryParams: {
         ...filters,
         ...(filters?.status && { status: filters.status }),
       },
     },
-    { enabled: isManager }
+    { enabled: isManager },
   );
 
   // --- 2. Fetch for Cleaner (using staffId/id) ---
@@ -79,7 +75,7 @@ export const useJobsByRole = (
         ...filters,
       },
     },
-    { enabled: isCleaner }
+    { enabled: isCleaner },
   );
 
   // --- Unified Results ---

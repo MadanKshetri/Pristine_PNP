@@ -7,9 +7,9 @@ export const queryClient = new QueryClient({
       // Retry failed requests up to 2 times
       retry: 2,
       // Keep data fresh for 5 minutes
-      staleTime: 1000,
+      staleTime: 1,
       // Cache data for 10 minutes
-      gcTime: 1000 * 2,
+      // gcTime: 1000 * 2,
       // Refetch on window focus (for web)
       refetchOnWindowFocus: true,
       // Refetch on reconnect

@@ -8,10 +8,7 @@ import type {
   LoginUserRequestDto,
   VerrifyOtpDto,
 } from "@/fetchers/queriesSchemas";
-import {
-  useAuthStore,
-  type User,
-} from "@/src/lib/store/authStore";
+import { useAuthStore, type User } from "@/src/lib/store/authStore";
 
 export const useAuth = () => {
   const {
@@ -93,10 +90,12 @@ export const useAuth = () => {
         };
 
         // Save to Zustand store
-        setAuth(user, response.data.token);
+        if (user.role === "manager" || user.role === "cleaner") {
+          setAuth(user, response.data.token);
+        }
 
         // Navigation will be handled by the component
-        return { success: true, userId: user.id };
+        return { success: true, userId: user.id, user };
       }
 
       return { success: false, message: "Invalid OTP" };

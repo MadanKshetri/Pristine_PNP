@@ -1,7 +1,15 @@
 import { useRouter } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  StyleProp,
+  StyleSheet,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 import { Edge, SafeAreaView } from "react-native-safe-area-context";
 
 export interface ScreenHeaderProps {
@@ -12,6 +20,8 @@ export interface ScreenHeaderProps {
   rightAction?: React.ReactNode;
   onRightAction?: () => void;
   edges?: Edge[];
+  safeAreaStyle?: StyleProp<ViewStyle>;
+  textStyles?: StyleProp<TextStyle>;
 }
 
 export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
@@ -22,6 +32,8 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
   rightAction,
   onRightAction,
   edges = ["top"],
+  safeAreaStyle,
+  textStyles,
 }) => {
   const router = useRouter();
 
@@ -34,7 +46,7 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
   };
 
   return (
-    <SafeAreaView edges={edges} style={styles.safeArea}>
+    <SafeAreaView edges={edges} style={[styles.safeArea, safeAreaStyle]}>
       <View style={styles.header}>
         {showBackButton && (
           <TouchableOpacity
@@ -46,7 +58,7 @@ export const ScreenHeader: React.FC<ScreenHeaderProps> = ({
           </TouchableOpacity>
         )}
         <View style={styles.textContainer}>
-          <Text style={styles.title}>{title}</Text>
+          <Text style={[styles.title, textStyles]}>{title}</Text>
           {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
         </View>
         {rightAction && (

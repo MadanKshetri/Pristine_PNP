@@ -1,12 +1,12 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import {
+  ColorValue,
+  Dimensions,
+  StyleSheet,
+  Text,
   TouchableOpacity,
   View,
-  Text,
-  ColorValue,
-  StyleSheet,
-  Dimensions,
 } from "react-native";
 
 type AnalyticsCardProps = {
@@ -31,7 +31,7 @@ export const AnalyticsCard = ({ item }: AnalyticsCardProps) => {
     <View key={item.id} style={[analyticsStyles.analyticsCardWrapper]}>
       <TouchableOpacity
         activeOpacity={0.8}
-        onPress={() => router.push("/(app)/(tabs)/jobs")}
+        onPress={() => router.push("/(app)/(cleaner-tabs)/jobs")}
       >
         <LinearGradient
           colors={item.gradient}

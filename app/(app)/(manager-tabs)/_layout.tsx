@@ -1,9 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 
-export default function TabsLayout() {
-  // Redirect logic is handled in the root layout
-
+export default function ManagerTabsLayout() {
   return (
     <Tabs
       screenOptions={{
@@ -28,7 +26,6 @@ export default function TabsLayout() {
         name="home"
         options={{
           title: "Home",
-          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home-outline" size={size} color={color} />
           ),
@@ -51,6 +48,16 @@ export default function TabsLayout() {
           title: "Sites",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="location-outline" size={size} color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="customers"
+        options={{
+          title: "Customers",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="people-outline" size={size} color={color} />
           ),
         }}
       />

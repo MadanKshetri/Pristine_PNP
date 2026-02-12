@@ -1,9 +1,9 @@
 import {
-  useManagerControllerGetSiteSummary,
+  useAdminSiteControllerSites,
   useStaffControllerGetSiteSummary,
 } from "@/fetchers/queriesComponents";
 import type {
-  ManagerListSiteDto,
+  ListSiteDto,
   StaffListSiteDto,
 } from "@/fetchers/queriesSchemas";
 import { Card, ScreenHeader } from "@/src/components/ui";
@@ -33,8 +33,13 @@ export default function SitesScreen() {
     data: managerSitesData,
     isLoading: isManagerLoading,
     refetch: refetchManager,
-  } = useManagerControllerGetSiteSummary(
-    {},
+  } = useAdminSiteControllerSites(
+    {
+      queryParams: {
+        page: 0,
+        take: 100,
+      },
+    },
     {
       enabled: isManager,
     }
@@ -53,7 +58,7 @@ export default function SitesScreen() {
   const renderItem = ({
     item,
   }: {
-    item: ManagerListSiteDto | StaffListSiteDto;
+    item: ListSiteDto | StaffListSiteDto;
   }) => (
     <Card variant="elevated" className="mb-4 mx-4">
       <View className="flex-row justify-between items-start mb-2">

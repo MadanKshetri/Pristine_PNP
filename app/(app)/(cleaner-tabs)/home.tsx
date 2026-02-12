@@ -1,7 +1,4 @@
-import {
-  useManagerControllerGetSummary,
-  useStaffControllerGetSummary,
-} from "@/fetchers/queriesComponents";
+import { useStaffControllerGetSummary } from "@/fetchers/queriesComponents";
 import { LoadingSpinner } from "@/src/components/ui";
 import { HomeScreen } from "@/src/features/home";
 import { useJobsByRole } from "@/src/features/jobs/hooks/useJobsByRole";
@@ -23,12 +20,8 @@ export default function HomeTab() {
     isRefetching: isRefetchingSummary,
   } = useStaffControllerGetSummary({}, { enabled: isStaff });
 
-  const {
-    data: managerSummaryData,
-    refetch: refetchManagerSummary,
-    isLoading: isLoadingManagerSummary,
-    isRefetching: isRefetchingManagerSummary,
-  } = useManagerControllerGetSummary({}, { enabled: isManager });
+  const refetchManagerSummary = () => {};
+  const isLoadingManagerSummary = false;
 
   // 2. In Progress Jobs Query
   const {
@@ -56,13 +49,14 @@ export default function HomeTab() {
 
   const handleRefresh = useCallback(() => {
     isStaff && refetchSummary();
-    isManager && refetchManagerSummary();
     refetchInProgress();
     refetchScheduled();
-  }, [isStaff, isManager, refetchSummary, refetchManagerSummary, refetchInProgress, refetchScheduled]);
+  }, [isStaff, refetchSummary, refetchInProgress, refetchScheduled]);
 
   const isLoading =
-    isLoadingSummary || isLoadingInProgress || isLoadingScheduled;
+    (isStaff && isLoadingSummary) ||
+    isLoadingInProgress ||
+    isLoadingScheduled;
   const isRefetching =
     (isRefetchingSummary || isRefetchingInProgress || isRefetchingScheduled) ??
     false;
@@ -75,9 +69,16 @@ export default function HomeTab() {
     );
   }
 
+  const managerSummaryFallback = {
+    pending: 0,
+    completed: 0,
+    upcomming: 0,
+    cancelled: 0,
+  };
+
   return (
     <HomeScreen
-      summary={isStaff ? summaryData?.data : managerSummaryData?.data}
+      summary={isStaff ? summaryData?.data : managerSummaryFallback}
       inProgressJobs={inProgressJobs}
       scheduledJobs={scheduledJobs}
       isLoading={isLoading}

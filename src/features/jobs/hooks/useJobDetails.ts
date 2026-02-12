@@ -1,5 +1,5 @@
 import {
-  useManagerJobControllerJob,
+  useAdminJobControllerJob,
   useStaffJobControllerJob,
 } from "@/fetchers/queriesComponents";
 import { useAuthStore } from "@/src/lib/store/authStore";
@@ -15,7 +15,7 @@ export const useJobDetailsByRole = (jobId: string) => {
     isLoading: isLoadingManager,
     error: managerError,
     refetch: refetchManager,
-  } = useManagerJobControllerJob(
+  } = useAdminJobControllerJob(
     {
       pathParams: { id: jobId },
     },
