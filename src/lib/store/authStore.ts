@@ -1,17 +1,16 @@
+import { GetMeDto } from "@/fetchers/queriesSchemas";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 // Types based on your API schema
-export type ApiUserRole = "admin" | "cleaner" | "manager" | "customer manager";
-export type UserRole = "manager" | "general" | "customer manager";
+export type UserRole = GetMeDto["role"];
 
 export interface User {
   id: string;
   fullName: string;
   email: string;
-  role: UserRole;
-  apiRole?: ApiUserRole;
+  role: GetMeDto["role"];
   oneSignalId: string;
   image?: {
     id: string;
@@ -77,8 +76,8 @@ export const useAuthStore = create<AuthState>()(
       onRehydrateStorage: () => (state) => {
         state?.setHydrated(true);
       },
-    }
-  )
+    },
+  ),
 );
 
 // Selectors for better performance

@@ -1,4 +1,4 @@
-import { useManagerIncidentConrollerIncidents } from "@/fetchers/queriesComponents";
+import { useAdminIncidentConrollerIncidents } from "@/fetchers/queriesComponents";
 import type { ManagerGetIncidentDto } from "@/fetchers/queriesSchemas";
 import { Card, ScreenHeader } from "@/src/components/ui";
 import { format } from "date-fns";
@@ -7,7 +7,7 @@ import React from "react";
 import { FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
 
 export default function ManagerIncidentListScreen() {
-  const { data, isLoading, refetch } = useManagerIncidentConrollerIncidents({});
+  const { data, isLoading, refetch } = useAdminIncidentConrollerIncidents({});
 
   const incidents = data?.data || [];
 

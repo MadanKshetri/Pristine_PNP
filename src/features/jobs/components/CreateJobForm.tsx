@@ -1,15 +1,13 @@
 import {
-  useAdminJobRequestControllerRequestJob,
-  useAdminSiteControllerSites
+  useAdminJobControllerCreateJob,
+  useAdminSiteControllerSites,
 } from "@/fetchers/queriesComponents";
-import {
-  ListSiteDto
-} from "@/fetchers/queriesSchemas";
+import { ListSiteDto } from "@/fetchers/queriesSchemas";
 import { Button, Input, ScreenHeader } from "@/src/components/ui";
-import { useAuth } from "@/src/features/auth/hooks/useAuth";
 import { Ionicons } from "@expo/vector-icons";
+import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   Alert,
@@ -25,35 +23,17 @@ import {
 } from "react-native";
 import { Calendar } from "react-native-calendars";
 
-export const JobRequestScreen: React.FC = () => {
+export const CreateJobForm: React.FC = () => {
   const router = useRouter();
-  const { user } = useAuth();
-
-  React.useEffect(() => {
-    if (
-      user &&
-      user.role !== "manager" &&
-      user.role !== "customer manager"
-    ) {
-      router.replace("/" as any);
-    }
-  }, [user]);
-
-  const params = useLocalSearchParams();
-  const initialDate = params.date
-    ? new Date(params.date as string)
-    : new Date();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [selectedSite, setSelectedSite] = useState<ListSiteDto | null>(
-    null,
-  );
+  const [selectedSite, setSelectedSite] = useState<ListSiteDto | null>(null);
   const [showSitePicker, setShowSitePicker] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [date, setDate] = useState(new Date());
 
-  // Date and Time
-  const [date, setDate] = useState(initialDate);
+  const queryClient = useQueryClient();
 
   const { data: sitesData, isLoading: isLoadingSites } =
     useAdminSiteControllerSites({
@@ -62,7 +42,8 @@ export const JobRequestScreen: React.FC = () => {
         take: 100,
       },
     });
-  const createJobMutation = useAdminJobRequestControllerRequestJob();
+
+  const createJobMutation = useAdminJobControllerCreateJob();
 
   const sites = sitesData?.data || [];
 
@@ -75,27 +56,42 @@ export const JobRequestScreen: React.FC = () => {
       Alert.alert("Error", "Please select a site");
       return;
     }
-    if (!selectedSite.customer) {
-      // Should not happen for manager sites usually
-      Alert.alert("Error", "Selected site does not have a valid customer");
+
+    // Per schema, customerId is required. We get it from the selected site.
+    if (!selectedSite.customer?.id) {
+      Alert.alert(
+        "Error",
+        "Selected site does not have a valid customer associated.",
+      );
       return;
     }
 
     try {
-      await createJobMutation.mutateAsync({
-        body: {
-          siteId: selectedSite.id,
-          description: description,
-          title: title,
-          startAt: date.toISOString(),
+      await createJobMutation.mutateAsync(
+        {
+          body: {
+            siteId: selectedSite.id,
+            customerId: selectedSite.customer.id,
+            description: description,
+            title: title,
+            startAt: date.toISOString(),
+            checklists: [], // Optional but array required by schema if present? Checking schema again, it says checklists: CreateJobChecklistDto[];
+            // Actually checking schema: checklists is NOT optional in CreateJobRequestDto based on my read: "checklists: CreateJobChecklistDto[];"
+            // If it is required, I must pass an empty array.
+          },
         },
-      });
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["admin", "job"] });
+          },
+        },
+      );
 
-      Alert.alert("Success", "Job request submitted successfully", [
+      Alert.alert("Success", "Job created successfully", [
         { text: "OK", onPress: () => router.back() },
       ]);
     } catch (error: any) {
-      Alert.alert("Error", error?.message || "Failed to create job request");
+      Alert.alert("Error", error?.message || "Failed to create job");
     }
   };
 
@@ -104,7 +100,7 @@ export const JobRequestScreen: React.FC = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <ScreenHeader title="Request Job" showBackButton={true} />
+      <ScreenHeader title="Create Job" showBackButton={true} />
 
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.formGroup}>
@@ -139,7 +135,7 @@ export const JobRequestScreen: React.FC = () => {
         <View style={styles.formGroup}>
           <Text style={styles.label}>Job Title *</Text>
           <Input
-            placeholder="e.g. Broken AC Repair"
+            placeholder="e.g. AC Repair"
             value={title}
             onChangeText={setTitle}
           />
@@ -148,7 +144,7 @@ export const JobRequestScreen: React.FC = () => {
         <View style={styles.formGroup}>
           <Text style={styles.label}>Description</Text>
           <Input
-            placeholder="Describe the issue or requirement..."
+            placeholder="Describe the job requirements..."
             value={description}
             onChangeText={setDescription}
             multiline
@@ -163,7 +159,7 @@ export const JobRequestScreen: React.FC = () => {
           disabled={createJobMutation.isPending || isLoadingSites}
           style={styles.submitButton}
         >
-          {createJobMutation.isPending ? "Submitting..." : "Submit Request"}
+          {createJobMutation.isPending ? "Creating..." : "Create Job"}
         </Button>
       </ScrollView>
 
@@ -283,17 +279,6 @@ const styles = StyleSheet.create({
     color: "#334155",
     marginBottom: 8,
   },
-  readOnlyInput: {
-    backgroundColor: "#f1f5f9",
-    padding: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#e2e8f0",
-  },
-  readOnlyText: {
-    color: "#64748b",
-    fontSize: 16,
-  },
   selectButton: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -313,12 +298,11 @@ const styles = StyleSheet.create({
   },
   textArea: {
     minHeight: 100,
-    paddingTop: 12, // for multiline text alignment
+    paddingTop: 12,
   },
   submitButton: {
     marginTop: 20,
   },
-  // Modal Styles
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",

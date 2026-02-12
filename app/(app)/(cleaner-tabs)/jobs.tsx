@@ -85,7 +85,14 @@ export default function JobsScreen() {
       }
     >
       <View style={styles.container}>
-        <ScreenHeader title="Schedule" showBackButton={true} />
+        <ScreenHeader
+          title={
+            user?.role === "manager" || user?.role === "customer manager"
+              ? "Jobs"
+              : "Schedule"
+          }
+          showBackButton={true}
+        />
 
         <WeekCalendarStrip
           selectedDate={selectedDate}
@@ -100,7 +107,7 @@ export default function JobsScreen() {
           jobs={jobs}
           onJobPress={handleJobPress}
           onRequestJob={
-            user?.role === "manager"
+            user?.role === "manager" || user?.role === "customer manager"
               ? (date) =>
                   router.push({
                     pathname: "/jobs/request",

@@ -1,4 +1,4 @@
-import { JobDetailsScreen } from "@/src/features/jobs";
+import { JobDetailsScreen } from "@/src/features/jobs/components";
 import { useLocalSearchParams } from "expo-router";
 
 export default function JobDetailPage() {

@@ -87,6 +87,8 @@ export async function queriesFetch<
       delete requestHeaders["Content-Type"];
     }
 
+    console.log("Response url:", url);
+
     const response = await window.fetch(
       `${baseUrl}${resolveUrl(url, queryParams, pathParams)}`,
       {
@@ -102,7 +104,9 @@ export async function queriesFetch<
     );
     if (!response.ok) {
       // Handle 401 Unauthorized - logout and redirect
+
       if (response.status === 401) {
+        console.warn("Unauthorized response received. Logging out., url", url);
         handleUnauthorized();
         throw {
           status: "unauthorized" as const,

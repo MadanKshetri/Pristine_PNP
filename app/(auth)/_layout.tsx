@@ -5,7 +5,7 @@ export default function AuthLayout() {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   if (isAuthenticated) {
-    return <Redirect href="/(app)/(tabs)/home" />;
+    return <Redirect href="/(app)/(cleaner-tabs)/home" />;
   }
 
   return (

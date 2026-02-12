@@ -77,8 +77,14 @@ export const OtpVerifyScreen = () => {
       // OneSignal.login(result.userId);
       console.log("Logged in to OneSignal with External ID:", result.userId);
 
-      // Navigate to main app after successful verification
-      router.replace("/(app)/(tabs)/home");
+      if (result.user?.role === "manager") {
+        router.replace("/(app)/(manager-tabs)/home");
+      } else if (result.user?.role === "cleaner") {
+        router.replace("/(app)/(cleaner-tabs)/home");
+      } else {
+        Alert.alert("Error", "Please use the web to access your account");
+        router.replace("/(auth)/login");
+      }
     } else {
       Alert.alert("Error", result.message || "Invalid OTP");
       setOtp(["", "", "", "", "", ""]);

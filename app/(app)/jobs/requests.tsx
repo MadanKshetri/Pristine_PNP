@@ -1,4 +1,4 @@
-import { useManagerJobRequestControllerJobRequests } from "@/fetchers/queriesComponents";
+import { useAdminJobRequestControllerJobRequests } from "@/fetchers/queriesComponents";
 import { ScreenHeader } from "@/src/components/ui";
 import { useAuth } from "@/src/features/auth/hooks/useAuth";
 import { JobRequestCard } from "@/src/features/jobs/components/JobRequestCard";
@@ -19,17 +19,16 @@ export default function JobRequestsScreen() {
   const { user } = useAuth(); // Assuming useAuth hook is available and provides user
 
   React.useEffect(() => {
-    if (user && user.role !== "manager") {
+    if (user && user.role !== "manager" && user.role !== "customer manager") {
       router.replace("/" as any);
     }
   }, [user, router]);
 
-  const { data, isLoading, refetch } =
-    useManagerJobRequestControllerJobRequests({
-      queryParams: {
-        // We can add filters here if needed, but for now fetch all
-      },
-    });
+  const { data, isLoading, refetch } = useAdminJobRequestControllerJobRequests({
+    queryParams: {
+      // We can add filters here if needed, but for now fetch all
+    },
+  });
 
   const jobs = data?.data || [];
 

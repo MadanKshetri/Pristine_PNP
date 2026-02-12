@@ -1,4 +1,3 @@
-import { useManagerJobControllerGenerateQr } from "@/fetchers/queriesComponents";
 import { QRScannerModal } from "@/src/components/qr/QRScannerModal";
 import { Button, Card } from "@/src/components/ui";
 import {
@@ -26,7 +25,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import QRCode from "react-native-qrcode-svg";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useJobActions, useJobDetailsByRole } from "../hooks";
 import { ChecklistItem } from "./ChecklistItem";
@@ -39,19 +37,17 @@ interface JobDetailsScreenProps {
 export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
   jobId,
 }) => {
-  console.log("jobId", jobId);
-
   const router = useRouter();
 
   const user = useAuthStore((state) => state.user);
-  const isManager = user?.role === "manager";
-  const isGeneralUser = user?.role === "general";
+  const isManager =
+    user?.role === "manager" || user?.role === "customer manager";
+  const isCleaner = user?.role === "cleaner";
 
   const { job, isLoading, error, refetch } = useJobDetailsByRole(jobId);
   const { startJob, updateJobStatus, isStartingJob, isUpdatingJobStatus } =
     useJobActions();
-  const { data: qrToken, isLoading: isLoadingQrToken } =
-    useManagerJobControllerGenerateQr({}, { enabled: isManager });
+  const isLoadingQrToken = false;
   const [showQRModal, setShowQRModal] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
   const [dialogConfig, setDialogConfig] = useState({
@@ -61,8 +57,6 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
     action: "" as "Completed" | "Cancelled",
     onConfirm: async () => {},
   });
-
-  console.log(job?.site);
 
   const qrRef = useRef<any>(null);
 
@@ -80,14 +74,14 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
             if (status !== ExpoLocation.PermissionStatus.GRANTED) {
               Alert.alert(
                 "Permission Required",
-                "Location permission is needed to start a job."
+                "Location permission is needed to start a job.",
               );
               return;
             }
             setShowScanner(true);
           },
         },
-      ]
+      ],
     );
   };
 
@@ -196,8 +190,8 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
   }
 
   const statusBadge = getJobStatusBadge();
-  const canStart = job.status === "Scheduled" && isGeneralUser;
-  const canComplete = job.status === "In Progress" && isGeneralUser;
+  const canStart = job.status === "Scheduled" && isCleaner;
+  const canComplete = job.status === "In Progress" && isCleaner;
   const completionPercentage =
     job.checklists.length > 0
       ? (job.checklists.filter((c) => c.status === "Completed").length /
@@ -217,12 +211,12 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
       url = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
     } else {
       url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-        address
+        address,
       )}`;
     }
 
     Linking.openURL(url).catch((err) =>
-      console.error("An error occurred", err)
+      console.error("An error occurred", err),
     );
   };
 
@@ -335,7 +329,7 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
                         <Text style={styles.progressSubtitle}>
                           {
                             job.checklists.filter(
-                              (c) => c.status === "Completed"
+                              (c) => c.status === "Completed",
                             ).length
                           }{" "}
                           of {job.checklists.length} tasks completed
@@ -613,13 +607,13 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
               {isLoadingQrToken ? (
                 <ActivityIndicator size="large" color="#0D9488" />
               ) : (
-                <QRCode
-                  value={qrToken?.data.token}
-                  size={220}
-                  backgroundColor="white"
-                  color="black"
-                  getRef={(c: any) => (qrRef.current = c)}
-                />
+                <View style={styles.qrEmptyState}>
+                  <Ionicons name="qr-code-outline" size={40} color="#94a3b8" />
+                  <Text style={styles.qrEmptyTitle}>QR unavailable</Text>
+                  <Text style={styles.qrEmptyText}>
+                    QR generation is not enabled for this role.
+                  </Text>
+                </View>
               )}
             </View>
 
@@ -668,7 +662,7 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
                             console.log(status);
                             if (status !== "granted") {
                               throw new Error(
-                                "Permission to access Photos was denied"
+                                "Permission to access Photos was denied",
                               );
                             }
                             const asset =
@@ -676,14 +670,14 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
                             await MediaLibrary.createAlbumAsync(
                               "Pristine PNP",
                               asset,
-                              false
+                              false,
                             ).catch(async () => {
                               await MediaLibrary.addAssetsToAlbumAsync(
                                 [asset],
                                 (await MediaLibrary.getAlbumAsync(
-                                  "Pristine PNP"
+                                  "Pristine PNP",
                                 )) || undefined,
-                                false
+                                false,
                               ).catch(() => {});
                             });
                             Alert.alert("Saved", "QR code saved to Photos");

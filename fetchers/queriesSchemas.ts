@@ -98,6 +98,17 @@ export type ListCustomerResponseDto = {
   pagination: PaginationResponseDto;
 };
 
+export type ListCustomerManagersDto = {
+  id: string;
+  user: IdNameDto;
+};
+
+export type ListCustomerManagersResponseDto = {
+  message: string;
+  data: ListCustomerManagersDto[];
+  pagination: PaginationResponseDto;
+};
+
 export type CreateCustomerRequestDto = {
   name: string;
   email?: string;
@@ -131,11 +142,12 @@ export type GetCustomerResponseDto = {
 };
 
 export type UpdateCustomerRequestDto = {
+  managerIds: string[];
   name?: string;
   email?: string;
 };
 
-export type ListManagerDto = {
+export type ListManagerUserDto = {
   id: string;
   email: string;
   fullName: string;
@@ -147,19 +159,32 @@ export type ListManagerDto = {
   image: AssetDto | null;
 };
 
+export type ListManagerDto = {
+  id: string;
+  user: ListManagerUserDto;
+};
+
 export type ListManagerResponseDto = {
   message: string;
   data: ListManagerDto[];
   pagination: PaginationResponseDto;
 };
 
+export type ListCustomerUserDto = {
+  id: string;
+  customer: IdNameDto;
+  user: ListManagerUserDto;
+};
+
+export type ListCustomerUserResponseDto = {
+  message: string;
+  data: ListCustomerUserDto[];
+  pagination: PaginationResponseDto;
+};
+
 export type ListGeneralDto = {
   id: string;
-  email: string;
-  fullName: string;
-  createdAt: string;
-  createdBy: IdNameDto | null;
-  image: AssetDto | null;
+  user: ListManagerUserDto;
 };
 
 export type ListCleanerResponseDto = {
