@@ -18,15 +18,6 @@ import {
 export default function ManagerHomeTab() {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
-  const isManager =
-    user?.role === "manager" || user?.role === "customer manager";
-
-  // const {
-  //   data: summaryData,
-  //   refetch: refetchSummary,
-  //   isLoading: isLoadingSummary,
-  //   isRefetching: isRefetchingSummary,
-  // } = useAdminJobControllerGetJobSummary({}, { enabled: false });
 
   const {
     jobs: recentJobs,

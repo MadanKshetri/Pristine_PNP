@@ -433,6 +433,32 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
                       )}
                     </View>
                   </View>
+
+                  {/* Assigned Staff */}
+                  <View style={styles.assignedStaffRow}>
+                    <View style={styles.assignedStaffIconWrap}>
+                      <Ionicons
+                        name={job.assignedStaff ? "person" : "person-outline"}
+                        size={20}
+                        color={job.assignedStaff ? "#0D9488" : "#94A3B8"}
+                      />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.assignedStaffLabel}>
+                        Assigned Staff
+                      </Text>
+                      <Text
+                        style={[
+                          styles.assignedStaffName,
+                          !job.assignedStaff && styles.assignedStaffUnassigned,
+                        ]}
+                      >
+                        {job.assignedStaff
+                          ? job.assignedStaff.name
+                          : "No staff assigned"}
+                      </Text>
+                    </View>
+                  </View>
                 </View>
               </Card>
             )}

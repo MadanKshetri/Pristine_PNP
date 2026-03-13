@@ -93,7 +93,7 @@ export const useSuspenseAuthControllerGetMeUser = <
   });
 };
 
-export const useAuthControllerGetMeUser = <TData = Schemas.GetMeResponseDto>(
+export const useAuthControllerGetMeUser = <TData = Schemas.GetMeResponseDto,>(
   variables: AuthControllerGetMeUserVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -372,6 +372,143 @@ export const useAdminCustomerControllerCreate = (
     mutationFn: (variables: AdminCustomerControllerCreateVariables) =>
       fetchAdminCustomerControllerCreate(deepMerge(fetcherOptions, variables)),
     ...options,
+  });
+};
+
+export type AdminCustomerControllerManagerCustomersQueryParams = {
+  /**
+   * @minimum 0
+   */
+  take?: number;
+  /**
+   * @minimum 0
+   */
+  page?: number;
+  search?: string;
+  /**
+   * @format date-time
+   */
+  dateFrom?: string;
+  /**
+   * @format date-time
+   */
+  dateTo?: string;
+};
+
+export type AdminCustomerControllerManagerCustomersError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AdminCustomerControllerManagerCustomersVariables = {
+  queryParams?: AdminCustomerControllerManagerCustomersQueryParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminCustomerControllerManagerCustomers = (
+  variables: AdminCustomerControllerManagerCustomersVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.ListCustomerResponseDto,
+    AdminCustomerControllerManagerCustomersError,
+    undefined,
+    {},
+    AdminCustomerControllerManagerCustomersQueryParams,
+    {}
+  >({ url: "/admin/customer/manager", method: "get", ...variables, signal });
+
+export function adminCustomerControllerManagerCustomersQuery(
+  variables: AdminCustomerControllerManagerCustomersVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (
+    options: QueryFnOptions,
+  ) => Promise<Schemas.ListCustomerResponseDto>;
+};
+
+export function adminCustomerControllerManagerCustomersQuery(
+  variables:
+    | AdminCustomerControllerManagerCustomersVariables
+    | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((options: QueryFnOptions) => Promise<Schemas.ListCustomerResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function adminCustomerControllerManagerCustomersQuery(
+  variables:
+    | AdminCustomerControllerManagerCustomersVariables
+    | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/admin/customer/manager",
+      operationId: "adminCustomerControllerManagerCustomers",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchAdminCustomerControllerManagerCustomers(variables, signal),
+  };
+}
+
+export const useSuspenseAdminCustomerControllerManagerCustomers = <
+  TData = Schemas.ListCustomerResponseDto,
+>(
+  variables: AdminCustomerControllerManagerCustomersVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListCustomerResponseDto,
+      AdminCustomerControllerManagerCustomersError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.ListCustomerResponseDto,
+    AdminCustomerControllerManagerCustomersError,
+    TData
+  >({
+    ...adminCustomerControllerManagerCustomersQuery(
+      deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useAdminCustomerControllerManagerCustomers = <
+  TData = Schemas.ListCustomerResponseDto,
+>(
+  variables:
+    | AdminCustomerControllerManagerCustomersVariables
+    | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListCustomerResponseDto,
+      AdminCustomerControllerManagerCustomersError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.ListCustomerResponseDto,
+    AdminCustomerControllerManagerCustomersError,
+    TData
+  >({
+    ...adminCustomerControllerManagerCustomersQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
   });
 };
 
@@ -1948,7 +2085,7 @@ export const useSuspenseAdminSowControllerSows = <
   });
 };
 
-export const useAdminSowControllerSows = <TData = Schemas.ListSOWResponseDto>(
+export const useAdminSowControllerSows = <TData = Schemas.ListSOWResponseDto,>(
   variables: AdminSowControllerSowsVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -2100,7 +2237,7 @@ export const useSuspenseAdminSowControllerSow = <
   });
 };
 
-export const useAdminSowControllerSow = <TData = Schemas.GetSOWResponseDto>(
+export const useAdminSowControllerSow = <TData = Schemas.GetSOWResponseDto,>(
   variables: AdminSowControllerSowVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -2990,7 +3127,7 @@ export const useSuspenseAdminSiteControllerSite = <
   });
 };
 
-export const useAdminSiteControllerSite = <TData = Schemas.GetSiteResponseDto>(
+export const useAdminSiteControllerSite = <TData = Schemas.GetSiteResponseDto,>(
   variables: AdminSiteControllerSiteVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -3233,7 +3370,7 @@ export const useSuspenseAdminJobControllerJobs = <
   });
 };
 
-export const useAdminJobControllerJobs = <TData = Schemas.ListJobResponseDto>(
+export const useAdminJobControllerJobs = <TData = Schemas.ListJobResponseDto,>(
   variables: AdminJobControllerJobsVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -3626,7 +3763,7 @@ export const useSuspenseAdminJobControllerJob = <
   });
 };
 
-export const useAdminJobControllerJob = <TData = Schemas.GetJobResponseDto>(
+export const useAdminJobControllerJob = <TData = Schemas.GetJobResponseDto,>(
   variables: AdminJobControllerJobVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -4544,6 +4681,182 @@ export const useAdminIncidentConrollerDeleteIncident = (
   });
 };
 
+export type AdminActivityControllerActivitiesQueryParams = {
+  /**
+   * @minimum 0
+   */
+  take?: number;
+  /**
+   * @minimum 0
+   */
+  page?: number;
+  search?: string;
+  /**
+   * @format date-time
+   */
+  dateFrom?: string;
+  /**
+   * @format date-time
+   */
+  dateTo?: string;
+  type?: Schemas.Object[];
+  /**
+   * @format uuid
+   */
+  customerId?: string;
+  /**
+   * @format uuid
+   */
+  siteId?: string;
+  /**
+   * @format uuid
+   */
+  jobId?: string;
+  /**
+   * @format uuid
+   */
+  userId?: string;
+};
+
+export type AdminActivityControllerActivitiesError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: {
+        /**
+         * @example 401
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 401
+         */
+        error: 401;
+      };
+    }
+  | {
+      status: 406;
+      payload: {
+        /**
+         * @example 406
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 406
+         */
+        error: 406;
+      };
+    }
+>;
+
+export type AdminActivityControllerActivitiesVariables = {
+  queryParams?: AdminActivityControllerActivitiesQueryParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchAdminActivityControllerActivities = (
+  variables: AdminActivityControllerActivitiesVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.ListActivityResponseDto,
+    AdminActivityControllerActivitiesError,
+    undefined,
+    {},
+    AdminActivityControllerActivitiesQueryParams,
+    {}
+  >({ url: "/admin/activity", method: "get", ...variables, signal });
+
+export function adminActivityControllerActivitiesQuery(
+  variables: AdminActivityControllerActivitiesVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (
+    options: QueryFnOptions,
+  ) => Promise<Schemas.ListActivityResponseDto>;
+};
+
+export function adminActivityControllerActivitiesQuery(
+  variables: AdminActivityControllerActivitiesVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((options: QueryFnOptions) => Promise<Schemas.ListActivityResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function adminActivityControllerActivitiesQuery(
+  variables: AdminActivityControllerActivitiesVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/admin/activity",
+      operationId: "adminActivityControllerActivities",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchAdminActivityControllerActivities(variables, signal),
+  };
+}
+
+export const useSuspenseAdminActivityControllerActivities = <
+  TData = Schemas.ListActivityResponseDto,
+>(
+  variables: AdminActivityControllerActivitiesVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListActivityResponseDto,
+      AdminActivityControllerActivitiesError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.ListActivityResponseDto,
+    AdminActivityControllerActivitiesError,
+    TData
+  >({
+    ...adminActivityControllerActivitiesQuery(
+      deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useAdminActivityControllerActivities = <
+  TData = Schemas.ListActivityResponseDto,
+>(
+  variables: AdminActivityControllerActivitiesVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListActivityResponseDto,
+      AdminActivityControllerActivitiesError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.ListActivityResponseDto,
+    AdminActivityControllerActivitiesError,
+    TData
+  >({
+    ...adminActivityControllerActivitiesQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
 export type ManagerJobControllerJobsQueryParams = {
   /**
    * @minimum 0
@@ -4679,7 +4992,9 @@ export const useSuspenseManagerJobControllerJobs = <
   });
 };
 
-export const useManagerJobControllerJobs = <TData = Schemas.ListJobResponseDto>(
+export const useManagerJobControllerJobs = <
+  TData = Schemas.ListJobResponseDto,
+>(
   variables: ManagerJobControllerJobsVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -4959,7 +5274,7 @@ export const useSuspenseManagerJobControllerJob = <
   });
 };
 
-export const useManagerJobControllerJob = <TData = Schemas.GetJobResponseDto>(
+export const useManagerJobControllerJob = <TData = Schemas.GetJobResponseDto,>(
   variables: ManagerJobControllerJobVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -6354,6 +6669,182 @@ export const useStaffIncidentConrollerIncident = <
   });
 };
 
+export type StaffActivityControllerActivitiesQueryParams = {
+  /**
+   * @minimum 0
+   */
+  take?: number;
+  /**
+   * @minimum 0
+   */
+  page?: number;
+  search?: string;
+  /**
+   * @format date-time
+   */
+  dateFrom?: string;
+  /**
+   * @format date-time
+   */
+  dateTo?: string;
+  type?: Schemas.Object[];
+  /**
+   * @format uuid
+   */
+  customerId?: string;
+  /**
+   * @format uuid
+   */
+  siteId?: string;
+  /**
+   * @format uuid
+   */
+  jobId?: string;
+  /**
+   * @format uuid
+   */
+  userId?: string;
+};
+
+export type StaffActivityControllerActivitiesError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: {
+        /**
+         * @example 401
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 401
+         */
+        error: 401;
+      };
+    }
+  | {
+      status: 406;
+      payload: {
+        /**
+         * @example 406
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 406
+         */
+        error: 406;
+      };
+    }
+>;
+
+export type StaffActivityControllerActivitiesVariables = {
+  queryParams?: StaffActivityControllerActivitiesQueryParams;
+} & QueriesContext["fetcherOptions"];
+
+export const fetchStaffActivityControllerActivities = (
+  variables: StaffActivityControllerActivitiesVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.ListActivityResponseDto,
+    StaffActivityControllerActivitiesError,
+    undefined,
+    {},
+    StaffActivityControllerActivitiesQueryParams,
+    {}
+  >({ url: "/staff/activity", method: "get", ...variables, signal });
+
+export function staffActivityControllerActivitiesQuery(
+  variables: StaffActivityControllerActivitiesVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (
+    options: QueryFnOptions,
+  ) => Promise<Schemas.ListActivityResponseDto>;
+};
+
+export function staffActivityControllerActivitiesQuery(
+  variables: StaffActivityControllerActivitiesVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((options: QueryFnOptions) => Promise<Schemas.ListActivityResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function staffActivityControllerActivitiesQuery(
+  variables: StaffActivityControllerActivitiesVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/staff/activity",
+      operationId: "staffActivityControllerActivities",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchStaffActivityControllerActivities(variables, signal),
+  };
+}
+
+export const useSuspenseStaffActivityControllerActivities = <
+  TData = Schemas.ListActivityResponseDto,
+>(
+  variables: StaffActivityControllerActivitiesVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListActivityResponseDto,
+      StaffActivityControllerActivitiesError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.ListActivityResponseDto,
+    StaffActivityControllerActivitiesError,
+    TData
+  >({
+    ...staffActivityControllerActivitiesQuery(
+      deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export const useStaffActivityControllerActivities = <
+  TData = Schemas.ListActivityResponseDto,
+>(
+  variables: StaffActivityControllerActivitiesVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListActivityResponseDto,
+      StaffActivityControllerActivitiesError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.ListActivityResponseDto,
+    StaffActivityControllerActivitiesError,
+    TData
+  >({
+    ...staffActivityControllerActivitiesQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
 export type StaffJobControllerJobsQueryParams = {
   /**
    * @minimum 0
@@ -6456,7 +6947,7 @@ export const useSuspenseStaffJobControllerJobs = <
   });
 };
 
-export const useStaffJobControllerJobs = <TData = Schemas.ListJobResponseDto>(
+export const useStaffJobControllerJobs = <TData = Schemas.ListJobResponseDto,>(
   variables: StaffJobControllerJobsVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -6624,7 +7115,7 @@ export const useSuspenseStaffJobControllerJob = <
   });
 };
 
-export const useStaffJobControllerJob = <TData = Schemas.GetJobResponseDto>(
+export const useStaffJobControllerJob = <TData = Schemas.GetJobResponseDto,>(
   variables: StaffJobControllerJobVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -6752,6 +7243,13 @@ export type QueryOperation =
       operationId: "adminCustomerControllerCustomers";
       variables:
         | AdminCustomerControllerCustomersVariables
+        | reactQuery.SkipToken;
+    }
+  | {
+      path: "/admin/customer/manager";
+      operationId: "adminCustomerControllerManagerCustomers";
+      variables:
+        | AdminCustomerControllerManagerCustomersVariables
         | reactQuery.SkipToken;
     }
   | {
@@ -6883,6 +7381,13 @@ export type QueryOperation =
       variables: AdminIncidentConrollerIncidentVariables | reactQuery.SkipToken;
     }
   | {
+      path: "/admin/activity";
+      operationId: "adminActivityControllerActivities";
+      variables:
+        | AdminActivityControllerActivitiesVariables
+        | reactQuery.SkipToken;
+    }
+  | {
       path: "/manager/job";
       operationId: "managerJobControllerJobs";
       variables: ManagerJobControllerJobsVariables | reactQuery.SkipToken;
@@ -6951,6 +7456,13 @@ export type QueryOperation =
       path: "/staff/incident/{id}";
       operationId: "staffIncidentConrollerIncident";
       variables: StaffIncidentConrollerIncidentVariables | reactQuery.SkipToken;
+    }
+  | {
+      path: "/staff/activity";
+      operationId: "staffActivityControllerActivities";
+      variables:
+        | StaffActivityControllerActivitiesVariables
+        | reactQuery.SkipToken;
     }
   | {
       path: "/staff/job";

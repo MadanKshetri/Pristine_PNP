@@ -85,6 +85,21 @@ export default function ManagerJobsTab() {
             <Text style={styles.jobMetaSub}>
               {job.site?.address.address || "No address"}
             </Text>
+            <View style={styles.staffRow}>
+              <Ionicons
+                name={job.assignedStaff ? "person" : "person-outline"}
+                size={13}
+                color={job.assignedStaff ? "#0D9488" : "#9CA3AF"}
+              />
+              <Text
+                style={[
+                  styles.staffText,
+                  !job.assignedStaff && styles.staffTextUnassigned,
+                ]}
+              >
+                {job.assignedStaff ? job.assignedStaff.name : "Unassigned"}
+              </Text>
+            </View>
           </TouchableOpacity>
         ))}
         {!isLoading && jobs.length === 0 && (
@@ -184,6 +199,22 @@ const styles = StyleSheet.create({
   jobMetaSub: {
     color: "#9CA3AF",
     fontSize: 11,
+  },
+  staffRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 8,
+    gap: 6,
+  },
+  staffText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#0D9488",
+  },
+  staffTextUnassigned: {
+    color: "#9CA3AF",
+    fontWeight: "400",
+    fontStyle: "italic",
   },
   emptyWrap: {
     alignItems: "center",

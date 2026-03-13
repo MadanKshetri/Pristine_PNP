@@ -365,6 +365,10 @@ export type ListSiteResponseDto = {
 export type ListSiteCleanersDto = {
   id: string;
   name: string;
+  /**
+   * @format uuid
+   */
+  userId: string;
 };
 
 export type ListSiteCleanersResponseDto = {
@@ -654,6 +658,31 @@ export type AdminUpdateIncidentRequestDto = {
   status: "Open" | "Resolved" | "Closed" | "Rejected";
   priority: "Low" | "Medium" | "High";
   description: string | null;
+};
+
+export type Object = {};
+
+export type ListActivityDto = {
+  /**
+   * @format uuid
+   */
+  id: string;
+  title: string;
+  type: Record<string, any>;
+  description: string;
+  diff: Record<string, any>[];
+  user: IdNameDto | null;
+  customer: IdNameDto | null;
+  /**
+   * @format date-time
+   */
+  createdAt: string;
+};
+
+export type ListActivityResponseDto = {
+  message: string;
+  data: ListActivityDto[];
+  pagination: PaginationResponseDto;
 };
 
 export type ManagerGenerateQrTokenDto = {
