@@ -7,20 +7,15 @@ import {
 import { useAuthStore } from "@/src/lib/store/authStore";
 import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
-import * as FileSystem from "expo-file-system/legacy";
 import * as ExpoLocation from "expo-location";
-import * as MediaLibrary from "expo-media-library";
 import { useRouter } from "expo-router";
 import type React from "react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
   ActivityIndicator,
   Alert,
   Linking,
-  Modal,
-  Platform,
   ScrollView,
-  Share,
   Text,
   TouchableOpacity,
   View,
@@ -47,8 +42,8 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
   const { job, isLoading, error, refetch } = useJobDetailsByRole(jobId);
   const { startJob, updateJobStatus, isStartingJob, isUpdatingJobStatus } =
     useJobActions();
-  const isLoadingQrToken = false;
-  const [showQRModal, setShowQRModal] = useState(false);
+  // const isLoadingQrToken = false;
+  // const [showQRModal, setShowQRModal] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
   const [dialogConfig, setDialogConfig] = useState({
     isOpen: false,
@@ -57,8 +52,6 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
     action: "" as "Completed" | "Cancelled",
     onConfirm: async () => {},
   });
-
-  const qrRef = useRef<any>(null);
 
   const handleStartJob = async () => {
     Alert.alert(
@@ -247,16 +240,16 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
               </TouchableOpacity>
 
               {/* QR Code Button for Managers */}
-              {isManager && (
-                <TouchableOpacity
-                  onPress={() => setShowQRModal(true)}
-                  style={[{ height: 40 }, styles.qrBtn]}
-                  activeOpacity={0.8}
-                >
-                  <Ionicons name="qr-code" size={20} color="#0D9488" />
-                  <Text style={styles.qrBtnText}>QR Code</Text>
-                </TouchableOpacity>
-              )}
+              {/* {isManager && ( */}
+              {/*   <TouchableOpacity */}
+              {/*     onPress={() => setShowQRModal(true)} */}
+              {/*     style={[{ height: 40 }, styles.qrBtn]} */}
+              {/*     activeOpacity={0.8} */}
+              {/*   > */}
+              {/*     <Ionicons name="qr-code" size={20} color="#0D9488" /> */}
+              {/*     <Text style={styles.qrBtnText}>QR Code</Text> */}
+              {/*   </TouchableOpacity> */}
+              {/* )} */}
             </View>
 
             <View style={styles.headerTitleRow}>
@@ -605,150 +598,13 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
       </SafeAreaView>
 
       {/* QR Code Modal */}
-      <Modal
-        visible={showQRModal}
-        transparent={true}
-        animationType="slide"
-        style={{ width: "70%" }}
-        onRequestClose={() => setShowQRModal(false)}
-      >
-        <TouchableOpacity
-          style={styles.modalOverlay}
-          activeOpacity={1}
-          onPress={() => setShowQRModal(false)}
-        >
-          <TouchableOpacity
-            activeOpacity={1}
-            onPress={(e) => e.stopPropagation()}
-            style={styles.modalContentWrap}
-          >
-            <View style={styles.qrHeader}>
-              <Text style={styles.qrTitle}>Start Job QR</Text>
-              <Text style={styles.qrSubtitle}>
-                Have your staff scan this code to start the job
-              </Text>
-            </View>
-
-            <View style={styles.qrBox}>
-              {isLoadingQrToken ? (
-                <ActivityIndicator size="large" color="#0D9488" />
-              ) : (
-                <View style={styles.qrEmptyState}>
-                  <Ionicons name="qr-code-outline" size={40} color="#94a3b8" />
-                  <Text style={styles.qrEmptyTitle}>QR unavailable</Text>
-                  <Text style={styles.qrEmptyText}>
-                    QR generation is not enabled for this role.
-                  </Text>
-                </View>
-              )}
-            </View>
-
-            <View style={styles.qrJobInfo}>
-              <Text style={styles.qrJobTitle}>{job.title}</Text>
-              <Text style={styles.qrJobNumber}>#{job.jobNumber}</Text>
-              <View
-                style={[
-                  styles.statusBadge,
-                  { marginTop: 8 },
-                  statusBadge.color === "green"
-                    ? { backgroundColor: "#10B981" }
-                    : statusBadge.color === "blue"
-                      ? { backgroundColor: "#06B6D4" }
-                      : { backgroundColor: "#F59E0B" },
-                ]}
-              >
-                <Text style={styles.statusBadgeText}>{statusBadge.label}</Text>
-              </View>
-            </View>
-
-            <View style={styles.qrActionsRow}>
-              <TouchableOpacity
-                onPress={async () => {
-                  console.log("QR Code saved to Photos");
-                  if (!qrRef.current) return;
-                  await new Promise<void>((resolve, reject) => {
-                    try {
-                      qrRef.current.toDataURL(async (data: string) => {
-                        try {
-                          const baseDir =
-                            (FileSystem as any).cacheDirectory ||
-                            (FileSystem as any).documentDirectory ||
-                            "";
-                          const fileUri = `${baseDir}job-${job.jobNumber}-qr.png`;
-                          console.log(fileUri, "------", baseDir);
-                          await FileSystem.writeAsStringAsync(fileUri, data, {
-                            encoding:
-                              FileSystem.EncodingType?.Base64 || "base64",
-                          });
-                          console.log("QR Code saved to Photos");
-                          try {
-                            console.log("MediaLibrary");
-                            const { status } =
-                              await MediaLibrary.requestPermissionsAsync(true);
-                            console.log(status);
-                            if (status !== "granted") {
-                              throw new Error(
-                                "Permission to access Photos was denied",
-                              );
-                            }
-                            const asset =
-                              await MediaLibrary.createAssetAsync(fileUri);
-                            await MediaLibrary.createAlbumAsync(
-                              "Pristine PNP",
-                              asset,
-                              false,
-                            ).catch(async () => {
-                              await MediaLibrary.addAssetsToAlbumAsync(
-                                [asset],
-                                (await MediaLibrary.getAlbumAsync(
-                                  "Pristine PNP",
-                                )) || undefined,
-                                false,
-                              ).catch(() => {});
-                            });
-                            Alert.alert("Saved", "QR code saved to Photos");
-                          } catch (saveErr) {
-                            console.log(saveErr);
-                            let shareUrl = fileUri;
-                            if (
-                              Platform.OS === "android" &&
-                              (FileSystem as any).getContentUriAsync
-                            ) {
-                              try {
-                                shareUrl = await (
-                                  FileSystem as any
-                                ).getContentUriAsync(fileUri);
-                              } catch {}
-                            }
-                            console.log("shareUrl", shareUrl);
-                            await Share.share({ url: shareUrl });
-                          }
-                          resolve();
-                        } catch (err) {
-                          reject(err);
-                        }
-                      });
-                    } catch (e) {
-                      reject(e as any);
-                    }
-                  });
-                }}
-                style={styles.qrDownloadIconBtn}
-                activeOpacity={0.9}
-              >
-                <Ionicons name="download" size={22} color="#FFFFFF" />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setShowQRModal(false)}
-                style={[styles.qrCloseBtn, styles.qrCloseBtnWide]}
-                activeOpacity={0.9}
-              >
-                <Text style={styles.qrCloseText}>Close</Text>
-              </TouchableOpacity>
-            </View>
-          </TouchableOpacity>
-        </TouchableOpacity>
-      </Modal>
+      {/* <QrCodeModal */}
+      {/*   showQRModal={showQRModal} */}
+      {/*   setShowQRModal={setShowQRModal} */}
+      {/*   job={job} */}
+      {/*   statusBadge={statusBadge} */}
+      {/*   isLoadingQrToken={isLoadingQrToken} */}
+      {/* /> */}
 
       <QRScannerModal
         visible={showScanner}

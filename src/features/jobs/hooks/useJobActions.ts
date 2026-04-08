@@ -23,7 +23,7 @@ export const useJobActions = () => {
       if (status !== Location.PermissionStatus.GRANTED) {
         Alert.alert(
           "Permission Required",
-          "Location permission is needed to start a job."
+          "Location permission is needed to start a job.",
         );
         return { success: false };
       }
@@ -52,7 +52,7 @@ export const useJobActions = () => {
 
   const updateJobStatus = async (
     jobId: string,
-    status: StaffUpdateJobStatusRequestDto["status"]
+    status: StaffUpdateJobStatusRequestDto["status"],
   ) => {
     try {
       const result = await updateJobStatusMutation.mutateAsync({
@@ -72,7 +72,7 @@ export const useJobActions = () => {
   const updateChecklist = async (
     checklistId: string,
     status: UpdateChecklistSowRequestDto["status"],
-    attachment?: { uri: string; name?: string; type?: string }
+    attachment?: { uri: string; name?: string; type?: string },
   ) => {
     try {
       const variables = attachment
@@ -102,7 +102,7 @@ export const useJobActions = () => {
           };
 
       const result = await updateChecklistMutation.mutateAsync(
-        variables as any
+        variables as any,
       );
 
       return { success: true, data: result };
