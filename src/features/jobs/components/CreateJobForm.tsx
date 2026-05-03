@@ -75,9 +75,7 @@ export const CreateJobForm: React.FC = () => {
             description: description,
             title: title,
             startAt: date.toISOString(),
-            checklists: [], // Optional but array required by schema if present? Checking schema again, it says checklists: CreateJobChecklistDto[];
-            // Actually checking schema: checklists is NOT optional in CreateJobRequestDto based on my read: "checklists: CreateJobChecklistDto[];"
-            // If it is required, I must pass an empty array.
+            checklists: [],
           },
         },
         {

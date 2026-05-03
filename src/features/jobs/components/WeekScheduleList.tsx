@@ -19,7 +19,7 @@ export const WeekScheduleList: React.FC<WeekScheduleListProps> = ({
   onRequestJob,
 }) => {
   const weekDays = Array.from({ length: 7 }).map((_, index) =>
-    addDays(weekStart, index)
+    addDays(weekStart, index),
   );
 
   return (
@@ -53,16 +53,16 @@ export const WeekScheduleList: React.FC<WeekScheduleListProps> = ({
               ) : (
                 <View style={styles.emptyState}>
                   <Text style={styles.emptyText}>No jobs scheduled</Text>
-                  {onRequestJob && (
-                    <TouchableOpacity
-                      style={styles.requestButton}
-                      onPress={() => onRequestJob(date)}
-                    >
-                      <Text style={styles.requestButtonText}>
-                        + Request Job
-                      </Text>
-                    </TouchableOpacity>
-                  )}
+                  {/* {onRequestJob && ( */}
+                  {/*   <TouchableOpacity */}
+                  {/*     style={styles.requestButton} */}
+                  {/*     onPress={() => onRequestJob(date)} */}
+                  {/*   > */}
+                  {/*     <Text style={styles.requestButtonText}> */}
+                  {/*       + Request Job */}
+                  {/*     </Text> */}
+                  {/*   </TouchableOpacity> */}
+                  {/* )} */}
                 </View>
               )}
             </View>

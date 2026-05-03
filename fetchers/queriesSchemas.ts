@@ -98,25 +98,55 @@ export type ListCustomerResponseDto = {
   pagination: PaginationResponseDto;
 };
 
-export type ListCustomerManagersDto = {
-  id: string;
-  user: IdNameDto;
+export type GetCustomerSummaryJobDataDto = {};
+
+export type GetCustomerSummaryDto = {
+  siteCount: number;
+  usersCount: number;
+  jobData: GetCustomerSummaryJobDataDto;
 };
 
-export type ListCustomerManagersResponseDto = {
+export type GetCustomerSummaryResponseDto = {
   message: string;
-  data: ListCustomerManagersDto[];
+  data: GetCustomerSummaryDto;
+};
+
+export type ListCustomerInternalManagersDto = {
+  /**
+   * @format uuid
+   */
+  id: string;
+  /**
+   * @format uuid
+   */
+  userId: string;
+  name: string;
+  email: string;
+};
+
+export type ListCustomerInternalManagersResponseDto = {
+  message: string;
+  data: ListCustomerInternalManagersDto[];
   pagination: PaginationResponseDto;
 };
 
-export type CreateCustomerRequestDto = {
+export type ListCustomerCustomerUserDto = {
+  /**
+   * @format uuid
+   */
+  id: string;
+  /**
+   * @format uuid
+   */
+  userId: string;
   name: string;
-  email?: string;
+  email: string;
 };
 
-export type MessageResponseWithIdDataDto = {
+export type ListCustomerCustomerUserResponseDto = {
   message: string;
-  data: IdDto;
+  data: ListCustomerCustomerUserDto[];
+  pagination: PaginationResponseDto;
 };
 
 export type GetCustomerSiteDto = {
@@ -141,10 +171,39 @@ export type GetCustomerResponseDto = {
   data: GetCustomerDto;
 };
 
+export type CreateCustomerRequestDto = {
+  name: string;
+  email?: string;
+};
+
+export type MessageResponseWithIdDataDto = {
+  message: string;
+  data: IdDto;
+};
+
 export type UpdateCustomerRequestDto = {
   managerIds: string[];
   name?: string;
   email?: string;
+};
+
+export type JobByStatusDto = {
+  status: "Scheduled" | "In Progress" | "Completed" | "Cancelled";
+  count: number;
+};
+
+export type AdminDashboardCountSummaryDto = {
+  totalClients: number;
+  totalSites: number;
+  totalCleaners: number;
+  totalClientUsers: number;
+  totalInternalManagers: number;
+  jobByStatus: JobByStatusDto[];
+};
+
+export type AdminDashboardCountSummaryResponseDto = {
+  message: string;
+  data: AdminDashboardCountSummaryDto;
 };
 
 export type ListManagerUserDto = {
@@ -383,7 +442,6 @@ export type GetSiteDto = {
   description: string | null;
   location: LocationDto;
   siteCleaners: IdNameDto[];
-  siteManagers: IdNameDto[];
   customer: IdNameDto;
   createdBy: IdNameDto | null;
 };
@@ -412,6 +470,23 @@ export type CreateSiteRequestDto = {
   location: CreateSiteLocationDto;
 };
 
+export type GenerateQrTokenRequestDto = {
+  entityType: "site" | "customer";
+  /**
+   * @format uuid
+   */
+  entityId: string;
+};
+
+export type GenerateQrTokenDto = {
+  token: string;
+};
+
+export type GenerateQrTokenResponseDto = {
+  message: string;
+  data: GenerateQrTokenDto;
+};
+
 export type UpdateSiteLocationDto = {
   postcode?: string;
   placeId?: string;
@@ -428,6 +503,18 @@ export type UpdateSiteRequestDto = {
   managerIds?: string[];
   customerUserIds?: string[];
   location?: UpdateSiteLocationDto;
+};
+
+export type ListJobAssignedStaffDto = {
+  /**
+   * @format uuid
+   */
+  id: string;
+  name: string;
+  /**
+   * @format uuid
+   */
+  userId: string;
 };
 
 export type GetJobSiteDto = {
@@ -449,7 +536,7 @@ export type ListJobDto = {
   title: string;
   jobNumber: number;
   customer: IdNameDto | null;
-  assignedStaff: IdNameDto | null;
+  assignedStaff: ListJobAssignedStaffDto | null;
   startAt: string | null;
   createdAt: string;
   site: GetJobSiteDto | null;
@@ -683,15 +770,6 @@ export type ListActivityResponseDto = {
   message: string;
   data: ListActivityDto[];
   pagination: PaginationResponseDto;
-};
-
-export type ManagerGenerateQrTokenDto = {
-  token: string;
-};
-
-export type ManagerGenerateQrTokenResponseDto = {
-  message: string;
-  data: ManagerGenerateQrTokenDto;
 };
 
 export type DashboardSummaryDto = {

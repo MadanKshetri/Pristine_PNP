@@ -4,6 +4,8 @@ import { Stack } from "expo-router";
 
 import "@/app/global.css";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
+import { ModalProvider } from "@/src/context/modal-context";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 // Initialize OneSignal
 // TODO: Replace with your actual OneSignal App ID
@@ -21,13 +23,17 @@ export default function RootLayout() {
   // Prevent rendering until authentication state is loaded
 
   return (
-    <GluestackUIProvider mode="light">
-      <QueryClientProvider client={queryClient}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(auth)" />
-          <Stack.Screen name="(app)" />
-        </Stack>
-      </QueryClientProvider>
-    </GluestackUIProvider>
+    <QueryClientProvider client={queryClient}>
+      <GluestackUIProvider mode="light">
+        <ModalProvider>
+          <SafeAreaProvider>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="(auth)" />
+              <Stack.Screen name="(app)" />
+            </Stack>
+          </SafeAreaProvider>
+        </ModalProvider>
+      </GluestackUIProvider>
+    </QueryClientProvider>
   );
 }

@@ -4,6 +4,7 @@ import {
   AlertButton,
   AppAlertDialog,
 } from "@/src/components/ui/AppAlertDialog";
+import { useModal } from "@/src/context/modal-context";
 import { useAuthStore } from "@/src/lib/store/authStore";
 import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
@@ -15,6 +16,7 @@ import {
   ActivityIndicator,
   Alert,
   Linking,
+  Pressable,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -33,6 +35,8 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
   jobId,
 }) => {
   const router = useRouter();
+
+  const { open } = useModal();
 
   const user = useAuthStore((state) => state.user);
   const isManager =
@@ -80,10 +84,12 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
 
   const handleScanned = async (data: string) => {
     try {
+      setShowScanner(false);
+      console.log(data);
       const result = await startJob(jobId, data);
       if (result.success) {
         Alert.alert("Success", "Job started successfully!");
-        setShowScanner(false);
+        // setShowScanner(false);
         refetch();
       }
     } catch (error) {
@@ -428,7 +434,19 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
                   </View>
 
                   {/* Assigned Staff */}
-                  <View style={styles.assignedStaffRow}>
+                  <Pressable
+                    style={styles.assignedStaffRow}
+                    onPress={() => {
+                      open({
+                        key: "select-cleaner",
+                        data: {
+                          siteId: job.site?.id ?? "",
+                          jobId: job.id,
+                        },
+                      });
+                    }}
+                    disabled={!isManager}
+                  >
                     <View style={styles.assignedStaffIconWrap}>
                       <Ionicons
                         name={job.assignedStaff ? "person" : "person-outline"}
@@ -451,7 +469,7 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
                           : "No staff assigned"}
                       </Text>
                     </View>
-                  </View>
+                  </Pressable>
                 </View>
               </Card>
             )}

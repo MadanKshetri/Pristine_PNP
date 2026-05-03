@@ -1,15 +1,10 @@
-// useJobsByRole.ts
 import {
-  AdminJobControllerJobsQueryParams,
   StaffJobControllerJobsQueryParams,
   useAdminJobControllerJobs,
   useStaffJobControllerJobs,
 } from "@/fetchers/queriesComponents";
 import type { Job } from "@/src/features/jobs/types";
 import { useAuthStore } from "@/src/lib/store/authStore";
-
-// Define a common type for your API query parameters
-type CommonQueryParams = Omit<AdminJobControllerJobsQueryParams, "staffId">;
 
 type JobsHookResult = {
   jobs: Job[];
@@ -26,8 +21,7 @@ export const useJobsByRole = (
   filters?: StaffJobControllerJobsQueryParams,
 ): JobsHookResult => {
   const user = useAuthStore((state) => state.user);
-  const isManager =
-    user?.role === "manager" || user?.role === "customer manager";
+  const isManager = user?.role === "manager";
   const isCleaner = user?.role === "cleaner";
   console.log(
     "User Role:",
@@ -43,9 +37,6 @@ export const useJobsByRole = (
     ...(filters?.status && { status: filters.status }),
   });
 
-  // Base query parameters including pagination and search filter
-
-  // --- 1. Fetch for Manager (using customerId) ---
   const {
     data: managerJobsData,
     isLoading: isManagerLoading,
@@ -62,7 +53,6 @@ export const useJobsByRole = (
     { enabled: isManager },
   );
 
-  // --- 2. Fetch for Cleaner (using staffId/id) ---
   const {
     data: cleanerJobsData,
     isLoading: isCleanerLoading,

@@ -9,8 +9,6 @@ import { View } from "react-native";
 export default function HomeTab() {
   const user = useAuthStore((state) => state.user);
   const isStaff = user?.role === "cleaner";
-  const isManager =
-    user?.role === "manager" || user?.role === "customer manager";
 
   // 1. Stats Query
   const {
@@ -19,9 +17,6 @@ export default function HomeTab() {
     isLoading: isLoadingSummary,
     isRefetching: isRefetchingSummary,
   } = useStaffControllerGetSummary({}, { enabled: isStaff });
-
-  const refetchManagerSummary = () => {};
-  const isLoadingManagerSummary = false;
 
   // 2. In Progress Jobs Query
   const {
@@ -54,9 +49,7 @@ export default function HomeTab() {
   }, [isStaff, refetchSummary, refetchInProgress, refetchScheduled]);
 
   const isLoading =
-    (isStaff && isLoadingSummary) ||
-    isLoadingInProgress ||
-    isLoadingScheduled;
+    (isStaff && isLoadingSummary) || isLoadingInProgress || isLoadingScheduled;
   const isRefetching =
     (isRefetchingSummary || isRefetchingInProgress || isRefetchingScheduled) ??
     false;

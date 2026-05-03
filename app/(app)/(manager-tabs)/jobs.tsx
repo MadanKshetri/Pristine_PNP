@@ -1,121 +1,76 @@
+import { Tabs } from "@/components/ui/tab-link";
 import { ScreenHeader } from "@/src/components/ui";
-import { useJobsByRole } from "@/src/features/jobs/hooks/useJobsByRole";
+import { JobsCalendarView } from "@/src/features/jobs/components/JobsCalendarView";
+import { JobsListView } from "@/src/features/jobs/components/JobsListView";
 import { useAuthStore } from "@/src/lib/store/authStore";
-import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import React from "react";
-import {
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { useLocalSearchParams } from "expo-router";
+import React, { useMemo, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
 
 export default function ManagerJobsTab() {
-  const router = useRouter();
+  // const router = useRouter();
+  // const user = useAuthStore((state) => state.user);
+  // const isManager = user?.role === "manager";
+
   const user = useAuthStore((state) => state.user);
-  const isManager =
-    user?.role === "manager" || user?.role === "customer manager";
 
-  const { jobs, isLoading, refetch } = useJobsByRole({
-    page: 0,
-    take: 50,
-  });
+  const { tab } = useLocalSearchParams<{ tab?: "calendar" | "list" }>();
 
-  if (!isManager) {
+  const [activeTab, setActiveTab] = useState<"calendar" | "list">(
+    tab === "list" ? "list" : "calendar",
+  );
+  const tabs = useMemo(
+    () => [
+      {
+        key: "calendar",
+        title: "Calendar",
+        render: () => <JobsCalendarView />,
+      },
+      {
+        key: "list",
+        title: "List",
+        render: () => <JobsListView />,
+      },
+    ],
+    [],
+  );
+
+  if (!user) {
     return (
       <View style={styles.container}>
-        <ScreenHeader title="Jobs" showBackButton={true} />
-        <View style={styles.emptyWrap}>
-          <Text style={styles.emptyTitle}>Access restricted</Text>
-          <Text style={styles.emptyText}>
-            You do not have access to manager jobs.
-          </Text>
-        </View>
+        <Text>Loading...</Text>
       </View>
     );
   }
 
   return (
-    <ScrollView
-      style={styles.container}
-      refreshControl={
-        <RefreshControl refreshing={isLoading} onRefresh={refetch} />
-      }
-    >
-      <View style={styles.headerWrap}>
-        <ScreenHeader title="Jobs" showBackButton={true} />
-        <View style={styles.headerRow}>
-          <Text style={styles.subtitle}>Jobs assigned to your customers</Text>
-          <TouchableOpacity
-            style={styles.createButton}
-            onPress={() =>
-              router.push({
-                pathname: "/jobs/create",
-                params: { date: new Date().toISOString() },
-              })
-            }
-          >
-            <Ionicons name="add" size={18} color="#ffffff" />
-            <Text style={styles.createText}>New</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+    <View style={styles.container}>
+      <ScreenHeader
+        title={
+          user?.role === "manager" || user?.role === "customer manager"
+            ? "Jobs"
+            : "Schedule"
+        }
+        showBackButton={true}
+      />
 
-      <View style={styles.listWrap}>
-        {jobs.map((job) => (
-          <TouchableOpacity
-            key={job.id}
-            style={styles.jobCard}
-            onPress={() => router.push(`/job/${job.id}` as never)}
-            activeOpacity={0.9}
-          >
-            <View style={styles.jobHeader}>
-              <View style={styles.jobTitleBlock}>
-                <Text style={styles.jobTitle}>{job.title}</Text>
-                <Text style={styles.jobNumber}>#{job.jobNumber}</Text>
-              </View>
-              <View style={styles.statusPill}>
-                <Text style={styles.statusText}>{job.status}</Text>
-              </View>
-            </View>
-            <Text style={styles.jobMeta}>{job.site?.title || "No site"}</Text>
-            <Text style={styles.jobMetaSub}>
-              {job.site?.address.address || "No address"}
-            </Text>
-            <View style={styles.staffRow}>
-              <Ionicons
-                name={job.assignedStaff ? "person" : "person-outline"}
-                size={13}
-                color={job.assignedStaff ? "#0D9488" : "#9CA3AF"}
-              />
-              <Text
-                style={[
-                  styles.staffText,
-                  !job.assignedStaff && styles.staffTextUnassigned,
-                ]}
-              >
-                {job.assignedStaff ? job.assignedStaff.name : "Unassigned"}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-        {!isLoading && jobs.length === 0 && (
-          <View style={styles.emptyWrap}>
-            <Text style={styles.emptyTitle}>No jobs found</Text>
-            <Text style={styles.emptyText}>
-              Create a job request to get started.
-            </Text>
-          </View>
-        )}
-      </View>
-    </ScrollView>
+      <Tabs
+        tabs={tabs}
+        activeKey={activeTab}
+        onChange={(key) => setActiveTab(key as "calendar" | "list")}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+  },
+});
+
+const styless = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f8fafc",

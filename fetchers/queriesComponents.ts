@@ -22,6 +22,9 @@ export type AuthControllerGetMeUserError = Fetcher.ErrorWrapper<undefined>;
 
 export type AuthControllerGetMeUserVariables = QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin or cleaner or manager or customer
+ */
 export const fetchAuthControllerGetMeUser = (
   variables: AuthControllerGetMeUserVariables,
   signal?: AbortSignal,
@@ -35,6 +38,9 @@ export const fetchAuthControllerGetMeUser = (
     {}
   >({ url: "/auth/user/me", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: admin or cleaner or manager or customer
+ */
 export function authControllerGetMeUserQuery(
   variables: AuthControllerGetMeUserVariables,
 ): {
@@ -68,6 +74,9 @@ export function authControllerGetMeUserQuery(
   };
 }
 
+/**
+ * Required Permission: admin or cleaner or manager or customer
+ */
 export const useSuspenseAuthControllerGetMeUser = <
   TData = Schemas.GetMeResponseDto,
 >(
@@ -93,6 +102,9 @@ export const useSuspenseAuthControllerGetMeUser = <
   });
 };
 
+/**
+ * Required Permission: admin or cleaner or manager or customer
+ */
 export const useAuthControllerGetMeUser = <TData = Schemas.GetMeResponseDto,>(
   variables: AuthControllerGetMeUserVariables | reactQuery.SkipToken,
   options?: Omit<
@@ -229,6 +241,9 @@ export type AdminCustomerControllerCustomersVariables = {
   queryParams?: AdminCustomerControllerCustomersQueryParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin or manager
+ */
 export const fetchAdminCustomerControllerCustomers = (
   variables: AdminCustomerControllerCustomersVariables,
   signal?: AbortSignal,
@@ -242,6 +257,9 @@ export const fetchAdminCustomerControllerCustomers = (
     {}
   >({ url: "/admin/customer", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: admin or manager
+ */
 export function adminCustomerControllerCustomersQuery(
   variables: AdminCustomerControllerCustomersVariables,
 ): {
@@ -277,6 +295,9 @@ export function adminCustomerControllerCustomersQuery(
   };
 }
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useSuspenseAdminCustomerControllerCustomers = <
   TData = Schemas.ListCustomerResponseDto,
 >(
@@ -304,6 +325,9 @@ export const useSuspenseAdminCustomerControllerCustomers = <
   });
 };
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useAdminCustomerControllerCustomers = <
   TData = Schemas.ListCustomerResponseDto,
 >(
@@ -340,6 +364,9 @@ export type AdminCustomerControllerCreateVariables = {
   body: Schemas.CreateCustomerRequestDto;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminCustomerControllerCreate = (
   variables: AdminCustomerControllerCreateVariables,
   signal?: AbortSignal,
@@ -353,6 +380,9 @@ export const fetchAdminCustomerControllerCreate = (
     {}
   >({ url: "/admin/customer", method: "post", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminCustomerControllerCreate = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -375,93 +405,96 @@ export const useAdminCustomerControllerCreate = (
   });
 };
 
-export type AdminCustomerControllerManagerCustomersQueryParams = {
+export type AdminCustomerControllerCustomerSitesPathParams = {
   /**
-   * @minimum 0
+   * @format uuid
    */
-  take?: number;
-  /**
-   * @minimum 0
-   */
-  page?: number;
-  search?: string;
-  /**
-   * @format date-time
-   */
-  dateFrom?: string;
-  /**
-   * @format date-time
-   */
-  dateTo?: string;
+  customerId: string;
 };
 
-export type AdminCustomerControllerManagerCustomersError =
+export type AdminCustomerControllerCustomerSitesError =
   Fetcher.ErrorWrapper<undefined>;
 
-export type AdminCustomerControllerManagerCustomersVariables = {
-  queryParams?: AdminCustomerControllerManagerCustomersQueryParams;
+export type AdminCustomerControllerCustomerSitesVariables = {
+  pathParams: AdminCustomerControllerCustomerSitesPathParams;
 } & QueriesContext["fetcherOptions"];
 
-export const fetchAdminCustomerControllerManagerCustomers = (
-  variables: AdminCustomerControllerManagerCustomersVariables,
+/**
+ * Required Permission: admin or manager
+ */
+export const fetchAdminCustomerControllerCustomerSites = (
+  variables: AdminCustomerControllerCustomerSitesVariables,
   signal?: AbortSignal,
 ) =>
   queriesFetch<
-    Schemas.ListCustomerResponseDto,
-    AdminCustomerControllerManagerCustomersError,
+    Schemas.GetCustomerSummaryResponseDto,
+    AdminCustomerControllerCustomerSitesError,
     undefined,
     {},
-    AdminCustomerControllerManagerCustomersQueryParams,
-    {}
-  >({ url: "/admin/customer/manager", method: "get", ...variables, signal });
+    {},
+    AdminCustomerControllerCustomerSitesPathParams
+  >({
+    url: "/admin/customer/{customerId}/overview",
+    method: "get",
+    ...variables,
+    signal,
+  });
 
-export function adminCustomerControllerManagerCustomersQuery(
-  variables: AdminCustomerControllerManagerCustomersVariables,
+/**
+ * Required Permission: admin or manager
+ */
+export function adminCustomerControllerCustomerSitesQuery(
+  variables: AdminCustomerControllerCustomerSitesVariables,
 ): {
   queryKey: reactQuery.QueryKey;
   queryFn: (
     options: QueryFnOptions,
-  ) => Promise<Schemas.ListCustomerResponseDto>;
+  ) => Promise<Schemas.GetCustomerSummaryResponseDto>;
 };
 
-export function adminCustomerControllerManagerCustomersQuery(
+export function adminCustomerControllerCustomerSitesQuery(
   variables:
-    | AdminCustomerControllerManagerCustomersVariables
+    | AdminCustomerControllerCustomerSitesVariables
     | reactQuery.SkipToken,
 ): {
   queryKey: reactQuery.QueryKey;
   queryFn:
-    | ((options: QueryFnOptions) => Promise<Schemas.ListCustomerResponseDto>)
+    | ((
+        options: QueryFnOptions,
+      ) => Promise<Schemas.GetCustomerSummaryResponseDto>)
     | reactQuery.SkipToken;
 };
 
-export function adminCustomerControllerManagerCustomersQuery(
+export function adminCustomerControllerCustomerSitesQuery(
   variables:
-    | AdminCustomerControllerManagerCustomersVariables
+    | AdminCustomerControllerCustomerSitesVariables
     | reactQuery.SkipToken,
 ) {
   return {
     queryKey: queryKeyFn({
-      path: "/admin/customer/manager",
-      operationId: "adminCustomerControllerManagerCustomers",
+      path: "/admin/customer/{customerId}/overview",
+      operationId: "adminCustomerControllerCustomerSites",
       variables,
     }),
     queryFn:
       variables === reactQuery.skipToken
         ? reactQuery.skipToken
         : ({ signal }: QueryFnOptions) =>
-            fetchAdminCustomerControllerManagerCustomers(variables, signal),
+            fetchAdminCustomerControllerCustomerSites(variables, signal),
   };
 }
 
-export const useSuspenseAdminCustomerControllerManagerCustomers = <
-  TData = Schemas.ListCustomerResponseDto,
+/**
+ * Required Permission: admin or manager
+ */
+export const useSuspenseAdminCustomerControllerCustomerSites = <
+  TData = Schemas.GetCustomerSummaryResponseDto,
 >(
-  variables: AdminCustomerControllerManagerCustomersVariables,
+  variables: AdminCustomerControllerCustomerSitesVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
-      Schemas.ListCustomerResponseDto,
-      AdminCustomerControllerManagerCustomersError,
+      Schemas.GetCustomerSummaryResponseDto,
+      AdminCustomerControllerCustomerSitesError,
       TData
     >,
     "queryKey" | "queryFn" | "initialData"
@@ -469,11 +502,11 @@ export const useSuspenseAdminCustomerControllerManagerCustomers = <
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useSuspenseQuery<
-    Schemas.ListCustomerResponseDto,
-    AdminCustomerControllerManagerCustomersError,
+    Schemas.GetCustomerSummaryResponseDto,
+    AdminCustomerControllerCustomerSitesError,
     TData
   >({
-    ...adminCustomerControllerManagerCustomersQuery(
+    ...adminCustomerControllerCustomerSitesQuery(
       deepMerge(fetcherOptions, variables),
     ),
     ...options,
@@ -481,16 +514,19 @@ export const useSuspenseAdminCustomerControllerManagerCustomers = <
   });
 };
 
-export const useAdminCustomerControllerManagerCustomers = <
-  TData = Schemas.ListCustomerResponseDto,
+/**
+ * Required Permission: admin or manager
+ */
+export const useAdminCustomerControllerCustomerSites = <
+  TData = Schemas.GetCustomerSummaryResponseDto,
 >(
   variables:
-    | AdminCustomerControllerManagerCustomersVariables
+    | AdminCustomerControllerCustomerSitesVariables
     | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
-      Schemas.ListCustomerResponseDto,
-      AdminCustomerControllerManagerCustomersError,
+      Schemas.GetCustomerSummaryResponseDto,
+      AdminCustomerControllerCustomerSitesError,
       TData
     >,
     "queryKey" | "queryFn" | "initialData"
@@ -498,11 +534,11 @@ export const useAdminCustomerControllerManagerCustomers = <
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useQuery<
-    Schemas.ListCustomerResponseDto,
-    AdminCustomerControllerManagerCustomersError,
+    Schemas.GetCustomerSummaryResponseDto,
+    AdminCustomerControllerCustomerSitesError,
     TData
   >({
-    ...adminCustomerControllerManagerCustomersQuery(
+    ...adminCustomerControllerCustomerSitesQuery(
       variables === reactQuery.skipToken
         ? variables
         : deepMerge(fetcherOptions, variables),
@@ -529,6 +565,14 @@ export type AdminCustomerControllerCustomerManagersQueryParams = {
    */
   page?: number;
   search?: string;
+  /**
+   * @format date-time
+   */
+  dateFrom?: string;
+  /**
+   * @format date-time
+   */
+  dateTo?: string;
 };
 
 export type AdminCustomerControllerCustomerManagersError =
@@ -539,31 +583,37 @@ export type AdminCustomerControllerCustomerManagersVariables = {
   queryParams?: AdminCustomerControllerCustomerManagersQueryParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminCustomerControllerCustomerManagers = (
   variables: AdminCustomerControllerCustomerManagersVariables,
   signal?: AbortSignal,
 ) =>
   queriesFetch<
-    Schemas.ListCustomerManagersResponseDto,
+    Schemas.ListCustomerInternalManagersResponseDto,
     AdminCustomerControllerCustomerManagersError,
     undefined,
     {},
     AdminCustomerControllerCustomerManagersQueryParams,
     AdminCustomerControllerCustomerManagersPathParams
   >({
-    url: "/admin/customer/managers/{customerId}",
+    url: "/admin/customer/{customerId}/managers",
     method: "get",
     ...variables,
     signal,
   });
 
+/**
+ * Required Permission: admin
+ */
 export function adminCustomerControllerCustomerManagersQuery(
   variables: AdminCustomerControllerCustomerManagersVariables,
 ): {
   queryKey: reactQuery.QueryKey;
   queryFn: (
     options: QueryFnOptions,
-  ) => Promise<Schemas.ListCustomerManagersResponseDto>;
+  ) => Promise<Schemas.ListCustomerInternalManagersResponseDto>;
 };
 
 export function adminCustomerControllerCustomerManagersQuery(
@@ -575,7 +625,7 @@ export function adminCustomerControllerCustomerManagersQuery(
   queryFn:
     | ((
         options: QueryFnOptions,
-      ) => Promise<Schemas.ListCustomerManagersResponseDto>)
+      ) => Promise<Schemas.ListCustomerInternalManagersResponseDto>)
     | reactQuery.SkipToken;
 };
 
@@ -586,7 +636,7 @@ export function adminCustomerControllerCustomerManagersQuery(
 ) {
   return {
     queryKey: queryKeyFn({
-      path: "/admin/customer/managers/{customerId}",
+      path: "/admin/customer/{customerId}/managers",
       operationId: "adminCustomerControllerCustomerManagers",
       variables,
     }),
@@ -598,13 +648,16 @@ export function adminCustomerControllerCustomerManagersQuery(
   };
 }
 
+/**
+ * Required Permission: admin
+ */
 export const useSuspenseAdminCustomerControllerCustomerManagers = <
-  TData = Schemas.ListCustomerManagersResponseDto,
+  TData = Schemas.ListCustomerInternalManagersResponseDto,
 >(
   variables: AdminCustomerControllerCustomerManagersVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
-      Schemas.ListCustomerManagersResponseDto,
+      Schemas.ListCustomerInternalManagersResponseDto,
       AdminCustomerControllerCustomerManagersError,
       TData
     >,
@@ -613,7 +666,7 @@ export const useSuspenseAdminCustomerControllerCustomerManagers = <
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useSuspenseQuery<
-    Schemas.ListCustomerManagersResponseDto,
+    Schemas.ListCustomerInternalManagersResponseDto,
     AdminCustomerControllerCustomerManagersError,
     TData
   >({
@@ -625,15 +678,18 @@ export const useSuspenseAdminCustomerControllerCustomerManagers = <
   });
 };
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminCustomerControllerCustomerManagers = <
-  TData = Schemas.ListCustomerManagersResponseDto,
+  TData = Schemas.ListCustomerInternalManagersResponseDto,
 >(
   variables:
     | AdminCustomerControllerCustomerManagersVariables
     | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
-      Schemas.ListCustomerManagersResponseDto,
+      Schemas.ListCustomerInternalManagersResponseDto,
       AdminCustomerControllerCustomerManagersError,
       TData
     >,
@@ -642,11 +698,175 @@ export const useAdminCustomerControllerCustomerManagers = <
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useQuery<
-    Schemas.ListCustomerManagersResponseDto,
+    Schemas.ListCustomerInternalManagersResponseDto,
     AdminCustomerControllerCustomerManagersError,
     TData
   >({
     ...adminCustomerControllerCustomerManagersQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type AdminCustomerControllerCustomerUsersPathParams = {
+  /**
+   * @format uuid
+   */
+  customerId: string;
+};
+
+export type AdminCustomerControllerCustomerUsersQueryParams = {
+  /**
+   * @minimum 0
+   */
+  take?: number;
+  /**
+   * @minimum 0
+   */
+  page?: number;
+  search?: string;
+  /**
+   * @format date-time
+   */
+  dateFrom?: string;
+  /**
+   * @format date-time
+   */
+  dateTo?: string;
+};
+
+export type AdminCustomerControllerCustomerUsersError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AdminCustomerControllerCustomerUsersVariables = {
+  pathParams: AdminCustomerControllerCustomerUsersPathParams;
+  queryParams?: AdminCustomerControllerCustomerUsersQueryParams;
+} & QueriesContext["fetcherOptions"];
+
+/**
+ * Required Permission: admin or manager
+ */
+export const fetchAdminCustomerControllerCustomerUsers = (
+  variables: AdminCustomerControllerCustomerUsersVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.ListCustomerCustomerUserResponseDto,
+    AdminCustomerControllerCustomerUsersError,
+    undefined,
+    {},
+    AdminCustomerControllerCustomerUsersQueryParams,
+    AdminCustomerControllerCustomerUsersPathParams
+  >({
+    url: "/admin/customer/{customerId}/users",
+    method: "get",
+    ...variables,
+    signal,
+  });
+
+/**
+ * Required Permission: admin or manager
+ */
+export function adminCustomerControllerCustomerUsersQuery(
+  variables: AdminCustomerControllerCustomerUsersVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (
+    options: QueryFnOptions,
+  ) => Promise<Schemas.ListCustomerCustomerUserResponseDto>;
+};
+
+export function adminCustomerControllerCustomerUsersQuery(
+  variables:
+    | AdminCustomerControllerCustomerUsersVariables
+    | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((
+        options: QueryFnOptions,
+      ) => Promise<Schemas.ListCustomerCustomerUserResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function adminCustomerControllerCustomerUsersQuery(
+  variables:
+    | AdminCustomerControllerCustomerUsersVariables
+    | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/admin/customer/{customerId}/users",
+      operationId: "adminCustomerControllerCustomerUsers",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchAdminCustomerControllerCustomerUsers(variables, signal),
+  };
+}
+
+/**
+ * Required Permission: admin or manager
+ */
+export const useSuspenseAdminCustomerControllerCustomerUsers = <
+  TData = Schemas.ListCustomerCustomerUserResponseDto,
+>(
+  variables: AdminCustomerControllerCustomerUsersVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListCustomerCustomerUserResponseDto,
+      AdminCustomerControllerCustomerUsersError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.ListCustomerCustomerUserResponseDto,
+    AdminCustomerControllerCustomerUsersError,
+    TData
+  >({
+    ...adminCustomerControllerCustomerUsersQuery(
+      deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+/**
+ * Required Permission: admin or manager
+ */
+export const useAdminCustomerControllerCustomerUsers = <
+  TData = Schemas.ListCustomerCustomerUserResponseDto,
+>(
+  variables:
+    | AdminCustomerControllerCustomerUsersVariables
+    | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListCustomerCustomerUserResponseDto,
+      AdminCustomerControllerCustomerUsersError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.ListCustomerCustomerUserResponseDto,
+    AdminCustomerControllerCustomerUsersError,
+    TData
+  >({
+    ...adminCustomerControllerCustomerUsersQuery(
       variables === reactQuery.skipToken
         ? variables
         : deepMerge(fetcherOptions, variables),
@@ -670,6 +890,9 @@ export type AdminCustomerControllerCustomerVariables = {
   pathParams: AdminCustomerControllerCustomerPathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin or manager
+ */
 export const fetchAdminCustomerControllerCustomer = (
   variables: AdminCustomerControllerCustomerVariables,
   signal?: AbortSignal,
@@ -683,6 +906,9 @@ export const fetchAdminCustomerControllerCustomer = (
     AdminCustomerControllerCustomerPathParams
   >({ url: "/admin/customer/{id}", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: admin or manager
+ */
 export function adminCustomerControllerCustomerQuery(
   variables: AdminCustomerControllerCustomerVariables,
 ): {
@@ -716,6 +942,9 @@ export function adminCustomerControllerCustomerQuery(
   };
 }
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useSuspenseAdminCustomerControllerCustomer = <
   TData = Schemas.GetCustomerResponseDto,
 >(
@@ -743,6 +972,9 @@ export const useSuspenseAdminCustomerControllerCustomer = <
   });
 };
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useAdminCustomerControllerCustomer = <
   TData = Schemas.GetCustomerResponseDto,
 >(
@@ -787,6 +1019,9 @@ export type AdminCustomerControllerUpdateVariables = {
   pathParams: AdminCustomerControllerUpdatePathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminCustomerControllerUpdate = (
   variables: AdminCustomerControllerUpdateVariables,
   signal?: AbortSignal,
@@ -800,6 +1035,9 @@ export const fetchAdminCustomerControllerUpdate = (
     AdminCustomerControllerUpdatePathParams
   >({ url: "/admin/customer/{id}", method: "patch", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminCustomerControllerUpdate = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -836,6 +1074,9 @@ export type AdminCustomerControllerDeleteVariables = {
   pathParams: AdminCustomerControllerDeletePathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminCustomerControllerDelete = (
   variables: AdminCustomerControllerDeleteVariables,
   signal?: AbortSignal,
@@ -849,6 +1090,9 @@ export const fetchAdminCustomerControllerDelete = (
     AdminCustomerControllerDeletePathParams
   >({ url: "/admin/customer/{id}", method: "delete", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminCustomerControllerDelete = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -868,6 +1112,136 @@ export const useAdminCustomerControllerDelete = (
     mutationFn: (variables: AdminCustomerControllerDeleteVariables) =>
       fetchAdminCustomerControllerDelete(deepMerge(fetcherOptions, variables)),
     ...options,
+  });
+};
+
+export type AdminDashboardControllerGetCountSummaryError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AdminDashboardControllerGetCountSummaryVariables =
+  QueriesContext["fetcherOptions"];
+
+/**
+ * Required Permission: admin
+ */
+export const fetchAdminDashboardControllerGetCountSummary = (
+  variables: AdminDashboardControllerGetCountSummaryVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.AdminDashboardCountSummaryResponseDto,
+    AdminDashboardControllerGetCountSummaryError,
+    undefined,
+    {},
+    {},
+    {}
+  >({ url: "/admin/dashboard/count", method: "get", ...variables, signal });
+
+/**
+ * Required Permission: admin
+ */
+export function adminDashboardControllerGetCountSummaryQuery(
+  variables: AdminDashboardControllerGetCountSummaryVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (
+    options: QueryFnOptions,
+  ) => Promise<Schemas.AdminDashboardCountSummaryResponseDto>;
+};
+
+export function adminDashboardControllerGetCountSummaryQuery(
+  variables:
+    | AdminDashboardControllerGetCountSummaryVariables
+    | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((
+        options: QueryFnOptions,
+      ) => Promise<Schemas.AdminDashboardCountSummaryResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function adminDashboardControllerGetCountSummaryQuery(
+  variables:
+    | AdminDashboardControllerGetCountSummaryVariables
+    | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/admin/dashboard/count",
+      operationId: "adminDashboardControllerGetCountSummary",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchAdminDashboardControllerGetCountSummary(variables, signal),
+  };
+}
+
+/**
+ * Required Permission: admin
+ */
+export const useSuspenseAdminDashboardControllerGetCountSummary = <
+  TData = Schemas.AdminDashboardCountSummaryResponseDto,
+>(
+  variables: AdminDashboardControllerGetCountSummaryVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.AdminDashboardCountSummaryResponseDto,
+      AdminDashboardControllerGetCountSummaryError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.AdminDashboardCountSummaryResponseDto,
+    AdminDashboardControllerGetCountSummaryError,
+    TData
+  >({
+    ...adminDashboardControllerGetCountSummaryQuery(
+      deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+/**
+ * Required Permission: admin
+ */
+export const useAdminDashboardControllerGetCountSummary = <
+  TData = Schemas.AdminDashboardCountSummaryResponseDto,
+>(
+  variables:
+    | AdminDashboardControllerGetCountSummaryVariables
+    | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.AdminDashboardCountSummaryResponseDto,
+      AdminDashboardControllerGetCountSummaryError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.AdminDashboardCountSummaryResponseDto,
+    AdminDashboardControllerGetCountSummaryError,
+    TData
+  >({
+    ...adminDashboardControllerGetCountSummaryQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
   });
 };
 
@@ -898,6 +1272,9 @@ export type AdminUserControllerGetManagersVariables = {
   queryParams?: AdminUserControllerGetManagersQueryParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminUserControllerGetManagers = (
   variables: AdminUserControllerGetManagersVariables,
   signal?: AbortSignal,
@@ -911,6 +1288,9 @@ export const fetchAdminUserControllerGetManagers = (
     {}
   >({ url: "/admin/user/managers", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export function adminUserControllerGetManagersQuery(
   variables: AdminUserControllerGetManagersVariables,
 ): {
@@ -944,6 +1324,9 @@ export function adminUserControllerGetManagersQuery(
   };
 }
 
+/**
+ * Required Permission: admin
+ */
 export const useSuspenseAdminUserControllerGetManagers = <
   TData = Schemas.ListManagerResponseDto,
 >(
@@ -971,6 +1354,9 @@ export const useSuspenseAdminUserControllerGetManagers = <
   });
 };
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminUserControllerGetManagers = <
   TData = Schemas.ListManagerResponseDto,
 >(
@@ -1031,6 +1417,9 @@ export type AdminUserControllerGetCustomerUsersVariables = {
   queryParams?: AdminUserControllerGetCustomerUsersQueryParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin or manager
+ */
 export const fetchAdminUserControllerGetCustomerUsers = (
   variables: AdminUserControllerGetCustomerUsersVariables,
   signal?: AbortSignal,
@@ -1044,6 +1433,9 @@ export const fetchAdminUserControllerGetCustomerUsers = (
     {}
   >({ url: "/admin/user/customerUsers", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: admin or manager
+ */
 export function adminUserControllerGetCustomerUsersQuery(
   variables: AdminUserControllerGetCustomerUsersVariables,
 ): {
@@ -1085,6 +1477,9 @@ export function adminUserControllerGetCustomerUsersQuery(
   };
 }
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useSuspenseAdminUserControllerGetCustomerUsers = <
   TData = Schemas.ListCustomerUserResponseDto,
 >(
@@ -1112,6 +1507,9 @@ export const useSuspenseAdminUserControllerGetCustomerUsers = <
   });
 };
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useAdminUserControllerGetCustomerUsers = <
   TData = Schemas.ListCustomerUserResponseDto,
 >(
@@ -1170,6 +1568,9 @@ export type AdminUserControllerGetGeneralsVariables = {
   queryParams?: AdminUserControllerGetGeneralsQueryParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin or manager
+ */
 export const fetchAdminUserControllerGetGenerals = (
   variables: AdminUserControllerGetGeneralsVariables,
   signal?: AbortSignal,
@@ -1183,6 +1584,9 @@ export const fetchAdminUserControllerGetGenerals = (
     {}
   >({ url: "/admin/user/cleaner", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: admin or manager
+ */
 export function adminUserControllerGetGeneralsQuery(
   variables: AdminUserControllerGetGeneralsVariables,
 ): {
@@ -1216,6 +1620,9 @@ export function adminUserControllerGetGeneralsQuery(
   };
 }
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useSuspenseAdminUserControllerGetGenerals = <
   TData = Schemas.ListCleanerResponseDto,
 >(
@@ -1243,6 +1650,9 @@ export const useSuspenseAdminUserControllerGetGenerals = <
   });
 };
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useAdminUserControllerGetGenerals = <
   TData = Schemas.ListCleanerResponseDto,
 >(
@@ -1286,6 +1696,9 @@ export type AdminUserControllerGetGeneralVariables = {
   pathParams: AdminUserControllerGetGeneralPathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminUserControllerGetGeneral = (
   variables: AdminUserControllerGetGeneralVariables,
   signal?: AbortSignal,
@@ -1304,6 +1717,9 @@ export const fetchAdminUserControllerGetGeneral = (
     signal,
   });
 
+/**
+ * Required Permission: admin
+ */
 export function adminUserControllerGetGeneralQuery(
   variables: AdminUserControllerGetGeneralVariables,
 ): {
@@ -1337,6 +1753,9 @@ export function adminUserControllerGetGeneralQuery(
   };
 }
 
+/**
+ * Required Permission: admin
+ */
 export const useSuspenseAdminUserControllerGetGeneral = <
   TData = Schemas.GetCleanerResponseDto,
 >(
@@ -1362,6 +1781,9 @@ export const useSuspenseAdminUserControllerGetGeneral = <
   });
 };
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminUserControllerGetGeneral = <
   TData = Schemas.GetCleanerResponseDto,
 >(
@@ -1406,6 +1828,9 @@ export type AdminUserControllerUpdateGeneralVariables = {
   pathParams: AdminUserControllerUpdateGeneralPathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminUserControllerUpdateGeneral = (
   variables: AdminUserControllerUpdateGeneralVariables,
   signal?: AbortSignal,
@@ -1424,6 +1849,9 @@ export const fetchAdminUserControllerUpdateGeneral = (
     signal,
   });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminUserControllerUpdateGeneral = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -1462,6 +1890,9 @@ export type AdminUserControllerGetCustomerUserVariables = {
   pathParams: AdminUserControllerGetCustomerUserPathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminUserControllerGetCustomerUser = (
   variables: AdminUserControllerGetCustomerUserVariables,
   signal?: AbortSignal,
@@ -1480,6 +1911,9 @@ export const fetchAdminUserControllerGetCustomerUser = (
     signal,
   });
 
+/**
+ * Required Permission: admin
+ */
 export function adminUserControllerGetCustomerUserQuery(
   variables: AdminUserControllerGetCustomerUserVariables,
 ): {
@@ -1513,6 +1947,9 @@ export function adminUserControllerGetCustomerUserQuery(
   };
 }
 
+/**
+ * Required Permission: admin
+ */
 export const useSuspenseAdminUserControllerGetCustomerUser = <
   TData = Schemas.GetManagerResponseDto,
 >(
@@ -1540,6 +1977,9 @@ export const useSuspenseAdminUserControllerGetCustomerUser = <
   });
 };
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminUserControllerGetCustomerUser = <
   TData = Schemas.GetManagerResponseDto,
 >(
@@ -1584,6 +2024,9 @@ export type AdminUserControllerUpdateCustomerUserVariables = {
   pathParams: AdminUserControllerUpdateCustomerUserPathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminUserControllerUpdateCustomerUser = (
   variables: AdminUserControllerUpdateCustomerUserVariables,
   signal?: AbortSignal,
@@ -1602,6 +2045,9 @@ export const fetchAdminUserControllerUpdateCustomerUser = (
     signal,
   });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminUserControllerUpdateCustomerUser = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -1640,6 +2086,9 @@ export type AdminUserControllerGetManagerVariables = {
   pathParams: AdminUserControllerGetManagerPathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminUserControllerGetManager = (
   variables: AdminUserControllerGetManagerVariables,
   signal?: AbortSignal,
@@ -1658,6 +2107,9 @@ export const fetchAdminUserControllerGetManager = (
     signal,
   });
 
+/**
+ * Required Permission: admin
+ */
 export function adminUserControllerGetManagerQuery(
   variables: AdminUserControllerGetManagerVariables,
 ): {
@@ -1691,6 +2143,9 @@ export function adminUserControllerGetManagerQuery(
   };
 }
 
+/**
+ * Required Permission: admin
+ */
 export const useSuspenseAdminUserControllerGetManager = <
   TData = Schemas.GetManagerResponseDto,
 >(
@@ -1716,6 +2171,9 @@ export const useSuspenseAdminUserControllerGetManager = <
   });
 };
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminUserControllerGetManager = <
   TData = Schemas.GetManagerResponseDto,
 >(
@@ -1760,6 +2218,9 @@ export type AdminUserControllerUpdateManagerVariables = {
   pathParams: AdminUserControllerUpdateManagerPathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminUserControllerUpdateManager = (
   variables: AdminUserControllerUpdateManagerVariables,
   signal?: AbortSignal,
@@ -1778,6 +2239,9 @@ export const fetchAdminUserControllerUpdateManager = (
     signal,
   });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminUserControllerUpdateManager = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -1809,6 +2273,9 @@ export type AdminUserControllerCreateManagerVariables = {
   body: Schemas.CreateManagerDto;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminUserControllerCreateManager = (
   variables: AdminUserControllerCreateManagerVariables,
   signal?: AbortSignal,
@@ -1822,6 +2289,9 @@ export const fetchAdminUserControllerCreateManager = (
     {}
   >({ url: "/admin/user/createManager", method: "post", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminUserControllerCreateManager = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -1853,6 +2323,9 @@ export type AdminUserControllerCreateGeneralVariables = {
   body: Schemas.CreateCleanerDto;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminUserControllerCreateGeneral = (
   variables: AdminUserControllerCreateGeneralVariables,
   signal?: AbortSignal,
@@ -1866,6 +2339,9 @@ export const fetchAdminUserControllerCreateGeneral = (
     {}
   >({ url: "/admin/user/createCleaner", method: "post", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminUserControllerCreateGeneral = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -1897,6 +2373,9 @@ export type AdminUserControllerCreateCustomerUserVariables = {
   body: Schemas.CreateCustomerUserRequestDto;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminUserControllerCreateCustomerUser = (
   variables: AdminUserControllerCreateCustomerUserVariables,
   signal?: AbortSignal,
@@ -1915,6 +2394,9 @@ export const fetchAdminUserControllerCreateCustomerUser = (
     signal,
   });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminUserControllerCreateCustomerUser = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -1953,6 +2435,9 @@ export type AdminUserControllerDeleteUserVariables = {
   pathParams: AdminUserControllerDeleteUserPathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminUserControllerDeleteUser = (
   variables: AdminUserControllerDeleteUserVariables,
   signal?: AbortSignal,
@@ -1966,6 +2451,9 @@ export const fetchAdminUserControllerDeleteUser = (
     AdminUserControllerDeleteUserPathParams
   >({ url: "/admin/user/{id}", method: "delete", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminUserControllerDeleteUser = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -2014,6 +2502,9 @@ export type AdminSowControllerSowsVariables = {
   queryParams?: AdminSowControllerSowsQueryParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminSowControllerSows = (
   variables: AdminSowControllerSowsVariables,
   signal?: AbortSignal,
@@ -2027,6 +2518,9 @@ export const fetchAdminSowControllerSows = (
     {}
   >({ url: "/admin/sow", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export function adminSowControllerSowsQuery(
   variables: AdminSowControllerSowsVariables,
 ): {
@@ -2060,6 +2554,9 @@ export function adminSowControllerSowsQuery(
   };
 }
 
+/**
+ * Required Permission: admin
+ */
 export const useSuspenseAdminSowControllerSows = <
   TData = Schemas.ListSOWResponseDto,
 >(
@@ -2085,6 +2582,9 @@ export const useSuspenseAdminSowControllerSows = <
   });
 };
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminSowControllerSows = <TData = Schemas.ListSOWResponseDto,>(
   variables: AdminSowControllerSowsVariables | reactQuery.SkipToken,
   options?: Omit<
@@ -2118,6 +2618,9 @@ export type AdminSowControllerCreateVariables = {
   body: Schemas.CreateScopeOfWorkRequestDto;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminSowControllerCreate = (
   variables: AdminSowControllerCreateVariables,
   signal?: AbortSignal,
@@ -2131,6 +2634,9 @@ export const fetchAdminSowControllerCreate = (
     {}
   >({ url: "/admin/sow", method: "post", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminSowControllerCreate = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -2166,6 +2672,9 @@ export type AdminSowControllerSowVariables = {
   pathParams: AdminSowControllerSowPathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminSowControllerSow = (
   variables: AdminSowControllerSowVariables,
   signal?: AbortSignal,
@@ -2179,6 +2688,9 @@ export const fetchAdminSowControllerSow = (
     AdminSowControllerSowPathParams
   >({ url: "/admin/sow/{id}", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export function adminSowControllerSowQuery(
   variables: AdminSowControllerSowVariables,
 ): {
@@ -2212,6 +2724,9 @@ export function adminSowControllerSowQuery(
   };
 }
 
+/**
+ * Required Permission: admin
+ */
 export const useSuspenseAdminSowControllerSow = <
   TData = Schemas.GetSOWResponseDto,
 >(
@@ -2237,6 +2752,9 @@ export const useSuspenseAdminSowControllerSow = <
   });
 };
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminSowControllerSow = <TData = Schemas.GetSOWResponseDto,>(
   variables: AdminSowControllerSowVariables | reactQuery.SkipToken,
   options?: Omit<
@@ -2278,6 +2796,9 @@ export type AdminSowControllerUpdateVariables = {
   pathParams: AdminSowControllerUpdatePathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminSowControllerUpdate = (
   variables: AdminSowControllerUpdateVariables,
   signal?: AbortSignal,
@@ -2291,6 +2812,9 @@ export const fetchAdminSowControllerUpdate = (
     AdminSowControllerUpdatePathParams
   >({ url: "/admin/sow/{id}", method: "patch", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminSowControllerUpdate = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -2326,6 +2850,9 @@ export type AdminSowControllerDeleteVariables = {
   pathParams: AdminSowControllerDeletePathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminSowControllerDelete = (
   variables: AdminSowControllerDeleteVariables,
   signal?: AbortSignal,
@@ -2339,6 +2866,9 @@ export const fetchAdminSowControllerDelete = (
     AdminSowControllerDeletePathParams
   >({ url: "/admin/sow/{id}", method: "delete", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminSowControllerDelete = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -2379,6 +2909,9 @@ export type AdminSowGroupControllerSowsVariables = {
   queryParams?: AdminSowGroupControllerSowsQueryParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminSowGroupControllerSows = (
   variables: AdminSowGroupControllerSowsVariables,
   signal?: AbortSignal,
@@ -2392,6 +2925,9 @@ export const fetchAdminSowGroupControllerSows = (
     {}
   >({ url: "/admin/sowGroup", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export function adminSowGroupControllerSowsQuery(
   variables: AdminSowGroupControllerSowsVariables,
 ): {
@@ -2427,6 +2963,9 @@ export function adminSowGroupControllerSowsQuery(
   };
 }
 
+/**
+ * Required Permission: admin
+ */
 export const useSuspenseAdminSowGroupControllerSows = <
   TData = Schemas.ListSOWGroupResponseDto,
 >(
@@ -2452,6 +2991,9 @@ export const useSuspenseAdminSowGroupControllerSows = <
   });
 };
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminSowGroupControllerSows = <
   TData = Schemas.ListSOWGroupResponseDto,
 >(
@@ -2488,6 +3030,9 @@ export type AdminSowGroupControllerCreateVariables = {
   body: Schemas.CreateScopeOfWorkGroupRequestDto;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminSowGroupControllerCreate = (
   variables: AdminSowGroupControllerCreateVariables,
   signal?: AbortSignal,
@@ -2501,6 +3046,9 @@ export const fetchAdminSowGroupControllerCreate = (
     {}
   >({ url: "/admin/sowGroup", method: "post", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminSowGroupControllerCreate = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -2536,6 +3084,9 @@ export type AdminSowGroupControllerSowVariables = {
   pathParams: AdminSowGroupControllerSowPathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminSowGroupControllerSow = (
   variables: AdminSowGroupControllerSowVariables,
   signal?: AbortSignal,
@@ -2549,6 +3100,9 @@ export const fetchAdminSowGroupControllerSow = (
     AdminSowGroupControllerSowPathParams
   >({ url: "/admin/sowGroup/{id}", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export function adminSowGroupControllerSowQuery(
   variables: AdminSowGroupControllerSowVariables,
 ): {
@@ -2582,6 +3136,9 @@ export function adminSowGroupControllerSowQuery(
   };
 }
 
+/**
+ * Required Permission: admin
+ */
 export const useSuspenseAdminSowGroupControllerSow = <
   TData = Schemas.GetSOWGroupResponseDto,
 >(
@@ -2607,6 +3164,9 @@ export const useSuspenseAdminSowGroupControllerSow = <
   });
 };
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminSowGroupControllerSow = <
   TData = Schemas.GetSOWGroupResponseDto,
 >(
@@ -2651,6 +3211,9 @@ export type AdminSowGroupControllerUpdateVariables = {
   pathParams: AdminSowGroupControllerUpdatePathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminSowGroupControllerUpdate = (
   variables: AdminSowGroupControllerUpdateVariables,
   signal?: AbortSignal,
@@ -2664,6 +3227,9 @@ export const fetchAdminSowGroupControllerUpdate = (
     AdminSowGroupControllerUpdatePathParams
   >({ url: "/admin/sowGroup/{id}", method: "patch", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminSowGroupControllerUpdate = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -2700,6 +3266,9 @@ export type AdminSowGroupControllerDeleteVariables = {
   pathParams: AdminSowGroupControllerDeletePathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminSowGroupControllerDelete = (
   variables: AdminSowGroupControllerDeleteVariables,
   signal?: AbortSignal,
@@ -2713,6 +3282,9 @@ export const fetchAdminSowGroupControllerDelete = (
     AdminSowGroupControllerDeletePathParams
   >({ url: "/admin/sowGroup/{id}", method: "delete", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminSowGroupControllerDelete = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -2757,6 +3329,10 @@ export type AdminSiteControllerSitesQueryParams = {
    * @format uuid
    */
   clientId?: string;
+  /**
+   * @format uuid
+   */
+  staffId?: string;
 };
 
 export type AdminSiteControllerSitesError = Fetcher.ErrorWrapper<undefined>;
@@ -2765,6 +3341,9 @@ export type AdminSiteControllerSitesVariables = {
   queryParams?: AdminSiteControllerSitesQueryParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin or manager
+ */
 export const fetchAdminSiteControllerSites = (
   variables: AdminSiteControllerSitesVariables,
   signal?: AbortSignal,
@@ -2778,6 +3357,9 @@ export const fetchAdminSiteControllerSites = (
     {}
   >({ url: "/admin/site", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: admin or manager
+ */
 export function adminSiteControllerSitesQuery(
   variables: AdminSiteControllerSitesVariables,
 ): {
@@ -2811,6 +3393,9 @@ export function adminSiteControllerSitesQuery(
   };
 }
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useSuspenseAdminSiteControllerSites = <
   TData = Schemas.ListSiteResponseDto,
 >(
@@ -2836,6 +3421,9 @@ export const useSuspenseAdminSiteControllerSites = <
   });
 };
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useAdminSiteControllerSites = <
   TData = Schemas.ListSiteResponseDto,
 >(
@@ -2871,6 +3459,9 @@ export type AdminSiteControllerCreateVariables = {
   body: Schemas.CreateSiteRequestDto;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin or manager
+ */
 export const fetchAdminSiteControllerCreate = (
   variables: AdminSiteControllerCreateVariables,
   signal?: AbortSignal,
@@ -2884,6 +3475,9 @@ export const fetchAdminSiteControllerCreate = (
     {}
   >({ url: "/admin/site", method: "post", ...variables, signal });
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useAdminSiteControllerCreate = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -2932,6 +3526,9 @@ export type AdminSiteControllerSiteCleanersVariables = {
   queryParams?: AdminSiteControllerSiteCleanersQueryParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin or manager
+ */
 export const fetchAdminSiteControllerSiteCleaners = (
   variables: AdminSiteControllerSiteCleanersVariables,
   signal?: AbortSignal,
@@ -2950,6 +3547,9 @@ export const fetchAdminSiteControllerSiteCleaners = (
     signal,
   });
 
+/**
+ * Required Permission: admin or manager
+ */
 export function adminSiteControllerSiteCleanersQuery(
   variables: AdminSiteControllerSiteCleanersVariables,
 ): {
@@ -2987,6 +3587,9 @@ export function adminSiteControllerSiteCleanersQuery(
   };
 }
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useSuspenseAdminSiteControllerSiteCleaners = <
   TData = Schemas.ListSiteCleanersResponseDto,
 >(
@@ -3014,6 +3617,9 @@ export const useSuspenseAdminSiteControllerSiteCleaners = <
   });
 };
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useAdminSiteControllerSiteCleaners = <
   TData = Schemas.ListSiteCleanersResponseDto,
 >(
@@ -3056,6 +3662,9 @@ export type AdminSiteControllerSiteVariables = {
   pathParams: AdminSiteControllerSitePathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin or manager
+ */
 export const fetchAdminSiteControllerSite = (
   variables: AdminSiteControllerSiteVariables,
   signal?: AbortSignal,
@@ -3069,6 +3678,9 @@ export const fetchAdminSiteControllerSite = (
     AdminSiteControllerSitePathParams
   >({ url: "/admin/site/{id}", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: admin or manager
+ */
 export function adminSiteControllerSiteQuery(
   variables: AdminSiteControllerSiteVariables,
 ): {
@@ -3102,6 +3714,9 @@ export function adminSiteControllerSiteQuery(
   };
 }
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useSuspenseAdminSiteControllerSite = <
   TData = Schemas.GetSiteResponseDto,
 >(
@@ -3127,6 +3742,9 @@ export const useSuspenseAdminSiteControllerSite = <
   });
 };
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useAdminSiteControllerSite = <TData = Schemas.GetSiteResponseDto,>(
   variables: AdminSiteControllerSiteVariables | reactQuery.SkipToken,
   options?: Omit<
@@ -3168,6 +3786,9 @@ export type AdminSiteControllerUpdateVariables = {
   pathParams: AdminSiteControllerUpdatePathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminSiteControllerUpdate = (
   variables: AdminSiteControllerUpdateVariables,
   signal?: AbortSignal,
@@ -3181,6 +3802,9 @@ export const fetchAdminSiteControllerUpdate = (
     AdminSiteControllerUpdatePathParams
   >({ url: "/admin/site/{id}", method: "patch", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminSiteControllerUpdate = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -3216,6 +3840,9 @@ export type AdminSiteControllerDeleteVariables = {
   pathParams: AdminSiteControllerDeletePathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminSiteControllerDelete = (
   variables: AdminSiteControllerDeleteVariables,
   signal?: AbortSignal,
@@ -3229,6 +3856,9 @@ export const fetchAdminSiteControllerDelete = (
     AdminSiteControllerDeletePathParams
   >({ url: "/admin/site/{id}", method: "delete", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminSiteControllerDelete = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -3247,6 +3877,82 @@ export const useAdminSiteControllerDelete = (
   >({
     mutationFn: (variables: AdminSiteControllerDeleteVariables) =>
       fetchAdminSiteControllerDelete(deepMerge(fetcherOptions, variables)),
+    ...options,
+  });
+};
+
+export type AdminSiteControllerGenerateQrError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: {
+        /**
+         * @example 401
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 401
+         */
+        error: 401;
+      };
+    }
+  | {
+      status: 406;
+      payload: {
+        /**
+         * @example 406
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 406
+         */
+        error: 406;
+      };
+    }
+>;
+
+export type AdminSiteControllerGenerateQrVariables = {
+  body: Schemas.GenerateQrTokenRequestDto;
+} & QueriesContext["fetcherOptions"];
+
+/**
+ * Required Permission: admin or manager
+ */
+export const fetchAdminSiteControllerGenerateQr = (
+  variables: AdminSiteControllerGenerateQrVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.GenerateQrTokenResponseDto,
+    AdminSiteControllerGenerateQrError,
+    Schemas.GenerateQrTokenRequestDto,
+    {},
+    {},
+    {}
+  >({ url: "/admin/site/qr/generate", method: "post", ...variables, signal });
+
+/**
+ * Required Permission: admin or manager
+ */
+export const useAdminSiteControllerGenerateQr = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.GenerateQrTokenResponseDto,
+      AdminSiteControllerGenerateQrError,
+      AdminSiteControllerGenerateQrVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.GenerateQrTokenResponseDto,
+    AdminSiteControllerGenerateQrError,
+    AdminSiteControllerGenerateQrVariables
+  >({
+    mutationFn: (variables: AdminSiteControllerGenerateQrVariables) =>
+      fetchAdminSiteControllerGenerateQr(deepMerge(fetcherOptions, variables)),
     ...options,
   });
 };
@@ -3277,6 +3983,10 @@ export type AdminJobControllerJobsQueryParams = {
    * @format uuid
    */
   customerId?: string;
+  /**
+   * @format uuid
+   */
+  siteId?: string;
   status?: string;
 };
 
@@ -3299,6 +4009,9 @@ export type AdminJobControllerJobsVariables = {
   queryParams?: AdminJobControllerJobsQueryParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin or manager
+ */
 export const fetchAdminJobControllerJobs = (
   variables: AdminJobControllerJobsVariables,
   signal?: AbortSignal,
@@ -3312,6 +4025,9 @@ export const fetchAdminJobControllerJobs = (
     {}
   >({ url: "/admin/job", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: admin or manager
+ */
 export function adminJobControllerJobsQuery(
   variables: AdminJobControllerJobsVariables,
 ): {
@@ -3345,6 +4061,9 @@ export function adminJobControllerJobsQuery(
   };
 }
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useSuspenseAdminJobControllerJobs = <
   TData = Schemas.ListJobResponseDto,
 >(
@@ -3370,6 +4089,9 @@ export const useSuspenseAdminJobControllerJobs = <
   });
 };
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useAdminJobControllerJobs = <TData = Schemas.ListJobResponseDto,>(
   variables: AdminJobControllerJobsVariables | reactQuery.SkipToken,
   options?: Omit<
@@ -3403,6 +4125,9 @@ export type AdminJobControllerCreateJobVariables = {
   body: Schemas.CreateJobRequestDto;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin or manager
+ */
 export const fetchAdminJobControllerCreateJob = (
   variables: AdminJobControllerCreateJobVariables,
   signal?: AbortSignal,
@@ -3416,6 +4141,9 @@ export const fetchAdminJobControllerCreateJob = (
     {}
   >({ url: "/admin/job", method: "post", ...variables, signal });
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useAdminJobControllerCreateJob = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -3456,6 +4184,9 @@ export type AdminJobControllerGetJobSummaryVariables = {
   queryParams?: AdminJobControllerGetJobSummaryQueryParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminJobControllerGetJobSummary = (
   variables: AdminJobControllerGetJobSummaryVariables,
   signal?: AbortSignal,
@@ -3469,6 +4200,9 @@ export const fetchAdminJobControllerGetJobSummary = (
     {}
   >({ url: "/admin/job/summary", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export function adminJobControllerGetJobSummaryQuery(
   variables: AdminJobControllerGetJobSummaryVariables,
 ): {
@@ -3506,6 +4240,9 @@ export function adminJobControllerGetJobSummaryQuery(
   };
 }
 
+/**
+ * Required Permission: admin
+ */
 export const useSuspenseAdminJobControllerGetJobSummary = <
   TData = Schemas.AdminGetJobSummaryResponseDto,
 >(
@@ -3533,6 +4270,9 @@ export const useSuspenseAdminJobControllerGetJobSummary = <
   });
 };
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminJobControllerGetJobSummary = <
   TData = Schemas.AdminGetJobSummaryResponseDto,
 >(
@@ -3577,6 +4317,9 @@ export type AdminJobControllerUpdateChecklistSowVariables = {
   pathParams: AdminJobControllerUpdateChecklistSowPathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminJobControllerUpdateChecklistSow = (
   variables: AdminJobControllerUpdateChecklistSowVariables,
   signal?: AbortSignal,
@@ -3595,6 +4338,9 @@ export const fetchAdminJobControllerUpdateChecklistSow = (
     signal,
   });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminJobControllerUpdateChecklistSow = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -3637,6 +4383,9 @@ export type AdminJobControllerAssignStaffToJobVariables = {
   pathParams: AdminJobControllerAssignStaffToJobPathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin or manager
+ */
 export const fetchAdminJobControllerAssignStaffToJob = (
   variables: AdminJobControllerAssignStaffToJobVariables,
   signal?: AbortSignal,
@@ -3655,6 +4404,9 @@ export const fetchAdminJobControllerAssignStaffToJob = (
     signal,
   });
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useAdminJobControllerAssignStaffToJob = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -3692,6 +4444,9 @@ export type AdminJobControllerJobVariables = {
   pathParams: AdminJobControllerJobPathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin or manager
+ */
 export const fetchAdminJobControllerJob = (
   variables: AdminJobControllerJobVariables,
   signal?: AbortSignal,
@@ -3705,6 +4460,9 @@ export const fetchAdminJobControllerJob = (
     AdminJobControllerJobPathParams
   >({ url: "/admin/job/{id}", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: admin or manager
+ */
 export function adminJobControllerJobQuery(
   variables: AdminJobControllerJobVariables,
 ): {
@@ -3738,6 +4496,9 @@ export function adminJobControllerJobQuery(
   };
 }
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useSuspenseAdminJobControllerJob = <
   TData = Schemas.GetJobResponseDto,
 >(
@@ -3763,6 +4524,9 @@ export const useSuspenseAdminJobControllerJob = <
   });
 };
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useAdminJobControllerJob = <TData = Schemas.GetJobResponseDto,>(
   variables: AdminJobControllerJobVariables | reactQuery.SkipToken,
   options?: Omit<
@@ -3804,12 +4568,15 @@ export type AdminJobControllerUpdateVariables = {
   pathParams: AdminJobControllerUpdatePathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminJobControllerUpdate = (
   variables: AdminJobControllerUpdateVariables,
   signal?: AbortSignal,
 ) =>
   queriesFetch<
-    undefined,
+    Schemas.MessageResponseWithIdDataDto,
     AdminJobControllerUpdateError,
     Schemas.UpdateJobRequestDto,
     {},
@@ -3817,10 +4584,13 @@ export const fetchAdminJobControllerUpdate = (
     AdminJobControllerUpdatePathParams
   >({ url: "/admin/job/{id}", method: "patch", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminJobControllerUpdate = (
   options?: Omit<
     reactQuery.UseMutationOptions<
-      undefined,
+      Schemas.MessageResponseWithIdDataDto,
       AdminJobControllerUpdateError,
       AdminJobControllerUpdateVariables
     >,
@@ -3829,7 +4599,7 @@ export const useAdminJobControllerUpdate = (
 ) => {
   const { fetcherOptions } = useQueriesContext();
   return reactQuery.useMutation<
-    undefined,
+    Schemas.MessageResponseWithIdDataDto,
     AdminJobControllerUpdateError,
     AdminJobControllerUpdateVariables
   >({
@@ -3852,6 +4622,9 @@ export type AdminJobControllerDeleteVariables = {
   pathParams: AdminJobControllerDeletePathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminJobControllerDelete = (
   variables: AdminJobControllerDeleteVariables,
   signal?: AbortSignal,
@@ -3865,6 +4638,9 @@ export const fetchAdminJobControllerDelete = (
     AdminJobControllerDeletePathParams
   >({ url: "/admin/job/{id}", method: "delete", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminJobControllerDelete = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -3923,6 +4699,9 @@ export type AdminJobRequestControllerJobRequestsVariables = {
   queryParams?: AdminJobRequestControllerJobRequestsQueryParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminJobRequestControllerJobRequests = (
   variables: AdminJobRequestControllerJobRequestsVariables,
   signal?: AbortSignal,
@@ -3936,6 +4715,9 @@ export const fetchAdminJobRequestControllerJobRequests = (
     {}
   >({ url: "/admin/job-request", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export function adminJobRequestControllerJobRequestsQuery(
   variables: AdminJobRequestControllerJobRequestsVariables,
 ): {
@@ -3977,6 +4759,9 @@ export function adminJobRequestControllerJobRequestsQuery(
   };
 }
 
+/**
+ * Required Permission: admin
+ */
 export const useSuspenseAdminJobRequestControllerJobRequests = <
   TData = Schemas.AdminListJobRequestResponseDto,
 >(
@@ -4004,6 +4789,9 @@ export const useSuspenseAdminJobRequestControllerJobRequests = <
   });
 };
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminJobRequestControllerJobRequests = <
   TData = Schemas.AdminListJobRequestResponseDto,
 >(
@@ -4042,6 +4830,9 @@ export type AdminJobRequestControllerRequestJobVariables = {
   body: Schemas.JobRequestDto;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminJobRequestControllerRequestJob = (
   variables: AdminJobRequestControllerRequestJobVariables,
   signal?: AbortSignal,
@@ -4055,6 +4846,9 @@ export const fetchAdminJobRequestControllerRequestJob = (
     {}
   >({ url: "/admin/job-request", method: "post", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminJobRequestControllerRequestJob = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -4105,6 +4899,9 @@ export type AdminJobRequestControllerJobRequestVariables = {
   pathParams: AdminJobRequestControllerJobRequestPathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminJobRequestControllerJobRequest = (
   variables: AdminJobRequestControllerJobRequestVariables,
   signal?: AbortSignal,
@@ -4118,6 +4915,9 @@ export const fetchAdminJobRequestControllerJobRequest = (
     AdminJobRequestControllerJobRequestPathParams
   >({ url: "/admin/job-request/{id}", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export function adminJobRequestControllerJobRequestQuery(
   variables: AdminJobRequestControllerJobRequestVariables,
 ): {
@@ -4159,6 +4959,9 @@ export function adminJobRequestControllerJobRequestQuery(
   };
 }
 
+/**
+ * Required Permission: admin
+ */
 export const useSuspenseAdminJobRequestControllerJobRequest = <
   TData = Schemas.AdminGetJobRequestResponseDto,
 >(
@@ -4186,6 +4989,9 @@ export const useSuspenseAdminJobRequestControllerJobRequest = <
   });
 };
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminJobRequestControllerJobRequest = <
   TData = Schemas.AdminGetJobRequestResponseDto,
 >(
@@ -4272,6 +5078,9 @@ export type AdminIncidentConrollerIncidentsVariables = {
   queryParams?: AdminIncidentConrollerIncidentsQueryParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin or manager
+ */
 export const fetchAdminIncidentConrollerIncidents = (
   variables: AdminIncidentConrollerIncidentsVariables,
   signal?: AbortSignal,
@@ -4285,6 +5094,9 @@ export const fetchAdminIncidentConrollerIncidents = (
     {}
   >({ url: "/admin/incident", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: admin or manager
+ */
 export function adminIncidentConrollerIncidentsQuery(
   variables: AdminIncidentConrollerIncidentsVariables,
 ): {
@@ -4322,6 +5134,9 @@ export function adminIncidentConrollerIncidentsQuery(
   };
 }
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useSuspenseAdminIncidentConrollerIncidents = <
   TData = Schemas.AdminListIncidentResponseDto,
 >(
@@ -4349,6 +5164,9 @@ export const useSuspenseAdminIncidentConrollerIncidents = <
   });
 };
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useAdminIncidentConrollerIncidents = <
   TData = Schemas.AdminListIncidentResponseDto,
 >(
@@ -4420,6 +5238,9 @@ export type AdminIncidentConrollerIncidentVariables = {
   pathParams: AdminIncidentConrollerIncidentPathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminIncidentConrollerIncident = (
   variables: AdminIncidentConrollerIncidentVariables,
   signal?: AbortSignal,
@@ -4433,6 +5254,9 @@ export const fetchAdminIncidentConrollerIncident = (
     AdminIncidentConrollerIncidentPathParams
   >({ url: "/admin/incident/{id}", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export function adminIncidentConrollerIncidentQuery(
   variables: AdminIncidentConrollerIncidentVariables,
 ): {
@@ -4466,6 +5290,9 @@ export function adminIncidentConrollerIncidentQuery(
   };
 }
 
+/**
+ * Required Permission: admin
+ */
 export const useSuspenseAdminIncidentConrollerIncident = <
   TData = Schemas.GetIncidentResponseDto,
 >(
@@ -4493,6 +5320,9 @@ export const useSuspenseAdminIncidentConrollerIncident = <
   });
 };
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminIncidentConrollerIncident = <
   TData = Schemas.GetIncidentResponseDto,
 >(
@@ -4565,6 +5395,9 @@ export type AdminIncidentConrollerUpdateIncidentVariables = {
   pathParams: AdminIncidentConrollerUpdateIncidentPathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminIncidentConrollerUpdateIncident = (
   variables: AdminIncidentConrollerUpdateIncidentVariables,
   signal?: AbortSignal,
@@ -4578,6 +5411,9 @@ export const fetchAdminIncidentConrollerUpdateIncident = (
     AdminIncidentConrollerUpdateIncidentPathParams
   >({ url: "/admin/incident/{id}", method: "patch", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminIncidentConrollerUpdateIncident = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -4644,6 +5480,9 @@ export type AdminIncidentConrollerDeleteIncidentVariables = {
   pathParams: AdminIncidentConrollerDeleteIncidentPathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin
+ */
 export const fetchAdminIncidentConrollerDeleteIncident = (
   variables: AdminIncidentConrollerDeleteIncidentVariables,
   signal?: AbortSignal,
@@ -4657,6 +5496,9 @@ export const fetchAdminIncidentConrollerDeleteIncident = (
     AdminIncidentConrollerDeleteIncidentPathParams
   >({ url: "/admin/incident/{id}", method: "delete", ...variables, signal });
 
+/**
+ * Required Permission: admin
+ */
 export const useAdminIncidentConrollerDeleteIncident = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -4753,6 +5595,9 @@ export type AdminActivityControllerActivitiesVariables = {
   queryParams?: AdminActivityControllerActivitiesQueryParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: admin or manager
+ */
 export const fetchAdminActivityControllerActivities = (
   variables: AdminActivityControllerActivitiesVariables,
   signal?: AbortSignal,
@@ -4766,6 +5611,9 @@ export const fetchAdminActivityControllerActivities = (
     {}
   >({ url: "/admin/activity", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: admin or manager
+ */
 export function adminActivityControllerActivitiesQuery(
   variables: AdminActivityControllerActivitiesVariables,
 ): {
@@ -4801,6 +5649,9 @@ export function adminActivityControllerActivitiesQuery(
   };
 }
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useSuspenseAdminActivityControllerActivities = <
   TData = Schemas.ListActivityResponseDto,
 >(
@@ -4828,6 +5679,9 @@ export const useSuspenseAdminActivityControllerActivities = <
   });
 };
 
+/**
+ * Required Permission: admin or manager
+ */
 export const useAdminActivityControllerActivities = <
   TData = Schemas.ListActivityResponseDto,
 >(
@@ -4883,6 +5737,10 @@ export type ManagerJobControllerJobsQueryParams = {
    * @format uuid
    */
   customerId?: string;
+  /**
+   * @format uuid
+   */
+  siteId?: string;
   status?: string;
 };
 
@@ -4921,6 +5779,9 @@ export type ManagerJobControllerJobsVariables = {
   queryParams?: ManagerJobControllerJobsQueryParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: customer
+ */
 export const fetchManagerJobControllerJobs = (
   variables: ManagerJobControllerJobsVariables,
   signal?: AbortSignal,
@@ -4934,6 +5795,9 @@ export const fetchManagerJobControllerJobs = (
     {}
   >({ url: "/manager/job", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: customer
+ */
 export function managerJobControllerJobsQuery(
   variables: ManagerJobControllerJobsVariables,
 ): {
@@ -4967,6 +5831,9 @@ export function managerJobControllerJobsQuery(
   };
 }
 
+/**
+ * Required Permission: customer
+ */
 export const useSuspenseManagerJobControllerJobs = <
   TData = Schemas.ListJobResponseDto,
 >(
@@ -4992,6 +5859,9 @@ export const useSuspenseManagerJobControllerJobs = <
   });
 };
 
+/**
+ * Required Permission: customer
+ */
 export const useManagerJobControllerJobs = <
   TData = Schemas.ListJobResponseDto,
 >(
@@ -5012,146 +5882,6 @@ export const useManagerJobControllerJobs = <
     TData
   >({
     ...managerJobControllerJobsQuery(
-      variables === reactQuery.skipToken
-        ? variables
-        : deepMerge(fetcherOptions, variables),
-    ),
-    ...options,
-    ...queryOptions,
-  });
-};
-
-export type ManagerJobControllerGenerateQrError = Fetcher.ErrorWrapper<
-  | {
-      status: 401;
-      payload: {
-        /**
-         * @example 401
-         */
-        statusCode: number;
-        message: string;
-        /**
-         * @example 401
-         */
-        error: 401;
-      };
-    }
-  | {
-      status: 406;
-      payload: {
-        /**
-         * @example 406
-         */
-        statusCode: number;
-        message: string;
-        /**
-         * @example 406
-         */
-        error: 406;
-      };
-    }
->;
-
-export type ManagerJobControllerGenerateQrVariables =
-  QueriesContext["fetcherOptions"];
-
-export const fetchManagerJobControllerGenerateQr = (
-  variables: ManagerJobControllerGenerateQrVariables,
-  signal?: AbortSignal,
-) =>
-  queriesFetch<
-    Schemas.ManagerGenerateQrTokenResponseDto,
-    ManagerJobControllerGenerateQrError,
-    undefined,
-    {},
-    {},
-    {}
-  >({ url: "/manager/job/qr/generate", method: "get", ...variables, signal });
-
-export function managerJobControllerGenerateQrQuery(
-  variables: ManagerJobControllerGenerateQrVariables,
-): {
-  queryKey: reactQuery.QueryKey;
-  queryFn: (
-    options: QueryFnOptions,
-  ) => Promise<Schemas.ManagerGenerateQrTokenResponseDto>;
-};
-
-export function managerJobControllerGenerateQrQuery(
-  variables: ManagerJobControllerGenerateQrVariables | reactQuery.SkipToken,
-): {
-  queryKey: reactQuery.QueryKey;
-  queryFn:
-    | ((
-        options: QueryFnOptions,
-      ) => Promise<Schemas.ManagerGenerateQrTokenResponseDto>)
-    | reactQuery.SkipToken;
-};
-
-export function managerJobControllerGenerateQrQuery(
-  variables: ManagerJobControllerGenerateQrVariables | reactQuery.SkipToken,
-) {
-  return {
-    queryKey: queryKeyFn({
-      path: "/manager/job/qr/generate",
-      operationId: "managerJobControllerGenerateQr",
-      variables,
-    }),
-    queryFn:
-      variables === reactQuery.skipToken
-        ? reactQuery.skipToken
-        : ({ signal }: QueryFnOptions) =>
-            fetchManagerJobControllerGenerateQr(variables, signal),
-  };
-}
-
-export const useSuspenseManagerJobControllerGenerateQr = <
-  TData = Schemas.ManagerGenerateQrTokenResponseDto,
->(
-  variables: ManagerJobControllerGenerateQrVariables,
-  options?: Omit<
-    reactQuery.UseQueryOptions<
-      Schemas.ManagerGenerateQrTokenResponseDto,
-      ManagerJobControllerGenerateQrError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
-  >,
-) => {
-  const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useSuspenseQuery<
-    Schemas.ManagerGenerateQrTokenResponseDto,
-    ManagerJobControllerGenerateQrError,
-    TData
-  >({
-    ...managerJobControllerGenerateQrQuery(
-      deepMerge(fetcherOptions, variables),
-    ),
-    ...options,
-    ...queryOptions,
-  });
-};
-
-export const useManagerJobControllerGenerateQr = <
-  TData = Schemas.ManagerGenerateQrTokenResponseDto,
->(
-  variables: ManagerJobControllerGenerateQrVariables | reactQuery.SkipToken,
-  options?: Omit<
-    reactQuery.UseQueryOptions<
-      Schemas.ManagerGenerateQrTokenResponseDto,
-      ManagerJobControllerGenerateQrError,
-      TData
-    >,
-    "queryKey" | "queryFn" | "initialData"
-  >,
-) => {
-  const { queryOptions, fetcherOptions } = useQueriesContext(options);
-  return reactQuery.useQuery<
-    Schemas.ManagerGenerateQrTokenResponseDto,
-    ManagerJobControllerGenerateQrError,
-    TData
-  >({
-    ...managerJobControllerGenerateQrQuery(
       variables === reactQuery.skipToken
         ? variables
         : deepMerge(fetcherOptions, variables),
@@ -5203,6 +5933,9 @@ export type ManagerJobControllerJobVariables = {
   pathParams: ManagerJobControllerJobPathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: customer
+ */
 export const fetchManagerJobControllerJob = (
   variables: ManagerJobControllerJobVariables,
   signal?: AbortSignal,
@@ -5216,6 +5949,9 @@ export const fetchManagerJobControllerJob = (
     ManagerJobControllerJobPathParams
   >({ url: "/manager/job/{id}", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: customer
+ */
 export function managerJobControllerJobQuery(
   variables: ManagerJobControllerJobVariables,
 ): {
@@ -5249,6 +5985,9 @@ export function managerJobControllerJobQuery(
   };
 }
 
+/**
+ * Required Permission: customer
+ */
 export const useSuspenseManagerJobControllerJob = <
   TData = Schemas.GetJobResponseDto,
 >(
@@ -5274,6 +6013,9 @@ export const useSuspenseManagerJobControllerJob = <
   });
 };
 
+/**
+ * Required Permission: customer
+ */
 export const useManagerJobControllerJob = <TData = Schemas.GetJobResponseDto,>(
   variables: ManagerJobControllerJobVariables | reactQuery.SkipToken,
   options?: Omit<
@@ -5319,6 +6061,9 @@ export type ManagerControllerGetSummaryError = Fetcher.ErrorWrapper<{
 export type ManagerControllerGetSummaryVariables =
   QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: customer
+ */
 export const fetchManagerControllerGetSummary = (
   variables: ManagerControllerGetSummaryVariables,
   signal?: AbortSignal,
@@ -5332,6 +6077,9 @@ export const fetchManagerControllerGetSummary = (
     {}
   >({ url: "/manager/summary", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: customer
+ */
 export function managerControllerGetSummaryQuery(
   variables: ManagerControllerGetSummaryVariables,
 ): {
@@ -5369,6 +6117,9 @@ export function managerControllerGetSummaryQuery(
   };
 }
 
+/**
+ * Required Permission: customer
+ */
 export const useSuspenseManagerControllerGetSummary = <
   TData = Schemas.DashboardSummaryResponseDto,
 >(
@@ -5394,6 +6145,9 @@ export const useSuspenseManagerControllerGetSummary = <
   });
 };
 
+/**
+ * Required Permission: customer
+ */
 export const useManagerControllerGetSummary = <
   TData = Schemas.DashboardSummaryResponseDto,
 >(
@@ -5454,6 +6208,9 @@ export type ManagerControllerGetSiteSummaryVariables = {
   queryParams?: ManagerControllerGetSiteSummaryQueryParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: customer
+ */
 export const fetchManagerControllerGetSiteSummary = (
   variables: ManagerControllerGetSiteSummaryVariables,
   signal?: AbortSignal,
@@ -5467,6 +6224,9 @@ export const fetchManagerControllerGetSiteSummary = (
     {}
   >({ url: "/manager/site", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: customer
+ */
 export function managerControllerGetSiteSummaryQuery(
   variables: ManagerControllerGetSiteSummaryVariables,
 ): {
@@ -5502,6 +6262,9 @@ export function managerControllerGetSiteSummaryQuery(
   };
 }
 
+/**
+ * Required Permission: customer
+ */
 export const useSuspenseManagerControllerGetSiteSummary = <
   TData = Schemas.ManagerListSiteResponseDto,
 >(
@@ -5529,6 +6292,9 @@ export const useSuspenseManagerControllerGetSiteSummary = <
   });
 };
 
+/**
+ * Required Permission: customer
+ */
 export const useManagerControllerGetSiteSummary = <
   TData = Schemas.ManagerListSiteResponseDto,
 >(
@@ -5590,6 +6356,9 @@ export type ManagerJobRequestControllerJobRequestsVariables = {
   queryParams?: ManagerJobRequestControllerJobRequestsQueryParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: customer
+ */
 export const fetchManagerJobRequestControllerJobRequests = (
   variables: ManagerJobRequestControllerJobRequestsVariables,
   signal?: AbortSignal,
@@ -5603,6 +6372,9 @@ export const fetchManagerJobRequestControllerJobRequests = (
     {}
   >({ url: "/manager/job-request", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: customer
+ */
 export function managerJobRequestControllerJobRequestsQuery(
   variables: ManagerJobRequestControllerJobRequestsVariables,
 ): {
@@ -5644,6 +6416,9 @@ export function managerJobRequestControllerJobRequestsQuery(
   };
 }
 
+/**
+ * Required Permission: customer
+ */
 export const useSuspenseManagerJobRequestControllerJobRequests = <
   TData = Schemas.ManagerListJobRequestResponseDto,
 >(
@@ -5671,6 +6446,9 @@ export const useSuspenseManagerJobRequestControllerJobRequests = <
   });
 };
 
+/**
+ * Required Permission: customer
+ */
 export const useManagerJobRequestControllerJobRequests = <
   TData = Schemas.ManagerListJobRequestResponseDto,
 >(
@@ -5709,6 +6487,9 @@ export type ManagerJobRequestControllerRequestJobVariables = {
   body: Schemas.JobRequestDto;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: customer
+ */
 export const fetchManagerJobRequestControllerRequestJob = (
   variables: ManagerJobRequestControllerRequestJobVariables,
   signal?: AbortSignal,
@@ -5722,6 +6503,9 @@ export const fetchManagerJobRequestControllerRequestJob = (
     {}
   >({ url: "/manager/job-request", method: "post", ...variables, signal });
 
+/**
+ * Required Permission: customer
+ */
 export const useManagerJobRequestControllerRequestJob = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -5793,6 +6577,9 @@ export type ManagerIncidentConrollerIncidentsVariables = {
   queryParams?: ManagerIncidentConrollerIncidentsQueryParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: customer
+ */
 export const fetchManagerIncidentConrollerIncidents = (
   variables: ManagerIncidentConrollerIncidentsVariables,
   signal?: AbortSignal,
@@ -5806,6 +6593,9 @@ export const fetchManagerIncidentConrollerIncidents = (
     {}
   >({ url: "/manager/incident", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: customer
+ */
 export function managerIncidentConrollerIncidentsQuery(
   variables: ManagerIncidentConrollerIncidentsVariables,
 ): {
@@ -5843,6 +6633,9 @@ export function managerIncidentConrollerIncidentsQuery(
   };
 }
 
+/**
+ * Required Permission: customer
+ */
 export const useSuspenseManagerIncidentConrollerIncidents = <
   TData = Schemas.ManagerListIncidentResponseDto,
 >(
@@ -5870,6 +6663,9 @@ export const useSuspenseManagerIncidentConrollerIncidents = <
   });
 };
 
+/**
+ * Required Permission: customer
+ */
 export const useManagerIncidentConrollerIncidents = <
   TData = Schemas.ManagerListIncidentResponseDto,
 >(
@@ -5941,6 +6737,9 @@ export type ManagerIncidentConrollerIncidentVariables = {
   pathParams: ManagerIncidentConrollerIncidentPathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: customer
+ */
 export const fetchManagerIncidentConrollerIncident = (
   variables: ManagerIncidentConrollerIncidentVariables,
   signal?: AbortSignal,
@@ -5954,6 +6753,9 @@ export const fetchManagerIncidentConrollerIncident = (
     ManagerIncidentConrollerIncidentPathParams
   >({ url: "/manager/incident/{id}", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: customer
+ */
 export function managerIncidentConrollerIncidentQuery(
   variables: ManagerIncidentConrollerIncidentVariables,
 ): {
@@ -5987,6 +6789,9 @@ export function managerIncidentConrollerIncidentQuery(
   };
 }
 
+/**
+ * Required Permission: customer
+ */
 export const useSuspenseManagerIncidentConrollerIncident = <
   TData = Schemas.GetIncidentResponseDto,
 >(
@@ -6014,6 +6819,9 @@ export const useSuspenseManagerIncidentConrollerIncident = <
   });
 };
 
+/**
+ * Required Permission: customer
+ */
 export const useManagerIncidentConrollerIncident = <
   TData = Schemas.GetIncidentResponseDto,
 >(
@@ -6061,6 +6869,9 @@ export type StaffControllerGetSummaryError = Fetcher.ErrorWrapper<{
 export type StaffControllerGetSummaryVariables =
   QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: cleaner
+ */
 export const fetchStaffControllerGetSummary = (
   variables: StaffControllerGetSummaryVariables,
   signal?: AbortSignal,
@@ -6074,6 +6885,9 @@ export const fetchStaffControllerGetSummary = (
     {}
   >({ url: "/staff/summary", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: cleaner
+ */
 export function staffControllerGetSummaryQuery(
   variables: StaffControllerGetSummaryVariables,
 ): {
@@ -6111,6 +6925,9 @@ export function staffControllerGetSummaryQuery(
   };
 }
 
+/**
+ * Required Permission: cleaner
+ */
 export const useSuspenseStaffControllerGetSummary = <
   TData = Schemas.DashboardSummaryResponseDto,
 >(
@@ -6136,6 +6953,9 @@ export const useSuspenseStaffControllerGetSummary = <
   });
 };
 
+/**
+ * Required Permission: cleaner
+ */
 export const useStaffControllerGetSummary = <
   TData = Schemas.DashboardSummaryResponseDto,
 >(
@@ -6196,6 +7016,9 @@ export type StaffControllerGetSiteSummaryVariables = {
   queryParams?: StaffControllerGetSiteSummaryQueryParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: cleaner
+ */
 export const fetchStaffControllerGetSiteSummary = (
   variables: StaffControllerGetSiteSummaryVariables,
   signal?: AbortSignal,
@@ -6209,6 +7032,9 @@ export const fetchStaffControllerGetSiteSummary = (
     {}
   >({ url: "/staff/site", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: cleaner
+ */
 export function staffControllerGetSiteSummaryQuery(
   variables: StaffControllerGetSiteSummaryVariables,
 ): {
@@ -6244,6 +7070,9 @@ export function staffControllerGetSiteSummaryQuery(
   };
 }
 
+/**
+ * Required Permission: cleaner
+ */
 export const useSuspenseStaffControllerGetSiteSummary = <
   TData = Schemas.StaffListSiteResponseDto,
 >(
@@ -6269,6 +7098,9 @@ export const useSuspenseStaffControllerGetSiteSummary = <
   });
 };
 
+/**
+ * Required Permission: cleaner
+ */
 export const useStaffControllerGetSiteSummary = <
   TData = Schemas.StaffListSiteResponseDto,
 >(
@@ -6289,6 +7121,131 @@ export const useStaffControllerGetSiteSummary = <
     TData
   >({
     ...staffControllerGetSiteSummaryQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type StaffControllerGetSiteError = Fetcher.ErrorWrapper<{
+  status: 401;
+  payload: {
+    /**
+     * @example 401
+     */
+    statusCode: number;
+    message: string;
+    /**
+     * @example 401
+     */
+    error: 401;
+  };
+}>;
+
+export type StaffControllerGetSiteVariables = QueriesContext["fetcherOptions"];
+
+/**
+ * Required Permission: cleaner
+ */
+export const fetchStaffControllerGetSite = (
+  variables: StaffControllerGetSiteVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Record<string, any>,
+    StaffControllerGetSiteError,
+    undefined,
+    {},
+    {},
+    {}
+  >({ url: "/staff/site/{siteId}", method: "get", ...variables, signal });
+
+/**
+ * Required Permission: cleaner
+ */
+export function staffControllerGetSiteQuery(
+  variables: StaffControllerGetSiteVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (options: QueryFnOptions) => Promise<Record<string, any>>;
+};
+
+export function staffControllerGetSiteQuery(
+  variables: StaffControllerGetSiteVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((options: QueryFnOptions) => Promise<Record<string, any>>)
+    | reactQuery.SkipToken;
+};
+
+export function staffControllerGetSiteQuery(
+  variables: StaffControllerGetSiteVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/staff/site/{siteId}",
+      operationId: "staffControllerGetSite",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchStaffControllerGetSite(variables, signal),
+  };
+}
+
+/**
+ * Required Permission: cleaner
+ */
+export const useSuspenseStaffControllerGetSite = <TData = Record<string, any>,>(
+  variables: StaffControllerGetSiteVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Record<string, any>,
+      StaffControllerGetSiteError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Record<string, any>,
+    StaffControllerGetSiteError,
+    TData
+  >({
+    ...staffControllerGetSiteQuery(deepMerge(fetcherOptions, variables)),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+/**
+ * Required Permission: cleaner
+ */
+export const useStaffControllerGetSite = <TData = Record<string, any>,>(
+  variables: StaffControllerGetSiteVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Record<string, any>,
+      StaffControllerGetSiteError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Record<string, any>,
+    StaffControllerGetSiteError,
+    TData
+  >({
+    ...staffControllerGetSiteQuery(
       variables === reactQuery.skipToken
         ? variables
         : deepMerge(fetcherOptions, variables),
@@ -6345,6 +7302,9 @@ export type StaffIncidentConrollerIncidentsVariables = {
   queryParams?: StaffIncidentConrollerIncidentsQueryParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: cleaner
+ */
 export const fetchStaffIncidentConrollerIncidents = (
   variables: StaffIncidentConrollerIncidentsVariables,
   signal?: AbortSignal,
@@ -6358,6 +7318,9 @@ export const fetchStaffIncidentConrollerIncidents = (
     {}
   >({ url: "/staff/incident", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: cleaner
+ */
 export function staffIncidentConrollerIncidentsQuery(
   variables: StaffIncidentConrollerIncidentsVariables,
 ): {
@@ -6395,6 +7358,9 @@ export function staffIncidentConrollerIncidentsQuery(
   };
 }
 
+/**
+ * Required Permission: cleaner
+ */
 export const useSuspenseStaffIncidentConrollerIncidents = <
   TData = Schemas.StaffListIncidentResponseDto,
 >(
@@ -6422,6 +7388,9 @@ export const useSuspenseStaffIncidentConrollerIncidents = <
   });
 };
 
+/**
+ * Required Permission: cleaner
+ */
 export const useStaffIncidentConrollerIncidents = <
   TData = Schemas.StaffListIncidentResponseDto,
 >(
@@ -6486,6 +7455,9 @@ export type StaffIncidentConrollerCreateVariables = {
   body: Schemas.StaffCreateIncidentReportRequestDTO;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: cleaner
+ */
 export const fetchStaffIncidentConrollerCreate = (
   variables: StaffIncidentConrollerCreateVariables,
   signal?: AbortSignal,
@@ -6499,6 +7471,9 @@ export const fetchStaffIncidentConrollerCreate = (
     {}
   >({ url: "/staff/incident", method: "post", ...variables, signal });
 
+/**
+ * Required Permission: cleaner
+ */
 export const useStaffIncidentConrollerCreate = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -6563,6 +7538,9 @@ export type StaffIncidentConrollerIncidentVariables = {
   pathParams: StaffIncidentConrollerIncidentPathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: cleaner
+ */
 export const fetchStaffIncidentConrollerIncident = (
   variables: StaffIncidentConrollerIncidentVariables,
   signal?: AbortSignal,
@@ -6576,6 +7554,9 @@ export const fetchStaffIncidentConrollerIncident = (
     StaffIncidentConrollerIncidentPathParams
   >({ url: "/staff/incident/{id}", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: cleaner
+ */
 export function staffIncidentConrollerIncidentQuery(
   variables: StaffIncidentConrollerIncidentVariables,
 ): {
@@ -6613,6 +7594,9 @@ export function staffIncidentConrollerIncidentQuery(
   };
 }
 
+/**
+ * Required Permission: cleaner
+ */
 export const useSuspenseStaffIncidentConrollerIncident = <
   TData = Schemas.StaffGetIncidentResponseDto,
 >(
@@ -6640,6 +7624,9 @@ export const useSuspenseStaffIncidentConrollerIncident = <
   });
 };
 
+/**
+ * Required Permission: cleaner
+ */
 export const useStaffIncidentConrollerIncident = <
   TData = Schemas.StaffGetIncidentResponseDto,
 >(
@@ -6741,6 +7728,9 @@ export type StaffActivityControllerActivitiesVariables = {
   queryParams?: StaffActivityControllerActivitiesQueryParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: cleaner
+ */
 export const fetchStaffActivityControllerActivities = (
   variables: StaffActivityControllerActivitiesVariables,
   signal?: AbortSignal,
@@ -6754,6 +7744,9 @@ export const fetchStaffActivityControllerActivities = (
     {}
   >({ url: "/staff/activity", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: cleaner
+ */
 export function staffActivityControllerActivitiesQuery(
   variables: StaffActivityControllerActivitiesVariables,
 ): {
@@ -6789,6 +7782,9 @@ export function staffActivityControllerActivitiesQuery(
   };
 }
 
+/**
+ * Required Permission: cleaner
+ */
 export const useSuspenseStaffActivityControllerActivities = <
   TData = Schemas.ListActivityResponseDto,
 >(
@@ -6816,6 +7812,9 @@ export const useSuspenseStaffActivityControllerActivities = <
   });
 };
 
+/**
+ * Required Permission: cleaner
+ */
 export const useStaffActivityControllerActivities = <
   TData = Schemas.ListActivityResponseDto,
 >(
@@ -6876,6 +7875,9 @@ export type StaffJobControllerJobsVariables = {
   queryParams?: StaffJobControllerJobsQueryParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: cleaner
+ */
 export const fetchStaffJobControllerJobs = (
   variables: StaffJobControllerJobsVariables,
   signal?: AbortSignal,
@@ -6889,6 +7891,9 @@ export const fetchStaffJobControllerJobs = (
     {}
   >({ url: "/staff/job", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: cleaner
+ */
 export function staffJobControllerJobsQuery(
   variables: StaffJobControllerJobsVariables,
 ): {
@@ -6922,6 +7927,9 @@ export function staffJobControllerJobsQuery(
   };
 }
 
+/**
+ * Required Permission: cleaner
+ */
 export const useSuspenseStaffJobControllerJobs = <
   TData = Schemas.ListJobResponseDto,
 >(
@@ -6947,6 +7955,9 @@ export const useSuspenseStaffJobControllerJobs = <
   });
 };
 
+/**
+ * Required Permission: cleaner
+ */
 export const useStaffJobControllerJobs = <TData = Schemas.ListJobResponseDto,>(
   variables: StaffJobControllerJobsVariables | reactQuery.SkipToken,
   options?: Omit<
@@ -6989,6 +8000,9 @@ export type StaffJobControllerUpdateChecklistSowVariables = {
   pathParams: StaffJobControllerUpdateChecklistSowPathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: cleaner
+ */
 export const fetchStaffJobControllerUpdateChecklistSow = (
   variables: StaffJobControllerUpdateChecklistSowVariables,
   signal?: AbortSignal,
@@ -7007,6 +8021,9 @@ export const fetchStaffJobControllerUpdateChecklistSow = (
     signal,
   });
 
+/**
+ * Required Permission: cleaner
+ */
 export const useStaffJobControllerUpdateChecklistSow = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -7044,6 +8061,9 @@ export type StaffJobControllerJobVariables = {
   pathParams: StaffJobControllerJobPathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: cleaner
+ */
 export const fetchStaffJobControllerJob = (
   variables: StaffJobControllerJobVariables,
   signal?: AbortSignal,
@@ -7057,6 +8077,9 @@ export const fetchStaffJobControllerJob = (
     StaffJobControllerJobPathParams
   >({ url: "/staff/job/{id}", method: "get", ...variables, signal });
 
+/**
+ * Required Permission: cleaner
+ */
 export function staffJobControllerJobQuery(
   variables: StaffJobControllerJobVariables,
 ): {
@@ -7090,6 +8113,9 @@ export function staffJobControllerJobQuery(
   };
 }
 
+/**
+ * Required Permission: cleaner
+ */
 export const useSuspenseStaffJobControllerJob = <
   TData = Schemas.GetJobResponseDto,
 >(
@@ -7115,6 +8141,9 @@ export const useSuspenseStaffJobControllerJob = <
   });
 };
 
+/**
+ * Required Permission: cleaner
+ */
 export const useStaffJobControllerJob = <TData = Schemas.GetJobResponseDto,>(
   variables: StaffJobControllerJobVariables | reactQuery.SkipToken,
   options?: Omit<
@@ -7156,6 +8185,9 @@ export type StaffJobControllerUpdateJobVariables = {
   pathParams: StaffJobControllerUpdateJobPathParams;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: cleaner
+ */
 export const fetchStaffJobControllerUpdateJob = (
   variables: StaffJobControllerUpdateJobVariables,
   signal?: AbortSignal,
@@ -7169,6 +8201,9 @@ export const fetchStaffJobControllerUpdateJob = (
     StaffJobControllerUpdateJobPathParams
   >({ url: "/staff/job/{id}", method: "patch", ...variables, signal });
 
+/**
+ * Required Permission: cleaner
+ */
 export const useStaffJobControllerUpdateJob = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -7197,6 +8232,9 @@ export type StaffJobControllerStartJobVariables = {
   body: Schemas.StartJobRequestDto;
 } & QueriesContext["fetcherOptions"];
 
+/**
+ * Required Permission: cleaner
+ */
 export const fetchStaffJobControllerStartJob = (
   variables: StaffJobControllerStartJobVariables,
   signal?: AbortSignal,
@@ -7210,6 +8248,9 @@ export const fetchStaffJobControllerStartJob = (
     {}
   >({ url: "/staff/job/start", method: "post", ...variables, signal });
 
+/**
+ * Required Permission: cleaner
+ */
 export const useStaffJobControllerStartJob = (
   options?: Omit<
     reactQuery.UseMutationOptions<
@@ -7246,17 +8287,24 @@ export type QueryOperation =
         | reactQuery.SkipToken;
     }
   | {
-      path: "/admin/customer/manager";
-      operationId: "adminCustomerControllerManagerCustomers";
+      path: "/admin/customer/{customerId}/overview";
+      operationId: "adminCustomerControllerCustomerSites";
       variables:
-        | AdminCustomerControllerManagerCustomersVariables
+        | AdminCustomerControllerCustomerSitesVariables
         | reactQuery.SkipToken;
     }
   | {
-      path: "/admin/customer/managers/{customerId}";
+      path: "/admin/customer/{customerId}/managers";
       operationId: "adminCustomerControllerCustomerManagers";
       variables:
         | AdminCustomerControllerCustomerManagersVariables
+        | reactQuery.SkipToken;
+    }
+  | {
+      path: "/admin/customer/{customerId}/users";
+      operationId: "adminCustomerControllerCustomerUsers";
+      variables:
+        | AdminCustomerControllerCustomerUsersVariables
         | reactQuery.SkipToken;
     }
   | {
@@ -7264,6 +8312,13 @@ export type QueryOperation =
       operationId: "adminCustomerControllerCustomer";
       variables:
         | AdminCustomerControllerCustomerVariables
+        | reactQuery.SkipToken;
+    }
+  | {
+      path: "/admin/dashboard/count";
+      operationId: "adminDashboardControllerGetCountSummary";
+      variables:
+        | AdminDashboardControllerGetCountSummaryVariables
         | reactQuery.SkipToken;
     }
   | {
@@ -7393,11 +8448,6 @@ export type QueryOperation =
       variables: ManagerJobControllerJobsVariables | reactQuery.SkipToken;
     }
   | {
-      path: "/manager/job/qr/generate";
-      operationId: "managerJobControllerGenerateQr";
-      variables: ManagerJobControllerGenerateQrVariables | reactQuery.SkipToken;
-    }
-  | {
       path: "/manager/job/{id}";
       operationId: "managerJobControllerJob";
       variables: ManagerJobControllerJobVariables | reactQuery.SkipToken;
@@ -7444,6 +8494,11 @@ export type QueryOperation =
       path: "/staff/site";
       operationId: "staffControllerGetSiteSummary";
       variables: StaffControllerGetSiteSummaryVariables | reactQuery.SkipToken;
+    }
+  | {
+      path: "/staff/site/{siteId}";
+      operationId: "staffControllerGetSite";
+      variables: StaffControllerGetSiteVariables | reactQuery.SkipToken;
     }
   | {
       path: "/staff/incident";

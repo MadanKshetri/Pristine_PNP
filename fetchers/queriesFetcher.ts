@@ -1,7 +1,7 @@
 import { useAuthStore } from "@/src/lib/store/authStore";
 import type { QueriesContext } from "./queriesContext";
 
-// const baseUrl = "http://192.168.1.83:5000";
+// const baseUrl = "http://192.168.1.83:3000";
 // const baseUrl = "http://192.168.100.103:5000";
 const baseUrl = "https://cmsapi.poudelsudeep.com.np";
 
@@ -126,6 +126,7 @@ export async function queriesFetch<
         };
       }
     } else if (response.headers.get("content-type")?.includes("json")) {
+      console.log(response);
       return await response.json();
     } else {
       // if it is not a json response, assume it is a blob and cast it to TData
