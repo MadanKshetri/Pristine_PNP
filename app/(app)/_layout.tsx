@@ -1,3 +1,4 @@
+import { StoreResetListener } from "@/components/misc/store-reset-listener";
 import { useAuthStore } from "@/src/lib/store/authStore";
 import { Redirect, Stack } from "expo-router";
 
@@ -12,12 +13,15 @@ export default function AppLayout() {
   const isManager = user?.role === "manager";
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(cleaner-tabs)" redirect={isManager} />
-      <Stack.Screen name="(manager-tabs)" redirect={!isManager} />
-      <Stack.Screen name="incidents" />
-      <Stack.Screen name="job" />
-      <Stack.Screen name="jobs" />
-    </Stack>
+    <>
+      <StoreResetListener />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(cleaner-tabs)" redirect={isManager} />
+        <Stack.Screen name="(manager-tabs)" redirect={!isManager} />
+        <Stack.Screen name="incidents" />
+        <Stack.Screen name="job" />
+        <Stack.Screen name="jobs" />
+      </Stack>
+    </>
   );
 }

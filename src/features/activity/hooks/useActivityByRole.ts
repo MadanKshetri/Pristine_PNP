@@ -1,6 +1,5 @@
 import {
   AdminActivityControllerActivitiesQueryParams,
-  StaffActivityControllerActivitiesQueryParams,
   useAdminActivityControllerActivities,
   useStaffActivityControllerActivities,
 } from "@/fetchers/queriesComponents";

@@ -13,7 +13,8 @@ import { useJobsByRole } from "../hooks/useJobsByRole";
 import { useCallback, useMemo, useState } from "react";
 import { addDays, format, startOfWeek } from "date-fns";
 import { StaffJobControllerJobsQueryParams } from "@/fetchers/queriesComponents";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
+import { parseFilterParams } from "@/src/lib/utils/filterParams";
 
 export function JobsCalendarView() {
   const [selectedDate, setSelectedDate] = useState<string | null>(
@@ -28,14 +29,17 @@ export function JobsCalendarView() {
   // Calculate week end and date filters
   const currentWeekEnd = addDays(currentWeekStart, 6);
 
-  const weeklyFilters: StaffJobControllerJobsQueryParams = useMemo(
-    () => ({
+  const { filters } = useLocalSearchParams<{ filters?: string }>();
+
+  const weeklyFilters: StaffJobControllerJobsQueryParams = useMemo(() => {
+    const parsedFilters = parseFilterParams<StaffJobControllerJobsQueryParams>(filters) || {};
+    return {
+      ...parsedFilters,
       status: JSON.stringify(["Scheduled", "In Progress"]) as any,
       dateFrom: currentWeekStart.toISOString(),
       dateTo: currentWeekEnd.toISOString(),
-    }),
-    [currentWeekStart, currentWeekEnd],
-  );
+    };
+  }, [currentWeekStart, currentWeekEnd, filters]);
 
   const handleJobPress = useCallback(
     (jobId: string) => {

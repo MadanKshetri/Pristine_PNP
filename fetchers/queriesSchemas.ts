@@ -871,6 +871,19 @@ export type StaffListSiteResponseDto = {
   pagination: PaginationResponseDto;
 };
 
+export type StaffGetSiteDto = {
+  id: string;
+  title: string;
+  description: string | null;
+  location: LocationDto;
+  customer: IdNameDto | null;
+};
+
+export type StaffGetSiteResponseDto = {
+  message: string;
+  data: StaffGetSiteDto;
+};
+
 export type StaffGetIncidentSiteDto = {
   /**
    * @format uuid

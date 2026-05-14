@@ -1,5 +1,5 @@
 import {
-  useStaffControllerGetSiteSummary,
+  useStaffControllerGetSites,
   useStaffIncidentConrollerCreate,
 } from "@/fetchers/queriesComponents";
 import { Button, Input, ScreenHeader } from "@/src/components/ui";
@@ -25,7 +25,7 @@ export default function StaffCreateIncidentScreen() {
   const [isSiteModalVisible, setIsSiteModalVisible] = useState(false);
 
   // Fetch Sites
-  const { data: sitesData } = useStaffControllerGetSiteSummary({});
+  const { data: sitesData } = useStaffControllerGetSites({});
   const sites = sitesData?.data || [];
 
   const selectedSite = sites.find((s) => s.id === selectedSiteId);
@@ -40,7 +40,7 @@ export default function StaffCreateIncidentScreen() {
     onError: (error: any) => {
       Alert.alert(
         "Error",
-        error?.payload?.message || "Failed to submit incident report"
+        error?.payload?.message || "Failed to submit incident report",
       );
     },
   });

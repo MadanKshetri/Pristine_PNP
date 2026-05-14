@@ -1,15 +1,24 @@
 import {
   useAdminSiteControllerSites,
-  useStaffControllerGetSiteSummary,
+  useStaffControllerGetSites,
 } from "@/fetchers/queriesComponents";
 import type { ListSiteDto, StaffListSiteDto } from "@/fetchers/queriesSchemas";
 import { ScreenHeader } from "@/src/components/ui";
 import { useAuthStore } from "@/src/lib/store/authStore";
 import { MapPin } from "lucide-react-native";
+import { useRouter } from "expo-router";
 import React, { useMemo } from "react";
-import { FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 export default function ManagerSitesTab() {
+  const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const isManager =
     user?.role === "manager" || user?.role === "customer manager";
@@ -18,7 +27,7 @@ export default function ManagerSitesTab() {
     data: staffSitesData,
     isLoading: isStaffLoading,
     refetch: refetchStaff,
-  } = useStaffControllerGetSiteSummary(
+  } = useStaffControllerGetSites(
     {},
     {
       enabled: !isManager,
@@ -52,7 +61,11 @@ export default function ManagerSitesTab() {
   const refetch = isManager ? refetchManager : refetchStaff;
 
   const renderItem = ({ item }: { item: ListSiteDto | StaffListSiteDto }) => (
-    <View style={styles.siteCard}>
+    <TouchableOpacity
+      style={styles.siteCard}
+      activeOpacity={0.7}
+      onPress={() => router.push(`/sites/${item.id}` as any)}
+    >
       <View style={styles.siteHeader}>
         <View style={styles.siteIconWrap}>
           <MapPin size={16} color="#0f172a" />
@@ -73,7 +86,7 @@ export default function ManagerSitesTab() {
           <Text style={styles.siteFooterValue}>{item.customer.name}</Text>
         </View>
       )}
-    </View>
+    </TouchableOpacity>
   );
 
   return (

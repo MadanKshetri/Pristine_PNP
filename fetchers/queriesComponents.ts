@@ -6985,7 +6985,7 @@ export const useStaffControllerGetSummary = <
   });
 };
 
-export type StaffControllerGetSiteSummaryQueryParams = {
+export type StaffControllerGetSitesQueryParams = {
   /**
    * @minimum 0
    */
@@ -6997,7 +6997,7 @@ export type StaffControllerGetSiteSummaryQueryParams = {
   search?: string;
 };
 
-export type StaffControllerGetSiteSummaryError = Fetcher.ErrorWrapper<{
+export type StaffControllerGetSitesError = Fetcher.ErrorWrapper<{
   status: 401;
   payload: {
     /**
@@ -7012,31 +7012,31 @@ export type StaffControllerGetSiteSummaryError = Fetcher.ErrorWrapper<{
   };
 }>;
 
-export type StaffControllerGetSiteSummaryVariables = {
-  queryParams?: StaffControllerGetSiteSummaryQueryParams;
+export type StaffControllerGetSitesVariables = {
+  queryParams?: StaffControllerGetSitesQueryParams;
 } & QueriesContext["fetcherOptions"];
 
 /**
  * Required Permission: cleaner
  */
-export const fetchStaffControllerGetSiteSummary = (
-  variables: StaffControllerGetSiteSummaryVariables,
+export const fetchStaffControllerGetSites = (
+  variables: StaffControllerGetSitesVariables,
   signal?: AbortSignal,
 ) =>
   queriesFetch<
     Schemas.StaffListSiteResponseDto,
-    StaffControllerGetSiteSummaryError,
+    StaffControllerGetSitesError,
     undefined,
     {},
-    StaffControllerGetSiteSummaryQueryParams,
+    StaffControllerGetSitesQueryParams,
     {}
   >({ url: "/staff/site", method: "get", ...variables, signal });
 
 /**
  * Required Permission: cleaner
  */
-export function staffControllerGetSiteSummaryQuery(
-  variables: StaffControllerGetSiteSummaryVariables,
+export function staffControllerGetSitesQuery(
+  variables: StaffControllerGetSitesVariables,
 ): {
   queryKey: reactQuery.QueryKey;
   queryFn: (
@@ -7044,8 +7044,8 @@ export function staffControllerGetSiteSummaryQuery(
   ) => Promise<Schemas.StaffListSiteResponseDto>;
 };
 
-export function staffControllerGetSiteSummaryQuery(
-  variables: StaffControllerGetSiteSummaryVariables | reactQuery.SkipToken,
+export function staffControllerGetSitesQuery(
+  variables: StaffControllerGetSitesVariables | reactQuery.SkipToken,
 ): {
   queryKey: reactQuery.QueryKey;
   queryFn:
@@ -7053,34 +7053,34 @@ export function staffControllerGetSiteSummaryQuery(
     | reactQuery.SkipToken;
 };
 
-export function staffControllerGetSiteSummaryQuery(
-  variables: StaffControllerGetSiteSummaryVariables | reactQuery.SkipToken,
+export function staffControllerGetSitesQuery(
+  variables: StaffControllerGetSitesVariables | reactQuery.SkipToken,
 ) {
   return {
     queryKey: queryKeyFn({
       path: "/staff/site",
-      operationId: "staffControllerGetSiteSummary",
+      operationId: "staffControllerGetSites",
       variables,
     }),
     queryFn:
       variables === reactQuery.skipToken
         ? reactQuery.skipToken
         : ({ signal }: QueryFnOptions) =>
-            fetchStaffControllerGetSiteSummary(variables, signal),
+            fetchStaffControllerGetSites(variables, signal),
   };
 }
 
 /**
  * Required Permission: cleaner
  */
-export const useSuspenseStaffControllerGetSiteSummary = <
+export const useSuspenseStaffControllerGetSites = <
   TData = Schemas.StaffListSiteResponseDto,
 >(
-  variables: StaffControllerGetSiteSummaryVariables,
+  variables: StaffControllerGetSitesVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
       Schemas.StaffListSiteResponseDto,
-      StaffControllerGetSiteSummaryError,
+      StaffControllerGetSitesError,
       TData
     >,
     "queryKey" | "queryFn" | "initialData"
@@ -7089,10 +7089,10 @@ export const useSuspenseStaffControllerGetSiteSummary = <
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useSuspenseQuery<
     Schemas.StaffListSiteResponseDto,
-    StaffControllerGetSiteSummaryError,
+    StaffControllerGetSitesError,
     TData
   >({
-    ...staffControllerGetSiteSummaryQuery(deepMerge(fetcherOptions, variables)),
+    ...staffControllerGetSitesQuery(deepMerge(fetcherOptions, variables)),
     ...options,
     ...queryOptions,
   });
@@ -7101,14 +7101,14 @@ export const useSuspenseStaffControllerGetSiteSummary = <
 /**
  * Required Permission: cleaner
  */
-export const useStaffControllerGetSiteSummary = <
+export const useStaffControllerGetSites = <
   TData = Schemas.StaffListSiteResponseDto,
 >(
-  variables: StaffControllerGetSiteSummaryVariables | reactQuery.SkipToken,
+  variables: StaffControllerGetSitesVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
       Schemas.StaffListSiteResponseDto,
-      StaffControllerGetSiteSummaryError,
+      StaffControllerGetSitesError,
       TData
     >,
     "queryKey" | "queryFn" | "initialData"
@@ -7117,10 +7117,10 @@ export const useStaffControllerGetSiteSummary = <
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useQuery<
     Schemas.StaffListSiteResponseDto,
-    StaffControllerGetSiteSummaryError,
+    StaffControllerGetSitesError,
     TData
   >({
-    ...staffControllerGetSiteSummaryQuery(
+    ...staffControllerGetSitesQuery(
       variables === reactQuery.skipToken
         ? variables
         : deepMerge(fetcherOptions, variables),
@@ -7128,6 +7128,13 @@ export const useStaffControllerGetSiteSummary = <
     ...options,
     ...queryOptions,
   });
+};
+
+export type StaffControllerGetSitePathParams = {
+  /**
+   * @format uuid
+   */
+  siteId: string;
 };
 
 export type StaffControllerGetSiteError = Fetcher.ErrorWrapper<{
@@ -7145,7 +7152,9 @@ export type StaffControllerGetSiteError = Fetcher.ErrorWrapper<{
   };
 }>;
 
-export type StaffControllerGetSiteVariables = QueriesContext["fetcherOptions"];
+export type StaffControllerGetSiteVariables = {
+  pathParams: StaffControllerGetSitePathParams;
+} & QueriesContext["fetcherOptions"];
 
 /**
  * Required Permission: cleaner
@@ -7155,12 +7164,12 @@ export const fetchStaffControllerGetSite = (
   signal?: AbortSignal,
 ) =>
   queriesFetch<
-    Record<string, any>,
+    Schemas.StaffGetSiteResponseDto,
     StaffControllerGetSiteError,
     undefined,
     {},
     {},
-    {}
+    StaffControllerGetSitePathParams
   >({ url: "/staff/site/{siteId}", method: "get", ...variables, signal });
 
 /**
@@ -7170,7 +7179,9 @@ export function staffControllerGetSiteQuery(
   variables: StaffControllerGetSiteVariables,
 ): {
   queryKey: reactQuery.QueryKey;
-  queryFn: (options: QueryFnOptions) => Promise<Record<string, any>>;
+  queryFn: (
+    options: QueryFnOptions,
+  ) => Promise<Schemas.StaffGetSiteResponseDto>;
 };
 
 export function staffControllerGetSiteQuery(
@@ -7178,7 +7189,7 @@ export function staffControllerGetSiteQuery(
 ): {
   queryKey: reactQuery.QueryKey;
   queryFn:
-    | ((options: QueryFnOptions) => Promise<Record<string, any>>)
+    | ((options: QueryFnOptions) => Promise<Schemas.StaffGetSiteResponseDto>)
     | reactQuery.SkipToken;
 };
 
@@ -7202,11 +7213,13 @@ export function staffControllerGetSiteQuery(
 /**
  * Required Permission: cleaner
  */
-export const useSuspenseStaffControllerGetSite = <TData = Record<string, any>,>(
+export const useSuspenseStaffControllerGetSite = <
+  TData = Schemas.StaffGetSiteResponseDto,
+>(
   variables: StaffControllerGetSiteVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
-      Record<string, any>,
+      Schemas.StaffGetSiteResponseDto,
       StaffControllerGetSiteError,
       TData
     >,
@@ -7215,7 +7228,7 @@ export const useSuspenseStaffControllerGetSite = <TData = Record<string, any>,>(
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useSuspenseQuery<
-    Record<string, any>,
+    Schemas.StaffGetSiteResponseDto,
     StaffControllerGetSiteError,
     TData
   >({
@@ -7228,11 +7241,13 @@ export const useSuspenseStaffControllerGetSite = <TData = Record<string, any>,>(
 /**
  * Required Permission: cleaner
  */
-export const useStaffControllerGetSite = <TData = Record<string, any>,>(
+export const useStaffControllerGetSite = <
+  TData = Schemas.StaffGetSiteResponseDto,
+>(
   variables: StaffControllerGetSiteVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
-      Record<string, any>,
+      Schemas.StaffGetSiteResponseDto,
       StaffControllerGetSiteError,
       TData
     >,
@@ -7241,7 +7256,7 @@ export const useStaffControllerGetSite = <TData = Record<string, any>,>(
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useQuery<
-    Record<string, any>,
+    Schemas.StaffGetSiteResponseDto,
     StaffControllerGetSiteError,
     TData
   >({
@@ -8492,8 +8507,8 @@ export type QueryOperation =
     }
   | {
       path: "/staff/site";
-      operationId: "staffControllerGetSiteSummary";
-      variables: StaffControllerGetSiteSummaryVariables | reactQuery.SkipToken;
+      operationId: "staffControllerGetSites";
+      variables: StaffControllerGetSitesVariables | reactQuery.SkipToken;
     }
   | {
       path: "/staff/site/{siteId}";

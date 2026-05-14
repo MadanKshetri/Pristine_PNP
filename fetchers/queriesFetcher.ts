@@ -126,7 +126,7 @@ export async function queriesFetch<
         };
       }
     } else if (response.headers.get("content-type")?.includes("json")) {
-      console.log(response);
+      // console.log(response);
       return await response.json();
     } else {
       // if it is not a json response, assume it is a blob and cast it to TData

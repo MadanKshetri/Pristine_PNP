@@ -4,6 +4,7 @@ import { useCallback, useMemo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useInfiniteJobsByRole } from "../hooks/useInfiniteJobsByRole";
 import { StaffJobControllerJobsQueryParams } from "@/fetchers/queriesComponents";
+import { useActivityFilters } from "@/src/hooks/useActivityFilters";
 import { useRouter } from "expo-router";
 
 type JobItem = {
@@ -15,10 +16,14 @@ type JobItem = {
 export function JobsListView() {
   const router = useRouter();
 
+  const { filters } = useActivityFilters();
+
   const listJobsFilters: StaffJobControllerJobsQueryParams = useMemo(
-    () => ({ take: 20 }),
-    [],
+    () => ({ take: 20, ...filters }),
+    [filters],
   );
+
+  console.log(filters);
 
   const {
     jobs,
@@ -33,7 +38,7 @@ export function JobsListView() {
 
   const handleJobPress = useCallback(
     (jobId: string) => {
-      router.push(`/job/${jobId}` as any);
+      router.push(`/job/${jobId}`);
     },
     [router],
   );
