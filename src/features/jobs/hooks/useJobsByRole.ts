@@ -32,11 +32,6 @@ export const useJobsByRole = (
     isCleaner,
   );
 
-  console.log({
-    ...filters,
-    ...(filters?.status && { status: filters.status }),
-  });
-
   const {
     data: managerJobsData,
     isLoading: isManagerLoading,

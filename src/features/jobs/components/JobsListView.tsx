@@ -23,8 +23,6 @@ export function JobsListView() {
     [filters],
   );
 
-  console.log(filters);
-
   const {
     jobs,
     error,

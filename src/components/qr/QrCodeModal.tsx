@@ -90,7 +90,6 @@ export default function QrCodeModal({
           <View style={styles.qrActionsRow}>
             <TouchableOpacity
               onPress={async () => {
-                console.log("QR Code saved to Photos");
                 if (!qrRef.current) return;
                 await new Promise<void>((resolve, reject) => {
                   try {
@@ -101,16 +100,12 @@ export default function QrCodeModal({
                           (FileSystem as any).documentDirectory ||
                           "";
                         const fileUri = `${baseDir}job-${job.jobNumber}-qr.png`;
-                        console.log(fileUri, "------", baseDir);
                         await FileSystem.writeAsStringAsync(fileUri, data, {
                           encoding: FileSystem.EncodingType?.Base64 || "base64",
                         });
-                        console.log("QR Code saved to Photos");
                         try {
-                          console.log("MediaLibrary");
                           const { status } =
                             await MediaLibrary.requestPermissionsAsync(true);
-                          console.log(status);
                           if (status !== "granted") {
                             throw new Error(
                               "Permission to access Photos was denied",
@@ -133,7 +128,7 @@ export default function QrCodeModal({
                           });
                           Alert.alert("Saved", "QR code saved to Photos");
                         } catch (saveErr) {
-                          console.log(saveErr);
+                          console.error(saveErr);
                           let shareUrl = fileUri;
                           if (
                             Platform.OS === "android" &&
@@ -145,7 +140,6 @@ export default function QrCodeModal({
                               ).getContentUriAsync(fileUri);
                             } catch {}
                           }
-                          console.log("shareUrl", shareUrl);
                           await Share.share({ url: shareUrl });
                         }
                         resolve();

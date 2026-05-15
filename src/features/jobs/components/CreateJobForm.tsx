@@ -56,12 +56,6 @@ export const CreateJobForm: React.FC = () => {
 
   const selectedSiteId = form.watch("siteId");
 
-  console.log("Selected Site ID:", form.watch());
-
-  useEffect(() => {
-    console.log("Form values changed:", !selectedSiteId);
-  }, [JSON.stringify(form.watch())]);
-
   const handleCreate = handleSubmit(async (data) => {
     try {
       await createJobMutation.mutateAsync(

@@ -9,13 +9,9 @@ export function StoreResetListener() {
 
   const prevPath = useRef(pathname);
 
-  console.log("StoreResetListener: mounted with path", pathname);
-
   useEffect(() => {
-    console.log("StoreResetListener: path changed to", pathname);
     if (prevPath.current !== pathname) {
       if (shouldResetOnNavigate) {
-        console.log("StoreResetListener: resetting store due to navigation");
         resetAll(false);
       } else {
         setShouldResetOnNavigate(true);

@@ -61,7 +61,6 @@ export async function queriesFetch<
   try {
     // Automatically inject auth token
     const token = getAuthToken();
-    console.log("Using token:", token);
     const requestHeaders: HeadersInit = {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
