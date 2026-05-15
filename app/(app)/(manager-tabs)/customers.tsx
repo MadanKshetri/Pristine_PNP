@@ -2,10 +2,19 @@ import { useAdminCustomerControllerCustomers } from "@/fetchers/queriesComponent
 import { ScreenHeader } from "@/src/components/ui";
 import { useAuthStore } from "@/src/lib/store/authStore";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React from "react";
-import { FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  Pressable,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 export default function CustomersTab() {
+  const router = useRouter();
   const user = useAuthStore((state) => state.user);
   const isManager =
     user?.role === "manager" || user?.role === "customer manager";
@@ -19,6 +28,10 @@ export default function CustomersTab() {
     },
     { enabled: isManager },
   );
+
+  const handleClickCustomer = (customerId: string) => {
+    router.push(`/customers/${customerId}`);
+  };
 
   const customers = data?.data || [];
 
@@ -39,10 +52,6 @@ export default function CustomersTab() {
     <View style={styles.container}>
       <View style={styles.headerWrap}>
         <ScreenHeader title="Customers" showBackButton={true} />
-        <View style={styles.headerNote}>
-          <Ionicons name="shield-checkmark-outline" size={18} color="#3B82F6" />
-          <Text style={styles.headerNoteText}>Managed accounts</Text>
-        </View>
       </View>
       <FlatList
         data={customers}
@@ -52,7 +61,10 @@ export default function CustomersTab() {
         }
         contentContainerStyle={styles.listContent}
         renderItem={({ item }) => (
-          <View style={styles.card}>
+          <Pressable
+            style={styles.card}
+            onPress={() => handleClickCustomer(item.id)}
+          >
             <View style={styles.cardHeader}>
               <View style={styles.iconWrap}>
                 <Ionicons name="business" size={18} color="#3B82F6" />
@@ -70,7 +82,7 @@ export default function CustomersTab() {
                 {item.createdBy?.name || "Unknown"}
               </Text>
             </View>
-          </View>
+          </Pressable>
         )}
         ListEmptyComponent={
           !isLoading ? (

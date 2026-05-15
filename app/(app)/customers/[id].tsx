@@ -18,10 +18,9 @@ export default function CustomerDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { user } = useAuthStore();
-  const { setFilter } = useActivityFilters();
+  const { setFilter, setShouldResetOnNavigate } = useActivityFilters();
 
   const isManager = user?.role === "manager";
-  const isCleaner = user?.role === "cleaner";
 
   const {
     data: customerResponse,
@@ -36,11 +35,9 @@ export default function CustomerDetailScreen() {
 
   const handleViewJobs = () => {
     if (!id) return;
-    if (isCleaner) {
+    if (isManager) {
       setFilter("customerId", id);
-      router.push(`/(app)/(cleaner-tabs)/jobs?tab=list&customerId=${id}`);
-    } else if (isManager) {
-      setFilter("customerId", id);
+      setShouldResetOnNavigate(false);
       router.push(`/(app)/(manager-tabs)/jobs?tab=list&customerId=${id}`);
     }
   };

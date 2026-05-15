@@ -2,13 +2,13 @@ import { PaginationResponseDto } from "@/fetchers/queriesSchemas";
 import { parseInfiniteQueryData } from "@/fetchers/queriesUtils";
 import { useDebounce } from "@/src/hooks/useDebounce";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { cn } from "@/src/lib/utils/cn";
 import { isEqual } from "lodash";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
   Pressable,
-  StyleSheet,
   Text,
   TextInput,
   View,
@@ -86,6 +86,11 @@ type TAsyncSelectProps<
   onFilterRemove?: () => void;
   options?: TOption[];
   maxLabelCount?: number;
+  disabled?: boolean;
+  className?: {
+    trigger?: string;
+    triggerActive?: string;
+  };
   components?: {
     trigger?: (props: {
       selected: TOption | TOption[];
@@ -135,10 +140,10 @@ export default function AsyncSelect<
   maxLabelCount,
   onChange,
   onFilterRemove,
+  disabled = false,
+  className,
   components,
 }: TAsyncSelectProps<T>) {
-  // ── Internal state ──────────────────────────────────────────────────────
-
   const [state, _setState] = useState<TSelected<typeof type>>(
     type === "single" ? { value: "", label: "" } : [],
   );
@@ -338,8 +343,6 @@ export default function AsyncSelect<
     }
   }, [_options]);
 
-  // ── Sync controlled value → internal state ──────────────────────────────
-
   useEffect(() => {
     if (value === undefined) return;
 
@@ -386,8 +389,6 @@ export default function AsyncSelect<
     }
   }, [value, options, fetchedOptions]);
 
-  // ── Clear handler ───────────────────────────────────────────────────────
-
   const handleClear = useCallback(() => {
     if (type === "single") {
       setState({ value: "", label: "" });
@@ -398,8 +399,6 @@ export default function AsyncSelect<
     setOpen(false);
   }, [type, onFilterRemove]);
 
-  // ── Render ──────────────────────────────────────────────────────────────
-
   const Trigger = components?.trigger;
 
   return (
@@ -409,20 +408,30 @@ export default function AsyncSelect<
         <Trigger
           selected={state}
           label={displayLabel}
-          onPress={() => setOpen(true)}
+          onPress={() => !disabled && setOpen(true)}
         />
       ) : (
         <Pressable
-          onPress={() => setOpen(true)}
-          style={[styles.trigger, isActive && styles.triggerActive]}
+          onPress={() => !disabled && setOpen(true)}
+          disabled={disabled}
+          className={cn(
+            "flex-row items-center gap-1 px-3 py-[7px] rounded-[20px] border border-[#E0E0E0] bg-[#FAFAFA]",
+            className?.trigger,
+            isActive &&
+              cn("border-[#E84A4A] bg-[#FFF1F1]", className?.triggerActive),
+            disabled && "opacity-50",
+          )}
         >
           <Text
-            style={[styles.triggerText, isActive && styles.triggerTextActive]}
+            className={cn(
+              "text-[13px] text-[#444] max-w-[160px]",
+              isActive && "font-medium",
+            )}
             numberOfLines={1}
           >
             {displayLabel}
           </Text>
-          <Text style={[styles.chevron, isActive && styles.chevronActive]}>
+          <Text className={cn("text-[8px] text-[#999]")}>
             {open ? "▲" : "▼"}
           </Text>
         </Pressable>
@@ -437,22 +446,24 @@ export default function AsyncSelect<
           </ActionsheetDragIndicatorWrapper>
 
           {/* Header */}
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>
+          <View className="flex-row justify-between items-center px-4 pt-2 pb-[10px] w-full">
+            <Text className="text-base font-semibold text-[#222]">
               {titleLabel || placeholder || "Select"}
             </Text>
             {isActive && (
               <Pressable onPress={handleClear}>
-                <Text style={styles.clearText}>Clear</Text>
+                <Text className="text-[13px] text-[#E84A4A] font-medium">
+                  Clear
+                </Text>
               </Pressable>
             )}
           </View>
 
           {/* Search input */}
           {withSearch && (
-            <View style={styles.searchContainer}>
+            <View className="px-4 pb-2 w-full">
               <TextInput
-                style={styles.searchInput}
+                className="px-[14px] py-[10px] bg-[#F5F5F5] rounded-[10px] text-sm text-[#222] border border-[#EBEBEB]"
                 placeholder="Search..."
                 placeholderTextColor="#999"
                 value={input}
@@ -465,7 +476,7 @@ export default function AsyncSelect<
 
           {/* Options list */}
           {isLoading && !data.data ? (
-            <ActivityIndicator style={styles.loader} color="#E84A4A" />
+            <ActivityIndicator className="my-8" color="#E84A4A" />
           ) : (
             <FlatList
               data={displayOptions}
@@ -473,37 +484,41 @@ export default function AsyncSelect<
               keyboardShouldPersistTaps="handled"
               onEndReached={handleEndReached}
               onEndReachedThreshold={0.5}
-              style={styles.list}
+              className="w-full"
               renderItem={({ item: option }) => {
                 const selected = getIsSelected(option.value);
                 return (
                   <Pressable
                     onPress={() => handleSelect(option)}
-                    style={[styles.option, selected && styles.optionSelected]}
+                    className={cn(
+                      "flex-row justify-between items-center px-4 py-[13px] border-b-[0.5px] border-[#F0F0F0]",
+                      selected && "bg-[#FFF1F1]",
+                    )}
                   >
                     <Text
-                      style={[
-                        styles.optionText,
-                        selected && styles.optionTextSelected,
-                      ]}
+                      className={cn(
+                        "text-sm text-[#333] flex-1",
+                        selected && "text-[#C93333] font-medium",
+                      )}
                       numberOfLines={1}
                     >
                       {option.label}
                     </Text>
-                    {selected && <Text style={styles.checkmark}>✓</Text>}
+                    {selected && (
+                      <Text className="text-sm text-[#C93333] ml-2">✓</Text>
+                    )}
                   </Pressable>
                 );
               }}
               ListFooterComponent={
                 isFetchingNextPage ? (
-                  <ActivityIndicator
-                    style={styles.footerLoader}
-                    color="#E84A4A"
-                  />
+                  <ActivityIndicator className="my-3" color="#E84A4A" />
                 ) : null
               }
               ListEmptyComponent={
-                <Text style={styles.emptyText}>No results found</Text>
+                <Text className="text-center text-[#aaa] text-[13px] p-6">
+                  No results found
+                </Text>
               }
             />
           )}
@@ -512,125 +527,3 @@ export default function AsyncSelect<
     </View>
   );
 }
-
-// ── Styles ──────────────────────────────────────────────────────────────────
-
-const styles = StyleSheet.create({
-  // Trigger button
-  trigger: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "#E0E0E0",
-    backgroundColor: "#FAFAFA",
-  },
-  triggerActive: {
-    borderColor: "#E84A4A",
-    backgroundColor: "#FFF1F1",
-  },
-  triggerText: {
-    fontSize: 13,
-    color: "#444",
-    maxWidth: 160,
-  },
-  triggerTextActive: {
-    color: "#C93333",
-    fontWeight: "500",
-  },
-  chevron: {
-    fontSize: 8,
-    color: "#999",
-  },
-  chevronActive: {
-    color: "#C93333",
-  },
-
-  // Header
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingTop: 8,
-    paddingBottom: 10,
-    width: "100%",
-  },
-  headerTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#222",
-  },
-  clearText: {
-    fontSize: 13,
-    color: "#E84A4A",
-    fontWeight: "500",
-  },
-
-  // Search
-  searchContainer: {
-    paddingHorizontal: 16,
-    paddingBottom: 8,
-    width: "100%",
-  },
-  searchInput: {
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    backgroundColor: "#F5F5F5",
-    borderRadius: 10,
-    fontSize: 14,
-    color: "#222",
-    borderWidth: 1,
-    borderColor: "#EBEBEB",
-  },
-
-  // List
-  list: {
-    width: "100%",
-  },
-
-  // Option row
-  option: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 13,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#F0F0F0",
-  },
-  optionSelected: {
-    backgroundColor: "#FFF1F1",
-  },
-  optionText: {
-    fontSize: 14,
-    color: "#333",
-    flex: 1,
-  },
-  optionTextSelected: {
-    color: "#C93333",
-    fontWeight: "500",
-  },
-  checkmark: {
-    fontSize: 14,
-    color: "#C93333",
-    marginLeft: 8,
-  },
-
-  // States
-  loader: {
-    marginVertical: 32,
-  },
-  footerLoader: {
-    marginVertical: 12,
-  },
-  emptyText: {
-    textAlign: "center",
-    color: "#aaa",
-    fontSize: 13,
-    padding: 24,
-  },
-});

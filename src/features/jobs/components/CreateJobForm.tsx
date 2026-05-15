@@ -1,79 +1,76 @@
 import {
+  fetchAdminSiteControllerSiteCleaners,
+  fetchAdminSiteControllerSites,
   useAdminJobControllerCreateJob,
-  useAdminSiteControllerSites,
 } from "@/fetchers/queriesComponents";
-import { ListSiteDto } from "@/fetchers/queriesSchemas";
 import { Button, Input, ScreenHeader } from "@/src/components/ui";
+import FormInput from "@/components/ui/form-input";
+import { CreateJobSchema } from "@/src/schema";
 import { Ionicons } from "@expo/vector-icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Alert,
   KeyboardAvoidingView,
   Modal,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 import { Calendar } from "react-native-calendars";
+import { z } from "zod";
+import AsyncSelect from "@/components/ui/async-select";
+import { INPUT_CLASSNAME } from "@/src/utils/constants";
 
 export const CreateJobForm: React.FC = () => {
   const router = useRouter();
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [selectedSite, setSelectedSite] = useState<ListSiteDto | null>(null);
-  const [showSitePicker, setShowSitePicker] = useState(false);
+  const form = useForm<z.infer<typeof CreateJobSchema>>({
+    resolver: zodResolver(CreateJobSchema),
+    mode: "onSubmit",
+    defaultValues: {
+      title: "",
+      assignedCleanerId: undefined,
+      customerId: "",
+      description: "",
+      siteId: "",
+      startAt: new Date(),
+    },
+  });
+
+  const { control, handleSubmit } = form;
+
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
 
   const queryClient = useQueryClient();
 
-  const { data: sitesData, isLoading: isLoadingSites } =
-    useAdminSiteControllerSites({
-      queryParams: {
-        page: 0,
-        take: 100,
-      },
-    });
-
   const createJobMutation = useAdminJobControllerCreateJob();
 
-  const sites = sitesData?.data || [];
+  const selectedSiteId = form.watch("siteId");
 
-  const handleCreate = async () => {
-    if (!title.trim()) {
-      Alert.alert("Error", "Please enter a job title");
-      return;
-    }
-    if (!selectedSite) {
-      Alert.alert("Error", "Please select a site");
-      return;
-    }
+  console.log("Selected Site ID:", form.watch());
 
-    // Per schema, customerId is required. We get it from the selected site.
-    if (!selectedSite.customer?.id) {
-      Alert.alert(
-        "Error",
-        "Selected site does not have a valid customer associated.",
-      );
-      return;
-    }
+  useEffect(() => {
+    console.log("Form values changed:", !selectedSiteId);
+  }, [JSON.stringify(form.watch())]);
 
+  const handleCreate = handleSubmit(async (data) => {
     try {
       await createJobMutation.mutateAsync(
         {
           body: {
-            siteId: selectedSite.id,
-            customerId: selectedSite.customer.id,
-            description: description,
-            title: title,
+            siteId: data.siteId,
+            customerId: data.customerId,
+            description: data.description,
+            title: data.title,
             startAt: date.toISOString(),
             checklists: [],
           },
@@ -91,7 +88,7 @@ export const CreateJobForm: React.FC = () => {
     } catch (error: any) {
       Alert.alert("Error", error?.message || "Failed to create job");
     }
-  };
+  });
 
   return (
     <KeyboardAvoidingView
@@ -100,8 +97,16 @@ export const CreateJobForm: React.FC = () => {
     >
       <ScreenHeader title="Create Job" showBackButton={true} />
 
-      <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.formGroup}>
+      <View className="flex flex-col gap-2 p-4">
+        <FormInput
+          control={control}
+          required
+          name="title"
+          label="Job Title"
+          placeholder="e.g. AC Repair"
+        />
+
+        <View>
           <Text style={styles.label}>Date *</Text>
           <TouchableOpacity
             style={styles.selectButton}
@@ -112,104 +117,98 @@ export const CreateJobForm: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Site *</Text>
-          <TouchableOpacity
-            style={styles.selectButton}
-            onPress={() => setShowSitePicker(true)}
-          >
-            <Text
-              style={[
-                styles.selectText,
-                !selectedSite && styles.placeholderText,
-              ]}
-            >
-              {selectedSite ? selectedSite.title : "Select a site"}
-            </Text>
-            <Ionicons name="chevron-down" size={20} color="#64748b" />
-          </TouchableOpacity>
-        </View>
+        <FormInput
+          name="siteId"
+          required
+          label="Site"
+          control={control}
+          render={({ field }) => {
+            return (
+              <AsyncSelect
+                withSearch={true}
+                placeholder="Select a site"
+                className={{
+                  trigger: INPUT_CLASSNAME,
+                  triggerActive: "bg-white border-gray-300",
+                }}
+                fetcher={{
+                  fn: fetchAdminSiteControllerSites,
+                  queryKey: ["admin", "site"],
+                  renderables: {
+                    getLabelFromItem: (item) => item.title,
+                    getValueFromItem: (item) => item.id,
+                  },
+                  onItemSelect: (item) => {
+                    form.setValue("customerId", item.customer.id);
+                    field.onChange(item.id);
+                  },
+                  search: "search",
+                }}
+              />
+            );
+          }}
+        />
+
+        <FormInput
+          name="assignedCleanerId"
+          control={control}
+          label="Assign Cleaner"
+          disabled={!selectedSiteId}
+          render={({ field }) => {
+            return (
+              <AsyncSelect
+                withSearch={true}
+                disabled={!selectedSiteId}
+                className={{
+                  trigger: INPUT_CLASSNAME,
+                  triggerActive: "bg-white border-gray-300",
+                }}
+                fetcher={{
+                  fn: fetchAdminSiteControllerSiteCleaners,
+                  params: {
+                    pathParams: {
+                      siteId: selectedSiteId,
+                    },
+                  },
+                  queryKey: ["admin", "site", selectedSiteId, "cleaners"],
+                  renderables: {
+                    getLabelFromItem: (item) => item.name,
+                    getValueFromItem: (item) => item.id,
+                  },
+                  onItemSelect: (item) => field.onChange(item.id),
+                }}
+              />
+            );
+          }}
+        />
 
         <View style={styles.formGroup}>
-          <Text style={styles.label}>Job Title *</Text>
-          <Input
-            placeholder="e.g. AC Repair"
-            value={title}
-            onChangeText={setTitle}
-          />
-        </View>
-
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Description</Text>
-          <Input
-            placeholder="Describe the job requirements..."
-            value={description}
-            onChangeText={setDescription}
-            multiline
-            numberOfLines={4}
-            style={styles.textArea}
-            textAlignVertical="top"
+          <FormInput
+            control={control}
+            name="description"
+            label="Description"
+            render={(props) => (
+              <Input
+                placeholder="Describe the job requirements..."
+                value={props?.field.value}
+                onChangeText={props?.field.onChange}
+                multiline
+                numberOfLines={4}
+                style={styles.textArea}
+                textAlignVertical="top"
+              />
+            )}
           />
         </View>
 
         <Button
           onPress={handleCreate}
-          disabled={createJobMutation.isPending || isLoadingSites}
+          disabled={createJobMutation.isPending}
           style={styles.submitButton}
         >
           {createJobMutation.isPending ? "Creating..." : "Create Job"}
         </Button>
-      </ScrollView>
-
-      {/* Site Picker Modal */}
-      <Modal
-        visible={showSitePicker}
-        animationType="fade"
-        transparent={true}
-        onRequestClose={() => setShowSitePicker(false)}
-      >
-        <Pressable
-          style={styles.modalOverlay}
-          onPress={() => setShowSitePicker(false)}
-        >
-          <Pressable
-            style={styles.modalContent}
-            onPress={(e) => e.stopPropagation()}
-          >
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Select Site</Text>
-              <TouchableOpacity onPress={() => setShowSitePicker(false)}>
-                <Ionicons name="close" size={24} color="#0f172a" />
-              </TouchableOpacity>
-            </View>
-            <ScrollView style={styles.modalList}>
-              {isLoadingSites ? (
-                <Text style={styles.loadingText}>Loading sites...</Text>
-              ) : sites.length === 0 ? (
-                <Text style={styles.emptyText}>No sites found</Text>
-              ) : (
-                sites.map((site) => (
-                  <TouchableOpacity
-                    key={site.id}
-                    style={styles.siteItem}
-                    onPress={() => {
-                      setSelectedSite(site);
-                      setShowSitePicker(false);
-                    }}
-                  >
-                    <Text style={styles.siteItemText}>{site.title}</Text>
-                    {site.location?.address && (
-                      <Text style={styles.siteItemAddress}>
-                        {site.location.address}
-                      </Text>
-                    )}
-                  </TouchableOpacity>
-                ))
-              )}
-            </ScrollView>
-          </Pressable>
-        </Pressable>
-      </Modal>
+      </View>
 
       {/* Date Picker Modal */}
       <Modal
