@@ -181,8 +181,13 @@ export type MessageResponseWithIdDataDto = {
   data: IdDto;
 };
 
+export type UpdateCustomerManagerDto = {
+  added?: string[];
+  removed?: string[];
+};
+
 export type UpdateCustomerRequestDto = {
-  managerIds: string[];
+  managers?: UpdateCustomerManagerDto;
   name?: string;
   email?: string;
 };
@@ -257,6 +262,17 @@ export type GetCleanerResponseDto = {
   data: ListGeneralDto;
 };
 
+export type ListManagerAssignedCustomersDto = {
+  id: string;
+  customer: IdNameDto;
+};
+
+export type ListManagerAssignedCustomersResponseDto = {
+  message: string;
+  data: ListManagerAssignedCustomersDto[];
+  pagination: PaginationResponseDto;
+};
+
 export type GetManagerResponseDto = {
   message: string;
   data: ListManagerDto;
@@ -264,6 +280,7 @@ export type GetManagerResponseDto = {
 
 export type CreateManagerDto = {
   email: string;
+  customerIds?: string[];
   /**
    * @format binary
    */
@@ -271,9 +288,15 @@ export type CreateManagerDto = {
   fullName: string;
 };
 
+export type AssignCustomerToManagerRequestDto = {
+  added?: string[];
+  removed?: string[];
+};
+
 export type UpdateManagerDto = {
   fullName?: string;
   ended?: boolean;
+  customerIds?: string[];
   /**
    * @format binary
    */
@@ -583,6 +606,7 @@ export type GetJobChecklistDto = {
 };
 
 export type GetJobDto = {
+  remarks?: string | null;
   description?: string | null;
   status: "Scheduled" | "In Progress" | "Completed" | "Cancelled";
   /**
@@ -616,6 +640,10 @@ export type CreateJobRequestDto = {
   /**
    * @format uuid
    */
+  assignedCleanerId?: string;
+  /**
+   * @format uuid
+   */
   jobRequestId?: string;
   title: string;
   siteId: string;
@@ -638,6 +666,7 @@ export type UpdateJobRequestDto = {
    */
   startAt?: string;
   status?: "Scheduled" | "In Progress" | "Completed" | "Cancelled";
+  remarks?: string;
 };
 
 export type AdminListJobRequestsSiteDto = {

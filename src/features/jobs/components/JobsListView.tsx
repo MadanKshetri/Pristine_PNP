@@ -6,12 +6,7 @@ import { useInfiniteJobsByRole } from "../hooks/useInfiniteJobsByRole";
 import { StaffJobControllerJobsQueryParams } from "@/fetchers/queriesComponents";
 import { useActivityFilters } from "@/src/hooks/useActivityFilters";
 import { useRouter } from "expo-router";
-
-type JobItem = {
-  id: string;
-  startAt?: string | null;
-  createdAt: string;
-};
+import { ListJobDto } from "@/fetchers/queriesSchemas";
 
 export function JobsListView() {
   const router = useRouter();
@@ -42,8 +37,8 @@ export function JobsListView() {
   );
 
   const renderListItem = useCallback(
-    ({ item }: { item: JobItem }) => (
-      <JobListCard job={item as any} onPress={handleJobPress} />
+    ({ item }: { item: ListJobDto }) => (
+      <JobListCard job={item} onPress={handleJobPress} />
     ),
     [handleJobPress],
   );
@@ -74,7 +69,7 @@ export function JobsListView() {
     <InfiniteScrollList
       data={sortedAllJobs as any[]}
       renderItem={renderListItem}
-      keyExtractor={(item: JobItem) => item.id}
+      keyExtractor={(item) => item.id}
       hasNextPage={hasNextPage}
       isFetchingNextPage={isFetchingNextPage}
       isLoading={isLoading}

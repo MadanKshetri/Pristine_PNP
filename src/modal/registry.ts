@@ -1,5 +1,6 @@
 import React from "react";
 import { CreateJobForm } from "../features/jobs";
+import { ManagerJobUpdateModal } from "../features/jobs/components/modals/ManagerJobUpdateModal";
 import SelectCleanerSheet from "./select-cleaner-modal";
 
 // Define the shape of each modal config
@@ -43,6 +44,10 @@ export const MODAL_REGISTRY = createModalRegistry({
   "select-cleaner": {
     type: "actionsheet",
     component: SelectCleanerSheet,
+  },
+  "manager-job-update": {
+    type: "modal",
+    component: ManagerJobUpdateModal,
   },
 });
 

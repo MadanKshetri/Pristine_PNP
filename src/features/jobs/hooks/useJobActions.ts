@@ -1,4 +1,5 @@
 import {
+  useAdminJobControllerUpdate,
   useStaffJobControllerStartJob,
   useStaffJobControllerUpdateChecklistSow,
   useStaffJobControllerUpdateJob,
@@ -6,6 +7,7 @@ import {
 import {
   StaffUpdateJobStatusRequestDto,
   UpdateChecklistSowRequestDto,
+  UpdateJobRequestDto,
 } from "@/fetchers/queriesSchemas";
 import * as Location from "expo-location";
 import { Alert } from "react-native";
@@ -14,6 +16,7 @@ export const useJobActions = () => {
   const startJobMutation = useStaffJobControllerStartJob();
   const updateJobStatusMutation = useStaffJobControllerUpdateJob();
   const updateChecklistMutation = useStaffJobControllerUpdateChecklistSow();
+  const adminUpdateJobMutation = useAdminJobControllerUpdate();
 
   const startJob = async (jobId: string, token: string) => {
     try {
@@ -69,6 +72,27 @@ export const useJobActions = () => {
     }
   };
 
+  const adminUpdateJob = async (
+    jobId: string,
+    status: UpdateJobRequestDto["status"],
+    remarks?: string,
+  ) => {
+    try {
+      const result = await adminUpdateJobMutation.mutateAsync({
+        body: {
+          status,
+          ...(remarks ? { remarks } : {}),
+        },
+        pathParams: { id: jobId },
+      });
+      Alert.alert("Success", "Job updated successfully!");
+      return { success: true, data: result };
+    } catch (error: any) {
+      Alert.alert("Error", error?.message || "Failed to update job");
+      return { success: false, error };
+    }
+  };
+
   const updateChecklist = async (
     checklistId: string,
     status: UpdateChecklistSowRequestDto["status"],
@@ -115,9 +139,11 @@ export const useJobActions = () => {
   return {
     startJob,
     updateJobStatus,
+    adminUpdateJob,
     updateChecklist,
     isStartingJob: startJobMutation.isPending,
     isUpdatingJobStatus: updateJobStatusMutation.isPending,
+    isAdminUpdatingJob: adminUpdateJobMutation.isPending,
     isUpdatingChecklist: updateChecklistMutation.isPending,
   };
 };

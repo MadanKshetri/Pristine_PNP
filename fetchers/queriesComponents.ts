@@ -1015,7 +1015,7 @@ export type AdminCustomerControllerUpdateError =
   Fetcher.ErrorWrapper<undefined>;
 
 export type AdminCustomerControllerUpdateVariables = {
-  body: Schemas.UpdateCustomerRequestDto;
+  body?: Schemas.UpdateCustomerRequestDto;
   pathParams: AdminCustomerControllerUpdatePathParams;
 } & QueriesContext["fetcherOptions"];
 
@@ -1876,6 +1876,174 @@ export const useAdminUserControllerUpdateGeneral = (
   });
 };
 
+export type AdminUserControllerGetManagerCustomersPathParams = {
+  /**
+   * @format uuid
+   */
+  managerId: string;
+};
+
+export type AdminUserControllerGetManagerCustomersQueryParams = {
+  /**
+   * @minimum 0
+   */
+  take?: number;
+  /**
+   * @minimum 0
+   */
+  page?: number;
+  search?: string;
+  /**
+   * @format date-time
+   */
+  dateFrom?: string;
+  /**
+   * @format date-time
+   */
+  dateTo?: string;
+  /**
+   * @format uuid
+   */
+  customerId?: string;
+};
+
+export type AdminUserControllerGetManagerCustomersError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AdminUserControllerGetManagerCustomersVariables = {
+  pathParams: AdminUserControllerGetManagerCustomersPathParams;
+  queryParams?: AdminUserControllerGetManagerCustomersQueryParams;
+} & QueriesContext["fetcherOptions"];
+
+/**
+ * Required Permission: admin or manager
+ */
+export const fetchAdminUserControllerGetManagerCustomers = (
+  variables: AdminUserControllerGetManagerCustomersVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.ListManagerAssignedCustomersResponseDto,
+    AdminUserControllerGetManagerCustomersError,
+    undefined,
+    {},
+    AdminUserControllerGetManagerCustomersQueryParams,
+    AdminUserControllerGetManagerCustomersPathParams
+  >({
+    url: "/admin/user/manager/{managerId}/managerCustomers",
+    method: "get",
+    ...variables,
+    signal,
+  });
+
+/**
+ * Required Permission: admin or manager
+ */
+export function adminUserControllerGetManagerCustomersQuery(
+  variables: AdminUserControllerGetManagerCustomersVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (
+    options: QueryFnOptions,
+  ) => Promise<Schemas.ListManagerAssignedCustomersResponseDto>;
+};
+
+export function adminUserControllerGetManagerCustomersQuery(
+  variables:
+    | AdminUserControllerGetManagerCustomersVariables
+    | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((
+        options: QueryFnOptions,
+      ) => Promise<Schemas.ListManagerAssignedCustomersResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function adminUserControllerGetManagerCustomersQuery(
+  variables:
+    | AdminUserControllerGetManagerCustomersVariables
+    | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/admin/user/manager/{managerId}/managerCustomers",
+      operationId: "adminUserControllerGetManagerCustomers",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchAdminUserControllerGetManagerCustomers(variables, signal),
+  };
+}
+
+/**
+ * Required Permission: admin or manager
+ */
+export const useSuspenseAdminUserControllerGetManagerCustomers = <
+  TData = Schemas.ListManagerAssignedCustomersResponseDto,
+>(
+  variables: AdminUserControllerGetManagerCustomersVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListManagerAssignedCustomersResponseDto,
+      AdminUserControllerGetManagerCustomersError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.ListManagerAssignedCustomersResponseDto,
+    AdminUserControllerGetManagerCustomersError,
+    TData
+  >({
+    ...adminUserControllerGetManagerCustomersQuery(
+      deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+/**
+ * Required Permission: admin or manager
+ */
+export const useAdminUserControllerGetManagerCustomers = <
+  TData = Schemas.ListManagerAssignedCustomersResponseDto,
+>(
+  variables:
+    | AdminUserControllerGetManagerCustomersVariables
+    | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListManagerAssignedCustomersResponseDto,
+      AdminUserControllerGetManagerCustomersError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.ListManagerAssignedCustomersResponseDto,
+    AdminUserControllerGetManagerCustomersError,
+    TData
+  >({
+    ...adminUserControllerGetManagerCustomersQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
 export type AdminUserControllerGetCustomerUserPathParams = {
   /**
    * @format uuid
@@ -2310,6 +2478,71 @@ export const useAdminUserControllerCreateManager = (
   >({
     mutationFn: (variables: AdminUserControllerCreateManagerVariables) =>
       fetchAdminUserControllerCreateManager(
+        deepMerge(fetcherOptions, variables),
+      ),
+    ...options,
+  });
+};
+
+export type AdminUserControllerAssignCustomerToManagerPathParams = {
+  /**
+   * @format uuid
+   */
+  managerId: string;
+};
+
+export type AdminUserControllerAssignCustomerToManagerError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AdminUserControllerAssignCustomerToManagerVariables = {
+  body?: Schemas.AssignCustomerToManagerRequestDto;
+  pathParams: AdminUserControllerAssignCustomerToManagerPathParams;
+} & QueriesContext["fetcherOptions"];
+
+/**
+ * Required Permission: admin
+ */
+export const fetchAdminUserControllerAssignCustomerToManager = (
+  variables: AdminUserControllerAssignCustomerToManagerVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminUserControllerAssignCustomerToManagerError,
+    Schemas.AssignCustomerToManagerRequestDto,
+    {},
+    {},
+    AdminUserControllerAssignCustomerToManagerPathParams
+  >({
+    url: "/admin/user/manager/{managerId}/assignCustomer",
+    method: "post",
+    ...variables,
+    signal,
+  });
+
+/**
+ * Required Permission: admin
+ */
+export const useAdminUserControllerAssignCustomerToManager = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.MessageResponseWithIdDataDto,
+      AdminUserControllerAssignCustomerToManagerError,
+      AdminUserControllerAssignCustomerToManagerVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.MessageResponseWithIdDataDto,
+    AdminUserControllerAssignCustomerToManagerError,
+    AdminUserControllerAssignCustomerToManagerVariables
+  >({
+    mutationFn: (
+      variables: AdminUserControllerAssignCustomerToManagerVariables,
+    ) =>
+      fetchAdminUserControllerAssignCustomerToManager(
         deepMerge(fetcherOptions, variables),
       ),
     ...options,
@@ -3516,6 +3749,7 @@ export type AdminSiteControllerSiteCleanersQueryParams = {
    * @minimum 0
    */
   page?: number;
+  search?: string;
 };
 
 export type AdminSiteControllerSiteCleanersError =
@@ -8357,6 +8591,13 @@ export type QueryOperation =
       path: "/admin/user/cleaner/{cleanerId}";
       operationId: "adminUserControllerGetGeneral";
       variables: AdminUserControllerGetGeneralVariables | reactQuery.SkipToken;
+    }
+  | {
+      path: "/admin/user/manager/{managerId}/managerCustomers";
+      operationId: "adminUserControllerGetManagerCustomers";
+      variables:
+        | AdminUserControllerGetManagerCustomersVariables
+        | reactQuery.SkipToken;
     }
   | {
       path: "/admin/user/customerUser/{customerUserId}";
