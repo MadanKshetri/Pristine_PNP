@@ -1,5 +1,5 @@
 import { QRScannerModal } from "@/src/components/qr/QRScannerModal";
-import { Button, Card, Input } from "@/src/components/ui";
+import { Button, Card } from "@/src/components/ui";
 import {
   AlertButton,
   AppAlertDialog,
@@ -46,10 +46,8 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
   const { job, isLoading, error, refetch } = useJobDetailsByRole(jobId);
   const { startJob, updateJobStatus, isStartingJob, isUpdatingJobStatus } =
     useJobActions();
-  // const isLoadingQrToken = false;
-  // const [showQRModal, setShowQRModal] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
-  
+
   const [dialogConfig, setDialogConfig] = useState({
     isOpen: false,
     title: "",
@@ -98,7 +96,10 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
     }
   };
 
-  const handleJobStatusChange = (status: "Completed" | "Cancelled", reason?: string) => {
+  const handleJobStatusChange = (
+    status: "Completed" | "Cancelled",
+    reason?: string,
+  ) => {
     const action = status === "Completed" ? "Complete" : "Cancel";
     const actionLower = action.toLowerCase();
 
@@ -209,7 +210,7 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
   const canStart = job.status === "Scheduled" && isCleaner;
   const canComplete = job.status === "In Progress" && isCleaner;
   const isJobActive = job.status !== "Completed" && job.status !== "Cancelled";
-  
+
   const completionPercentage =
     job.checklists.length > 0
       ? (job.checklists.filter((c) => c.status === "Completed").length /
@@ -606,91 +607,91 @@ export const JobDetailsScreen: React.FC<JobDetailsScreenProps> = ({
                 </View>
               </View>
             )}
-            
+
             {/* Manager Actions */}
             {isManager && isJobActive && (
-               <View style={{ marginTop: 8, marginBottom: 8 }}>
-                 <View style={{ flexDirection: "row", gap: 12 }}>
-                   <TouchableOpacity
-                     onPress={() => openManagerActionModal("Cancelled")}
-                     disabled={isUpdatingJobStatus}
-                     style={[
-                       styles.startBtn,
-                       { flex: 1, backgroundColor: "#EF4444", padding: 12 },
-                     ]}
-                     activeOpacity={0.9}
-                   >
-                     <View style={styles.rowCenterJustifyCenter}>
-                       {isUpdatingJobStatus ? (
-                         <ActivityIndicator size="small" color="#FFFFFF" />
-                       ) : (
-                         <>
-                           <View
-                             style={[
-                               styles.startIconWrap,
-                               { width: 32, height: 32 },
-                             ]}
-                           >
-                             <Ionicons
-                               name="close-circle"
-                               size={20}
-                               color="white"
-                             />
-                           </View>
-                           <Text
-                             style={[
-                               styles.startText,
-                               { fontSize: 16, marginLeft: 8 },
-                             ]}
-                           >
-                             Cancel Job
-                           </Text>
-                         </>
-                       )}
-                     </View>
-                   </TouchableOpacity>
+              <View style={{ marginTop: 8, marginBottom: 8 }}>
+                <View style={{ flexDirection: "row", gap: 12 }}>
+                  <TouchableOpacity
+                    onPress={() => openManagerActionModal("Cancelled")}
+                    disabled={isUpdatingJobStatus}
+                    style={[
+                      styles.startBtn,
+                      { flex: 1, backgroundColor: "#EF4444", padding: 12 },
+                    ]}
+                    activeOpacity={0.9}
+                  >
+                    <View style={styles.rowCenterJustifyCenter}>
+                      {isUpdatingJobStatus ? (
+                        <ActivityIndicator size="small" color="#FFFFFF" />
+                      ) : (
+                        <>
+                          <View
+                            style={[
+                              styles.startIconWrap,
+                              { width: 32, height: 32 },
+                            ]}
+                          >
+                            <Ionicons
+                              name="close-circle"
+                              size={20}
+                              color="white"
+                            />
+                          </View>
+                          <Text
+                            style={[
+                              styles.startText,
+                              { fontSize: 16, marginLeft: 8 },
+                            ]}
+                          >
+                            Cancel Job
+                          </Text>
+                        </>
+                      )}
+                    </View>
+                  </TouchableOpacity>
 
-                   <TouchableOpacity
-                     onPress={() => openManagerActionModal("Completed")}
-                     disabled={isUpdatingJobStatus}
-                     style={[
-                       styles.startBtn,
-                       { flex: 1, backgroundColor: "#10B981", padding: 12 },
-                     ]}
-                     activeOpacity={0.9}
-                   >
-                     <View style={styles.rowCenterJustifyCenter}>
-                       {isUpdatingJobStatus ? (
-                         <ActivityIndicator size="small" color="#FFFFFF" />
-                       ) : (
-                         <>
-                           <View
-                             style={[
-                               styles.startIconWrap,
-                               { width: 32, height: 32 },
-                             ]}
-                           >
-                             <Ionicons
-                               name="checkmark-done-circle"
-                               size={20}
-                               color="white"
-                             />
-                           </View>
-                           <Text
-                             style={[
-                               styles.startText,
-                               { fontSize: 16, marginLeft: 8 },
-                             ]}
-                           >
-                             Complete Job
-                           </Text>
-                         </>
-                       )}
-                     </View>
-                   </TouchableOpacity>
-                 </View>
-               </View>
-             )}
+                  <TouchableOpacity
+                    onPress={() => openManagerActionModal("Completed")}
+                    disabled={isUpdatingJobStatus}
+                    style={[
+                      styles.startBtn,
+                      { flex: 1, backgroundColor: "#10B981", padding: 12 },
+                    ]}
+                    activeOpacity={0.9}
+                  >
+                    <View style={styles.rowCenterJustifyCenter}>
+                      {isUpdatingJobStatus ? (
+                        <ActivityIndicator size="small" color="#FFFFFF" />
+                      ) : (
+                        <>
+                          <View
+                            style={[
+                              styles.startIconWrap,
+                              { width: 32, height: 32 },
+                            ]}
+                          >
+                            <Ionicons
+                              name="checkmark-done-circle"
+                              size={20}
+                              color="white"
+                            />
+                          </View>
+                          <Text
+                            style={[
+                              styles.startText,
+                              { fontSize: 16, marginLeft: 8 },
+                            ]}
+                          >
+                            Complete Job
+                          </Text>
+                        </>
+                      )}
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
 
             {/* Checklists Section */}
             <View style={styles.mb2}>

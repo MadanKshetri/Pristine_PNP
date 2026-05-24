@@ -1,34 +1,36 @@
+import AsyncSelect from "@/components/ui/async-select";
+import FormInput from "@/components/ui/form-input";
+import StaticSelect from "@/components/ui/static-select";
 import {
-  useStaffControllerGetSites,
+  fetchAdminSiteControllerSites,
+  fetchStaffControllerGetSites,
   useStaffIncidentConrollerCreate,
 } from "@/fetchers/queriesComponents";
-import { Button, Input, ScreenHeader } from "@/src/components/ui";
-import { Ionicons } from "@expo/vector-icons";
+import { Button, ScreenHeader } from "@/src/components/ui";
+import { CreateIncidentSchema } from "@/src/schema";
+import { INPUT_CLASSNAME } from "@/src/utils/constants";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
-import { ChevronDown, MapPin, X } from "lucide-react-native";
-import React, { useState } from "react";
-import {
-  Alert,
-  Modal,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { Alert, ScrollView, StyleSheet, View } from "react-native";
 
 export default function StaffCreateIncidentScreen() {
   const router = useRouter();
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [selectedSiteId, setSelectedSiteId] = useState<string | null>(null);
-  const [isSiteModalVisible, setIsSiteModalVisible] = useState(false);
 
-  // Fetch Sites
-  const { data: sitesData } = useStaffControllerGetSites({});
-  const sites = sitesData?.data || [];
+  const form = useForm({
+    mode: "onSubmit",
+    resolver: zodResolver(CreateIncidentSchema),
+    defaultValues: {
+      description: undefined,
+      priority: "Low",
+      siteId: "",
+      title: "",
+      type: "Issue",
+    },
+  });
 
-  const selectedSite = sites.find((s) => s.id === selectedSiteId);
+  const { handleSubmit } = form;
 
   // Create Incident Mutation
   const createMutation = useStaffIncidentConrollerCreate({
@@ -38,6 +40,8 @@ export default function StaffCreateIncidentScreen() {
       ]);
     },
     onError: (error: any) => {
+      console.error("Error creating incident report:", error);
+
       Alert.alert(
         "Error",
         error?.payload?.message || "Failed to submit incident report",
@@ -45,148 +49,129 @@ export default function StaffCreateIncidentScreen() {
     },
   });
 
-  const handleSubmit = () => {
-    if (!title.trim()) {
-      Alert.alert("Validation Error", "Please enter a title");
-      return;
-    }
-    if (!selectedSiteId) {
-      Alert.alert("Validation Error", "Please select a site");
-      return;
-    }
-
+  const handleFormSubmit = handleSubmit(async (data) => {
     createMutation.mutate({
       body: {
-        title,
-        description,
-        siteId: selectedSiteId,
+        title: data.title.trim(),
+        description: data.description,
+        siteId: data.siteId,
+        priority: data.priority,
+        type: data.type,
       },
     });
-  };
+  });
 
   return (
     <View style={styles.container}>
       <ScreenHeader title="Report Incident" />
 
       <ScrollView className="px-6 py-6" showsVerticalScrollIndicator={false}>
-        <View className="mb-6">
-          <Text className="text-sm font-bold text-gray-700 mb-2 ml-1">
-            TITLE
-          </Text>
-          <Input
-            placeholder="e.g., Leaking pipe in main hall"
-            value={title}
-            onChangeText={setTitle}
-          />
-        </View>
+        <FormInput
+          control={form.control}
+          required
+          name="title"
+          label="Incident Title"
+        />
 
-        <View className="mb-6">
-          <Text className="text-sm font-bold text-gray-700 mb-2 ml-1">
-            SITE
-          </Text>
-          <TouchableOpacity
-            onPress={() => setIsSiteModalVisible(true)}
-            className="flex-row items-center border border-gray-200 bg-white rounded-xl h-12 px-4"
-          >
-            <MapPin size={18} color={selectedSite ? "#1F2937" : "#9CA3AF"} />
-            <Text
-              className={`flex-1 ml-2 text-base ${
-                selectedSite ? "text-gray-900" : "text-gray-400"
-              }`}
-            >
-              {selectedSite ? selectedSite.title : "Select a site"}
-            </Text>
-            <ChevronDown size={20} color="#6B7280" />
-          </TouchableOpacity>
-        </View>
+        <FormInput
+          name="siteId"
+          required
+          label="Site"
+          control={form.control}
+          render={({ field }) => {
+            return (
+              <AsyncSelect
+                withSearch={true}
+                placeholder="Select a site"
+                className={{
+                  trigger: INPUT_CLASSNAME,
+                  triggerActive: "bg-white border-gray-300",
+                }}
+                fetcher={{
+                  fn: fetchStaffControllerGetSites,
+                  queryKey: ["admin", "site"],
+                  renderables: {
+                    getLabelFromItem: (item) => item.title,
+                    getValueFromItem: (item) => item.id,
+                  },
+                  onItemSelect: (item) => {
+                    form.setValue("siteId", item.id);
+                    field.onChange(item.id);
+                  },
+                  search: "search",
+                }}
+              />
+            );
+          }}
+        />
 
-        <View className="mb-8">
-          <Text className="text-sm font-bold text-gray-700 mb-2 ml-1">
-            DESCRIPTION
-          </Text>
-          <Input
-            placeholder="Describe the incident details..."
-            value={description}
-            onChangeText={setDescription}
-            multiline
-            numberOfLines={4}
-            className="h-32 py-3"
-            textAlignVertical="top"
-          />
-        </View>
+        <FormInput
+          name="priority"
+          control={form.control}
+          label="Priority"
+          render={({ field }) => {
+            return (
+              <StaticSelect
+                placeholder="Select priority"
+                withSearch={false}
+                className={{
+                  trigger: INPUT_CLASSNAME,
+                  triggerActive: "bg-white border-gray-300",
+                }}
+                options={[
+                  { label: "Low", value: "Low" },
+                  { label: "Medium", value: "Medium" },
+                  { label: "High", value: "High" },
+                ]}
+                value={field.value}
+                onChange={field.onChange}
+              />
+            );
+          }}
+        />
 
-        <Button onPress={handleSubmit} isLoading={createMutation.isPending}>
+        <FormInput
+          name="type"
+          control={form.control}
+          label="Type"
+          render={({ field }) => {
+            return (
+              <StaticSelect
+                placeholder="Select type"
+                withSearch={false}
+                className={{
+                  trigger: INPUT_CLASSNAME,
+                  triggerActive: "bg-white border-gray-300",
+                }}
+                options={[
+                  { label: "Issue", value: "Issue" },
+                  { label: "Request", value: "Request" },
+                  {
+                    label: "Seeking Information",
+                    value: "Seeking Information",
+                  },
+                ]}
+                value={field.value}
+                onChange={field.onChange}
+              />
+            );
+          }}
+        />
+
+        <FormInput
+          control={form.control}
+          name="description"
+          inputProps={{
+            multiline: true,
+            numberOfLines: 4,
+          }}
+          label="Description"
+        />
+
+        <Button onPress={handleFormSubmit} isLoading={createMutation.isPending}>
           Submit Report
         </Button>
       </ScrollView>
-
-      {/* Site Selection Modal */}
-      <Modal
-        visible={isSiteModalVisible}
-        animationType="slide"
-        presentationStyle="pageSheet"
-        onRequestClose={() => setIsSiteModalVisible(false)}
-      >
-        <View className="flex-1 bg-white">
-          <View className="flex-row items-center justify-between p-4 border-b border-gray-100">
-            <Text className="text-lg font-bold text-gray-900">Select Site</Text>
-            <TouchableOpacity
-              onPress={() => setIsSiteModalVisible(false)}
-              className="p-2 bg-gray-100 rounded-full"
-            >
-              <X size={20} color="#1F2937" />
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView contentContainerStyle={{ padding: 16 }}>
-            {sites.map((site) => (
-              <TouchableOpacity
-                key={site.id}
-                onPress={() => {
-                  setSelectedSiteId(site.id);
-                  setIsSiteModalVisible(false);
-                }}
-                className={`flex-row items-center p-4 mb-3 rounded-xl border ${
-                  selectedSiteId === site.id
-                    ? "bg-blue-50 border-blue-200"
-                    : "bg-white border-gray-200"
-                }`}
-              >
-                <MapPin
-                  size={20}
-                  color={selectedSiteId === site.id ? "#3B82F6" : "#6B7280"}
-                />
-                <View className="ml-3 flex-1">
-                  <Text
-                    className={`text-base font-semibold ${
-                      selectedSiteId === site.id
-                        ? "text-blue-900"
-                        : "text-gray-900"
-                    }`}
-                  >
-                    {site.title}
-                  </Text>
-                  <Text className="text-sm text-gray-500 mt-0.5">
-                    {site.location.address}
-                  </Text>
-                </View>
-                {selectedSiteId === site.id && (
-                  <Ionicons name="checkmark-circle" size={24} color="#3B82F6" />
-                )}
-              </TouchableOpacity>
-            ))}
-
-            <TouchableOpacity
-              onPress={() => setIsSiteModalVisible(false)}
-              className="mt-2 py-4 items-center justify-center rounded-xl bg-gray-100 active:bg-gray-200"
-            >
-              <Text className="text-base font-semibold text-gray-700">
-                Cancel
-              </Text>
-            </TouchableOpacity>
-          </ScrollView>
-        </View>
-      </Modal>
     </View>
   );
 }

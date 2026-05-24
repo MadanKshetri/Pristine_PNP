@@ -33,6 +33,7 @@ type TProps<
 
   form?: UseFormReturn<TFieldValues>;
   control?: Control<TFieldValues>;
+  inputProps?: React.ComponentProps<typeof InputField>;
 
   placeholder?: string;
   disabled?: boolean;
@@ -54,6 +55,7 @@ export default function FormInput<
   helperText,
   form,
   control,
+  inputProps,
   placeholder,
   disabled,
   readOnly,
@@ -80,6 +82,7 @@ export default function FormInput<
             isDisabled={disabled}
             isReadOnly={readOnly}
             isRequired={required}
+            className="my-1"
           >
             {label && (
               <FormControlLabel>
@@ -93,12 +96,13 @@ export default function FormInput<
                 fieldState: fieldState,
               })
             ) : (
-              <Input className="my-1">
+              <Input className="my-1 rounded-xl h-12">
                 <InputField
                   value={field.value}
                   onBlur={field.onBlur}
                   onChangeText={field.onChange}
                   placeholder={placeholder}
+                  {...inputProps}
                 />
               </Input>
             )}
