@@ -169,7 +169,10 @@ export const CreateJobForm: React.FC = () => {
                     getLabelFromItem: (item) => item.name,
                     getValueFromItem: (item) => item.id,
                   },
-                  onItemSelect: (item) => field.onChange(item.id),
+                  onItemSelect: (item) => {
+                    form.setValue("assignedCleanerId", item.id);
+                    field.onChange(item.id);
+                  },
                 }}
               />
             );
