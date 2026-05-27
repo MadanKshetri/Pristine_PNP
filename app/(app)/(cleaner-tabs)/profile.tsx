@@ -1,6 +1,7 @@
 import { Card, ScreenHeader } from "@/src/components/ui";
 import { useAuth } from "@/src/features/auth";
 import { Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import {
   Alert,
@@ -31,9 +32,9 @@ export default function ProfileScreen() {
 
   const navigateToIncidents = () => {
     if (user?.role === "manager" || user?.role === "customer manager") {
-      router.push("/incidents/manager-list" as any);
+      router.push("/incidents/manager-list");
     } else {
-      router.push("/incidents/staff-list" as any);
+      router.push("/incidents/staff-list");
     }
   };
 
@@ -46,22 +47,31 @@ export default function ProfileScreen() {
         <Card
           variant="elevated"
           padding="sm"
-          className="mb-6 flex-row items-center p-4"
+          className="mb-6 flex-row items-center p-4 bg-white rounded-2xl shadow-sm border border-gray-100"
         >
-          <View className="w-16 h-16 bg-blue-100 rounded-full items-center justify-center mr-4">
-            <Ionicons name="person" size={32} color="#3B82F6" />
+          <View className="w-16 h-16 bg-blue-100 rounded-full items-center justify-center mr-4 overflow-hidden border-2 border-blue-50">
+            {user?.image?.url ? (
+              <Image
+                source={{ uri: user.image.url }}
+                className="w-full h-full"
+                contentFit="cover"
+                transition={200}
+              />
+            ) : (
+              <Ionicons name="person" size={32} color="#3B82F6" />
+            )}
           </View>
 
           <View className="flex-1">
-            <Text className="text-lg font-bold text-gray-900 leading-tight">
+            <Text className="text-xl font-bold text-gray-900 leading-tight mb-1">
               {user?.fullName || "User"}
             </Text>
-            <Text className="text-sm text-gray-500 mb-1">
+            <Text className="text-sm text-gray-500 mb-2 font-medium">
               {user?.email || "email@example.com"}
             </Text>
             <View className="flex-row">
-              <View className="bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-100">
-                <Text className="text-xs font-semibold text-blue-600 capitalize">
+              <View className="bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
+                <Text className="text-xs font-bold text-blue-600 uppercase tracking-wider">
                   {user?.role || "user"}
                 </Text>
               </View>

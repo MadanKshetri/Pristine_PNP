@@ -278,14 +278,34 @@ export type GetManagerResponseDto = {
   data: ListManagerDto;
 };
 
+export type EmergencyContactDto = {
+  name: string;
+  contact: string;
+  relationship: string;
+};
+
 export type CreateManagerDto = {
-  email: string;
+  /**
+   * @format date-time
+   */
+  startDate?: string;
+  gender: "Male" | "Female" | "Not disclosed";
+  employmentStatus: "Full-time" | "Part-time" | "Casual" | "Contract";
+  yearOfExperience?: number;
   customerIds?: string[];
   /**
    * @format binary
    */
   photo?: Blob;
   fullName: string;
+  email: string;
+  phone: string;
+  address: string;
+  /**
+   * @format date-time
+   */
+  dateOfBirth: string;
+  emergencyContact: EmergencyContactDto;
 };
 
 export type AssignCustomerToManagerRequestDto = {
@@ -296,6 +316,20 @@ export type AssignCustomerToManagerRequestDto = {
 export type UpdateManagerDto = {
   fullName?: string;
   ended?: boolean;
+  phone?: string;
+  address?: string;
+  /**
+   * @format date-time
+   */
+  dateOfBirth?: string;
+  /**
+   * @format date-time
+   */
+  startDate?: string;
+  gender?: "Male" | "Female" | "Not disclosed";
+  emergencyContact?: EmergencyContactDto;
+  employmentStatus?: "Full-time" | "Part-time" | "Casual" | "Contract";
+  yearOfExperience?: number;
   customerIds?: string[];
   /**
    * @format binary
@@ -304,17 +338,45 @@ export type UpdateManagerDto = {
 };
 
 export type CreateCleanerDto = {
-  email: string;
+  employmentStatus: "Full-time" | "Part-time" | "Casual" | "Contract";
+  gender: "Male" | "Female" | "Not disclosed";
+  yearOfExperience?: number;
   /**
    * @format binary
    */
   photo?: Blob;
+  email: string;
   fullName: string;
+  phone: string;
+  address: string;
+  /**
+   * @format date-time
+   */
+  dateOfBirth: string;
+  /**
+   * @format date-time
+   */
+  startDate: string;
+  emergencyContact?: EmergencyContactDto;
 };
 
 export type UpdateCleanerDto = {
   fullName?: string;
   ended?: boolean;
+  phone?: string;
+  address?: string;
+  /**
+   * @format date-time
+   */
+  dateOfBirth?: string;
+  /**
+   * @format date-time
+   */
+  startDate?: string;
+  gender?: "Male" | "Female" | "Not disclosed";
+  emergencyContact?: EmergencyContactDto;
+  employmentStatus?: "Full-time" | "Part-time" | "Casual" | "Contract";
+  yearOfExperience?: number;
   email?: string;
   /**
    * @format binary
@@ -771,9 +833,11 @@ export type GetIncidentResponseDto = {
 };
 
 export type AdminUpdateIncidentRequestDto = {
-  status: "Open" | "Resolved" | "Closed" | "Rejected";
-  priority: "Low" | "Medium" | "High";
-  description: string | null;
+  title?: string;
+  status?: "Open" | "Resolved" | "Closed" | "Rejected";
+  type?: "Issue" | "Request" | "Seeking Information";
+  priority?: "Low" | "Medium" | "High";
+  description?: string | null;
 };
 
 export type Object = {};

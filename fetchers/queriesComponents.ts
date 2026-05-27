@@ -105,7 +105,7 @@ export const useSuspenseAuthControllerGetMeUser = <
 /**
  * Required Permission: admin or cleaner or manager or customer
  */
-export const useAuthControllerGetMeUser = <TData = Schemas.GetMeResponseDto>(
+export const useAuthControllerGetMeUser = <TData = Schemas.GetMeResponseDto,>(
   variables: AuthControllerGetMeUserVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -2818,7 +2818,7 @@ export const useSuspenseAdminSowControllerSows = <
 /**
  * Required Permission: admin
  */
-export const useAdminSowControllerSows = <TData = Schemas.ListSOWResponseDto>(
+export const useAdminSowControllerSows = <TData = Schemas.ListSOWResponseDto,>(
   variables: AdminSowControllerSowsVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -2988,7 +2988,7 @@ export const useSuspenseAdminSowControllerSow = <
 /**
  * Required Permission: admin
  */
-export const useAdminSowControllerSow = <TData = Schemas.GetSOWResponseDto>(
+export const useAdminSowControllerSow = <TData = Schemas.GetSOWResponseDto,>(
   variables: AdminSowControllerSowVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -3979,7 +3979,7 @@ export const useSuspenseAdminSiteControllerSite = <
 /**
  * Required Permission: admin or manager
  */
-export const useAdminSiteControllerSite = <TData = Schemas.GetSiteResponseDto>(
+export const useAdminSiteControllerSite = <TData = Schemas.GetSiteResponseDto,>(
   variables: AdminSiteControllerSiteVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -4326,7 +4326,7 @@ export const useSuspenseAdminJobControllerJobs = <
 /**
  * Required Permission: admin or manager
  */
-export const useAdminJobControllerJobs = <TData = Schemas.ListJobResponseDto>(
+export const useAdminJobControllerJobs = <TData = Schemas.ListJobResponseDto,>(
   variables: AdminJobControllerJobsVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -4761,7 +4761,7 @@ export const useSuspenseAdminJobControllerJob = <
 /**
  * Required Permission: admin or manager
  */
-export const useAdminJobControllerJob = <TData = Schemas.GetJobResponseDto>(
+export const useAdminJobControllerJob = <TData = Schemas.GetJobResponseDto,>(
   variables: AdminJobControllerJobVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -4803,7 +4803,7 @@ export type AdminJobControllerUpdateVariables = {
 } & QueriesContext["fetcherOptions"];
 
 /**
- * Required Permission: admin
+ * Required Permission: admin or manager
  */
 export const fetchAdminJobControllerUpdate = (
   variables: AdminJobControllerUpdateVariables,
@@ -4819,7 +4819,7 @@ export const fetchAdminJobControllerUpdate = (
   >({ url: "/admin/job/{id}", method: "patch", ...variables, signal });
 
 /**
- * Required Permission: admin
+ * Required Permission: admin or manager
  */
 export const useAdminJobControllerUpdate = (
   options?: Omit<
@@ -5625,7 +5625,7 @@ export type AdminIncidentConrollerUpdateIncidentError = Fetcher.ErrorWrapper<
 >;
 
 export type AdminIncidentConrollerUpdateIncidentVariables = {
-  body: Schemas.AdminUpdateIncidentRequestDto;
+  body?: Schemas.AdminUpdateIncidentRequestDto;
   pathParams: AdminIncidentConrollerUpdateIncidentPathParams;
 } & QueriesContext["fetcherOptions"];
 
@@ -6096,7 +6096,9 @@ export const useSuspenseManagerJobControllerJobs = <
 /**
  * Required Permission: customer
  */
-export const useManagerJobControllerJobs = <TData = Schemas.ListJobResponseDto>(
+export const useManagerJobControllerJobs = <
+  TData = Schemas.ListJobResponseDto,
+>(
   variables: ManagerJobControllerJobsVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -6248,7 +6250,7 @@ export const useSuspenseManagerJobControllerJob = <
 /**
  * Required Permission: customer
  */
-export const useManagerJobControllerJob = <TData = Schemas.GetJobResponseDto>(
+export const useManagerJobControllerJob = <TData = Schemas.GetJobResponseDto,>(
   variables: ManagerJobControllerJobVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -8205,7 +8207,7 @@ export const useSuspenseStaffJobControllerJobs = <
 /**
  * Required Permission: cleaner
  */
-export const useStaffJobControllerJobs = <TData = Schemas.ListJobResponseDto>(
+export const useStaffJobControllerJobs = <TData = Schemas.ListJobResponseDto,>(
   variables: StaffJobControllerJobsVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -8391,7 +8393,7 @@ export const useSuspenseStaffJobControllerJob = <
 /**
  * Required Permission: cleaner
  */
-export const useStaffJobControllerJob = <TData = Schemas.GetJobResponseDto>(
+export const useStaffJobControllerJob = <TData = Schemas.GetJobResponseDto,>(
   variables: StaffJobControllerJobVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
