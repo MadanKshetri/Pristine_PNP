@@ -1,8 +1,8 @@
 import AsyncSelect from "@/components/ui/async-select";
 import FormInput from "@/components/ui/form-input";
 import StaticSelect from "@/components/ui/static-select";
+import { Textarea, TextareaInput } from "@/components/ui/textarea";
 import {
-  fetchAdminSiteControllerSites,
   fetchStaffControllerGetSites,
   useStaffIncidentConrollerCreate,
 } from "@/fetchers/queriesComponents";
@@ -13,7 +13,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Alert, ScrollView, StyleSheet, View } from "react-native";
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+} from "react-native";
 
 export default function StaffCreateIncidentScreen() {
   const router = useRouter();
@@ -62,117 +69,131 @@ export default function StaffCreateIncidentScreen() {
   });
 
   return (
-    <View style={styles.container}>
-      <ScreenHeader title="Report Incident" />
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      className="flex-1 bg-white"
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+    >
+      <View style={styles.container}>
+        <ScreenHeader title="Report Incident" />
 
-      <ScrollView className="px-6 py-6" showsVerticalScrollIndicator={false}>
-        <FormInput
-          control={form.control}
-          required
-          name="title"
-          label="Incident Title"
-        />
+        <ScrollView className="px-6 py-6" showsVerticalScrollIndicator={false}>
+          <FormInput
+            control={form.control}
+            required
+            name="title"
+            label="Incident Title"
+          />
 
-        <FormInput
-          name="siteId"
-          required
-          label="Site"
-          control={form.control}
-          render={({ field }) => {
-            return (
-              <AsyncSelect
-                withSearch={true}
-                placeholder="Select a site"
-                className={{
-                  trigger: INPUT_CLASSNAME,
-                  triggerActive: "bg-white border-gray-300",
-                }}
-                fetcher={{
-                  fn: fetchStaffControllerGetSites,
-                  queryKey: ["admin", "site"],
-                  renderables: {
-                    getLabelFromItem: (item) => item.title,
-                    getValueFromItem: (item) => item.id,
-                  },
-                  onItemSelect: (item) => {
-                    form.setValue("siteId", item.id);
-                    field.onChange(item.id);
-                  },
-                  search: "search",
-                }}
-              />
-            );
-          }}
-        />
+          <FormInput
+            name="siteId"
+            required
+            label="Site"
+            control={form.control}
+            render={({ field }) => {
+              return (
+                <AsyncSelect
+                  withSearch={true}
+                  placeholder="Select a site"
+                  className={{
+                    trigger: INPUT_CLASSNAME,
+                    triggerActive: "bg-white border-gray-300",
+                  }}
+                  fetcher={{
+                    fn: fetchStaffControllerGetSites,
+                    queryKey: ["admin", "site"],
+                    renderables: {
+                      getLabelFromItem: (item) => item.title,
+                      getValueFromItem: (item) => item.id,
+                    },
+                    onItemSelect: (item) => {
+                      form.setValue("siteId", item.id);
+                      field.onChange(item.id);
+                    },
+                    search: "search",
+                  }}
+                />
+              );
+            }}
+          />
 
-        <FormInput
-          name="priority"
-          control={form.control}
-          label="Priority"
-          render={({ field }) => {
-            return (
-              <StaticSelect
-                placeholder="Select priority"
-                withSearch={false}
-                className={{
-                  trigger: INPUT_CLASSNAME,
-                  triggerActive: "bg-white border-gray-300",
-                }}
-                options={[
-                  { label: "Low", value: "Low" },
-                  { label: "Medium", value: "Medium" },
-                  { label: "High", value: "High" },
-                ]}
-                value={field.value}
-                onChange={field.onChange}
-              />
-            );
-          }}
-        />
+          <FormInput
+            name="priority"
+            control={form.control}
+            label="Priority"
+            render={({ field }) => {
+              return (
+                <StaticSelect
+                  placeholder="Select priority"
+                  withSearch={false}
+                  className={{
+                    trigger: INPUT_CLASSNAME,
+                    triggerActive: "bg-white border-gray-300",
+                  }}
+                  options={[
+                    { label: "Low", value: "Low" },
+                    { label: "Medium", value: "Medium" },
+                    { label: "High", value: "High" },
+                  ]}
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              );
+            }}
+          />
 
-        <FormInput
-          name="type"
-          control={form.control}
-          label="Type"
-          render={({ field }) => {
-            return (
-              <StaticSelect
-                placeholder="Select type"
-                withSearch={false}
-                className={{
-                  trigger: INPUT_CLASSNAME,
-                  triggerActive: "bg-white border-gray-300",
-                }}
-                options={[
-                  { label: "Issue", value: "Issue" },
-                  { label: "Request", value: "Request" },
-                  {
-                    label: "Seeking Information",
-                    value: "Seeking Information",
-                  },
-                ]}
-                value={field.value}
-                onChange={field.onChange}
-              />
-            );
-          }}
-        />
+          <FormInput
+            name="type"
+            control={form.control}
+            label="Type"
+            render={({ field }) => {
+              return (
+                <StaticSelect
+                  placeholder="Select type"
+                  withSearch={false}
+                  className={{
+                    trigger: INPUT_CLASSNAME,
+                    triggerActive: "bg-white border-gray-300",
+                  }}
+                  options={[
+                    { label: "Issue", value: "Issue" },
+                    { label: "Request", value: "Request" },
+                    {
+                      label: "Seeking Information",
+                      value: "Seeking Information",
+                    },
+                  ]}
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              );
+            }}
+          />
 
-        <FormInput
-          control={form.control}
-          name="description"
-          inputProps={{
-            multiline: true,
-            numberOfLines: 4,
-          }}
-          label="Description"
-        />
+          <FormInput
+            control={form.control}
+            name="description"
+            label="Description"
+            render={({ field }) => (
+              <Textarea size="md">
+                <TextareaInput
+                  onChange={field.onChange}
+                  value={field.value}
+                  placeholder="Describe the incident in detail"
+                />
+              </Textarea>
+            )}
+          />
 
-        <Button onPress={handleFormSubmit} isLoading={createMutation.isPending}>
-          Submit Report
-        </Button>
-      </ScrollView>
-    </View>
+          <Button
+            onPress={handleFormSubmit}
+            isLoading={createMutation.isPending}
+          >
+            Submit Report
+          </Button>
+        </ScrollView>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 

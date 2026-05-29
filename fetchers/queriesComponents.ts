@@ -1122,7 +1122,7 @@ export type AdminDashboardControllerGetCountSummaryVariables =
   QueriesContext["fetcherOptions"];
 
 /**
- * Required Permission: admin
+ * Required Permission: admin or manager
  */
 export const fetchAdminDashboardControllerGetCountSummary = (
   variables: AdminDashboardControllerGetCountSummaryVariables,
@@ -1138,7 +1138,7 @@ export const fetchAdminDashboardControllerGetCountSummary = (
   >({ url: "/admin/dashboard/count", method: "get", ...variables, signal });
 
 /**
- * Required Permission: admin
+ * Required Permission: admin or manager
  */
 export function adminDashboardControllerGetCountSummaryQuery(
   variables: AdminDashboardControllerGetCountSummaryVariables,
@@ -1182,7 +1182,7 @@ export function adminDashboardControllerGetCountSummaryQuery(
 }
 
 /**
- * Required Permission: admin
+ * Required Permission: admin or manager
  */
 export const useSuspenseAdminDashboardControllerGetCountSummary = <
   TData = Schemas.AdminDashboardCountSummaryResponseDto,
@@ -1212,7 +1212,7 @@ export const useSuspenseAdminDashboardControllerGetCountSummary = <
 };
 
 /**
- * Required Permission: admin
+ * Required Permission: admin or manager
  */
 export const useAdminDashboardControllerGetCountSummary = <
   TData = Schemas.AdminDashboardCountSummaryResponseDto,
@@ -2066,7 +2066,7 @@ export const fetchAdminUserControllerGetCustomerUser = (
   signal?: AbortSignal,
 ) =>
   queriesFetch<
-    Schemas.GetManagerResponseDto,
+    Schemas.GetCustomerUserResponseDto,
     AdminUserControllerGetCustomerUserError,
     undefined,
     {},
@@ -2086,7 +2086,9 @@ export function adminUserControllerGetCustomerUserQuery(
   variables: AdminUserControllerGetCustomerUserVariables,
 ): {
   queryKey: reactQuery.QueryKey;
-  queryFn: (options: QueryFnOptions) => Promise<Schemas.GetManagerResponseDto>;
+  queryFn: (
+    options: QueryFnOptions,
+  ) => Promise<Schemas.GetCustomerUserResponseDto>;
 };
 
 export function adminUserControllerGetCustomerUserQuery(
@@ -2094,7 +2096,7 @@ export function adminUserControllerGetCustomerUserQuery(
 ): {
   queryKey: reactQuery.QueryKey;
   queryFn:
-    | ((options: QueryFnOptions) => Promise<Schemas.GetManagerResponseDto>)
+    | ((options: QueryFnOptions) => Promise<Schemas.GetCustomerUserResponseDto>)
     | reactQuery.SkipToken;
 };
 
@@ -2119,12 +2121,12 @@ export function adminUserControllerGetCustomerUserQuery(
  * Required Permission: admin
  */
 export const useSuspenseAdminUserControllerGetCustomerUser = <
-  TData = Schemas.GetManagerResponseDto,
+  TData = Schemas.GetCustomerUserResponseDto,
 >(
   variables: AdminUserControllerGetCustomerUserVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
-      Schemas.GetManagerResponseDto,
+      Schemas.GetCustomerUserResponseDto,
       AdminUserControllerGetCustomerUserError,
       TData
     >,
@@ -2133,7 +2135,7 @@ export const useSuspenseAdminUserControllerGetCustomerUser = <
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useSuspenseQuery<
-    Schemas.GetManagerResponseDto,
+    Schemas.GetCustomerUserResponseDto,
     AdminUserControllerGetCustomerUserError,
     TData
   >({
@@ -2149,12 +2151,12 @@ export const useSuspenseAdminUserControllerGetCustomerUser = <
  * Required Permission: admin
  */
 export const useAdminUserControllerGetCustomerUser = <
-  TData = Schemas.GetManagerResponseDto,
+  TData = Schemas.GetCustomerUserResponseDto,
 >(
   variables: AdminUserControllerGetCustomerUserVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
-      Schemas.GetManagerResponseDto,
+      Schemas.GetCustomerUserResponseDto,
       AdminUserControllerGetCustomerUserError,
       TData
     >,
@@ -2163,7 +2165,7 @@ export const useAdminUserControllerGetCustomerUser = <
 ) => {
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useQuery<
-    Schemas.GetManagerResponseDto,
+    Schemas.GetCustomerUserResponseDto,
     AdminUserControllerGetCustomerUserError,
     TData
   >({

@@ -223,9 +223,29 @@ export type ListManagerUserDto = {
   image: AssetDto | null;
 };
 
+export type EmergencyContactDto = {
+  name: string;
+  contact: string;
+  relationship: string;
+};
+
 export type ListManagerDto = {
+  /**
+   * @format date-time
+   */
+  startDate?: string;
+  gender: "Male" | "Female" | "Not disclosed";
+  employmentStatus: "Full-time" | "Part-time" | "Casual" | "Contract";
+  yearOfExperience?: number | null;
   id: string;
   user: ListManagerUserDto;
+  phone: string;
+  address: string;
+  /**
+   * @format date-time
+   */
+  dateOfBirth: string;
+  emergencyContact: EmergencyContactDto | null;
 };
 
 export type ListManagerResponseDto = {
@@ -247,8 +267,22 @@ export type ListCustomerUserResponseDto = {
 };
 
 export type ListGeneralDto = {
+  /**
+   * @format date-time
+   */
+  startDate?: string;
+  gender: "Male" | "Female" | "Not disclosed";
+  employmentStatus: "Full-time" | "Part-time" | "Casual" | "Contract";
+  yearOfExperience?: number | null;
   id: string;
   user: ListManagerUserDto;
+  phone: string;
+  address: string;
+  /**
+   * @format date-time
+   */
+  dateOfBirth: string;
+  emergencyContact: EmergencyContactDto | null;
 };
 
 export type ListCleanerResponseDto = {
@@ -257,9 +291,29 @@ export type ListCleanerResponseDto = {
   pagination: PaginationResponseDto;
 };
 
+export type GetGeneralDto = {
+  /**
+   * @format date-time
+   */
+  startDate?: string;
+  gender: "Male" | "Female" | "Not disclosed";
+  employmentStatus: "Full-time" | "Part-time" | "Casual" | "Contract";
+  yearOfExperience?: number | null;
+  id: string;
+  user: ListManagerUserDto;
+  phone: string;
+  address: string;
+  /**
+   * @format date-time
+   */
+  dateOfBirth: string;
+  attachments: AssetDto[];
+  emergencyContact: EmergencyContactDto | null;
+};
+
 export type GetCleanerResponseDto = {
   message: string;
-  data: ListGeneralDto;
+  data: GetGeneralDto;
 };
 
 export type ListManagerAssignedCustomersDto = {
@@ -273,15 +327,34 @@ export type ListManagerAssignedCustomersResponseDto = {
   pagination: PaginationResponseDto;
 };
 
-export type GetManagerResponseDto = {
+export type GetCustomerUserResponseDto = {
   message: string;
-  data: ListManagerDto;
+  data: ListCustomerUserDto;
 };
 
-export type EmergencyContactDto = {
-  name: string;
-  contact: string;
-  relationship: string;
+export type GetManagerDto = {
+  /**
+   * @format date-time
+   */
+  startDate?: string;
+  gender: "Male" | "Female" | "Not disclosed";
+  employmentStatus: "Full-time" | "Part-time" | "Casual" | "Contract";
+  yearOfExperience?: number | null;
+  id: string;
+  user: ListManagerUserDto;
+  phone: string;
+  address: string;
+  /**
+   * @format date-time
+   */
+  dateOfBirth: string;
+  emergencyContact: EmergencyContactDto | null;
+  attachments: AssetDto[];
+};
+
+export type GetManagerResponseDto = {
+  message: string;
+  data: GetManagerDto;
 };
 
 export type CreateManagerDto = {
@@ -297,6 +370,7 @@ export type CreateManagerDto = {
    * @format binary
    */
   photo?: Blob;
+  attachments?: Blob[];
   fullName: string;
   email: string;
   phone: string;
@@ -305,7 +379,7 @@ export type CreateManagerDto = {
    * @format date-time
    */
   dateOfBirth: string;
-  emergencyContact: EmergencyContactDto;
+  emergencyContact?: EmergencyContactDto;
 };
 
 export type AssignCustomerToManagerRequestDto = {
@@ -345,6 +419,7 @@ export type CreateCleanerDto = {
    * @format binary
    */
   photo?: Blob;
+  attachments?: Blob[];
   email: string;
   fullName: string;
   phone: string;
@@ -646,14 +721,7 @@ export type AdminGetJobSummaryResponseDto = {
 export type UpdateChecklistSowRequestDto = {
   status?: "Pending" | "Ongoing" | "Completed" | "Cancelled";
   remarks?: string;
-  /**
-   * @format binary
-   */
-  attachments?: Blob;
-  /**
-   * @format uuid
-   */
-  id: string;
+  attachments?: Blob[];
 };
 
 export type GetJobChecklistDto = {
@@ -806,7 +874,7 @@ export type AdminGetIncidentSiteDto = {
 export type AdminGetIncidentDto = {
   type: "Issue" | "Request" | "Seeking Information";
   priority: "Low" | "Medium" | "High";
-  status: "Open" | "Resolved" | "Closed" | "Rejected";
+  status: "Open" | "In Progress" | "Resolved" | "Closed" | "Rejected";
   /**
    * @format uuid
    */
@@ -834,7 +902,7 @@ export type GetIncidentResponseDto = {
 
 export type AdminUpdateIncidentRequestDto = {
   title?: string;
-  status?: "Open" | "Resolved" | "Closed" | "Rejected";
+  status?: "Open" | "In Progress" | "Resolved" | "Closed" | "Rejected";
   type?: "Issue" | "Request" | "Seeking Information";
   priority?: "Low" | "Medium" | "High";
   description?: string | null;
@@ -929,7 +997,7 @@ export type ManagerGetIncidentSiteDto = {
 export type ManagerGetIncidentDto = {
   type: "Issue" | "Request" | "Seeking Information";
   priority: "Low" | "Medium" | "High";
-  status: "Open" | "Resolved" | "Closed" | "Rejected";
+  status: "Open" | "In Progress" | "Resolved" | "Closed" | "Rejected";
   /**
    * @format uuid
    */
@@ -989,7 +1057,7 @@ export type StaffGetIncidentSiteDto = {
 export type StaffGetIncidentDto = {
   type: "Issue" | "Request" | "Seeking Information";
   priority: "Low" | "Medium" | "High";
-  status: "Open" | "Resolved" | "Closed" | "Rejected";
+  status: "Open" | "In Progress" | "Resolved" | "Closed" | "Rejected";
   /**
    * @format uuid
    */

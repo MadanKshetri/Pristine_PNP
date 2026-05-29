@@ -4,7 +4,12 @@ import {
 } from "@/fetchers/queriesSchemas";
 import { AlertButton, AppAlertDialog, Card } from "@/src/components/ui";
 import { Ionicons } from "@expo/vector-icons";
-import * as ImagePicker from "expo-image-picker";
+import {
+  launchCameraAsync,
+  launchImageLibraryAsync,
+  requestCameraPermissionsAsync,
+  requestMediaLibraryPermissionsAsync,
+} from "expo-image-picker";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
@@ -16,6 +21,8 @@ import {
 } from "react-native";
 import { useJobActions } from "../hooks";
 import type { JobChecklist } from "../types";
+import { useStaffJobControllerUpdateChecklistSow } from "@/fetchers/queriesComponents";
+import { parseToFormData } from "@/src/utils/form.util";
 
 interface ChecklistItemProps {
   checklist: JobChecklist;
@@ -33,6 +40,7 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
   isReadOnly = false,
 }) => {
   const { updateChecklist, isUpdatingChecklist } = useJobActions();
+  const { mutate: updateCheckList } = useStaffJobControllerUpdateChecklistSow();
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [alertConfig, setAlertConfig] = useState<{
     isOpen: boolean;
@@ -49,7 +57,7 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
   const showAlert = (
     title: string,
     description: string,
-    renderFooter?: (onClose: () => void) => React.ReactNode
+    renderFooter?: (onClose: () => void) => React.ReactNode,
   ) => {
     setAlertConfig({
       isOpen: true,
@@ -95,27 +103,26 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
       showAlert(
         "Job Not Started",
         "Please start the job before uploading photos.",
-        (onClose) => <AlertButton onPress={onClose}>OK</AlertButton>
+        (onClose) => <AlertButton onPress={onClose}>OK</AlertButton>,
       );
       return;
     }
 
     closeAlert();
 
-    const permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const permissionResult = await requestMediaLibraryPermissionsAsync();
 
     if (!permissionResult.granted) {
       showAlert(
         "Permission Required",
         "Camera roll permission is needed to upload photos.",
-        (onClose) => <AlertButton onPress={onClose}>OK</AlertButton>
+        (onClose) => <AlertButton onPress={onClose}>OK</AlertButton>,
       );
       return;
     }
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    const result = await launchImageLibraryAsync({
+      mediaTypes: "images",
       allowsMultipleSelection: false,
       quality: 0.8,
     });
@@ -124,14 +131,26 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
       const asset = result.assets[0];
       setSelectedImages([...selectedImages, asset.uri]);
       try {
-        const res = await updateChecklist(checklist.id, checklist.status, {
-          uri: asset.uri,
-          name: (asset as any).fileName || "photo.jpg",
-          type: (asset as any).mimeType || "image/jpeg",
-        });
-        if (res.success) {
-          onUpdate();
-        }
+        updateCheckList(
+          {
+            pathParams: { id: checklist.id },
+            body: parseToFormData(
+              {
+                attachments: {
+                  uri: asset.uri,
+                  name: (asset as any).fileName || "photo.jpg",
+                  type: (asset as any).mimeType || "image/jpeg",
+                } as any,
+              },
+              ["attachments"],
+            ),
+          },
+          {
+            onSuccess: () => {
+              onUpdate();
+            },
+          },
+        );
       } catch (error) {
         console.error("Error uploading image:", error);
         showAlert("Error", "Failed to upload image", (onClose) => (
@@ -148,25 +167,25 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
       showAlert(
         "Job Not Started",
         "Please start the job before taking photos.",
-        (onClose) => <AlertButton onPress={onClose}>OK</AlertButton>
+        (onClose) => <AlertButton onPress={onClose}>OK</AlertButton>,
       );
       return;
     }
 
     closeAlert();
 
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    const permissionResult = await requestCameraPermissionsAsync();
 
     if (!permissionResult.granted) {
       showAlert(
         "Permission Required",
         "Camera permission is needed to take photos.",
-        (onClose) => <AlertButton onPress={onClose}>OK</AlertButton>
+        (onClose) => <AlertButton onPress={onClose}>OK</AlertButton>,
       );
       return;
     }
 
-    const result = await ImagePicker.launchCameraAsync({
+    const result = await launchCameraAsync({
       allowsEditing: true,
       quality: 0.8,
     });
@@ -175,14 +194,26 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
       const asset = result.assets[0];
       setSelectedImages([...selectedImages, asset.uri]);
       try {
-        const res = await updateChecklist(checklist.id, checklist.status, {
-          uri: asset.uri,
-          name: (asset as any).fileName || "photo.jpg",
-          type: (asset as any).mimeType || "image/jpeg",
-        });
-        if (res.success) {
-          onUpdate();
-        }
+        updateCheckList(
+          {
+            pathParams: { id: checklist.id },
+            body: parseToFormData(
+              {
+                attachments: {
+                  uri: asset.uri,
+                  name: (asset as any).fileName || "photo.jpg",
+                  type: (asset as any).mimeType || "image/jpeg",
+                } as any,
+              },
+              ["attachments"],
+            ),
+          },
+          {
+            onSuccess: () => {
+              onUpdate();
+            },
+          },
+        );
       } catch (error) {
         console.error("Error uploading photo:", error);
         showAlert("Error", "Failed to upload photo", (onClose) => (
@@ -195,7 +226,7 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
   };
 
   const handleChangeStatus = async (
-    newStatus: UpdateChecklistSowRequestDto["status"]
+    newStatus: UpdateChecklistSowRequestDto["status"],
   ) => {
     if (jobStatus === "Scheduled" && newStatus !== "Pending") {
       showAlert("Job Not Started", "Please start the job first.", (onClose) => (
@@ -274,7 +305,7 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
             Cancel
           </AlertButton>
         </>
-      )
+      ),
     );
   };
 
@@ -375,7 +406,7 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
                 <TouchableOpacity
                   onPress={() =>
                     setSelectedImages(
-                      selectedImages.filter((_, i) => i !== idx)
+                      selectedImages.filter((_, i) => i !== idx),
                     )
                   }
                   style={styles.removeBtn}
