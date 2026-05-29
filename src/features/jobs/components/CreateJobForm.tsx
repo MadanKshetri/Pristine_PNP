@@ -10,7 +10,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -64,6 +64,7 @@ export const CreateJobForm: React.FC = () => {
             siteId: data.siteId,
             customerId: data.customerId,
             description: data.description,
+            assignedCleanerId: data.assignedCleanerId,
             title: data.title,
             startAt: date.toISOString(),
             checklists: [],
