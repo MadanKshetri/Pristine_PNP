@@ -24,7 +24,6 @@ const getStatusStyle = (status: Job["status"]) => {
 
 export const JobListCard: React.FC<JobListCardProps> = ({ job, onPress }) => {
   const jobDate = job.startAt ? new Date(job.startAt) : new Date(job.createdAt);
-  const endTime = new Date(jobDate.getTime() + 8 * 60 * 60 * 1000);
   const statusStyle = getStatusStyle(job.status);
 
   return (
@@ -67,7 +66,7 @@ export const JobListCard: React.FC<JobListCardProps> = ({ job, onPress }) => {
             Time
           </Text>
           <Text className="text-[13px] text-slate-700 font-medium">
-            {`${format(jobDate, "h:mm a")} - ${format(endTime, "h:mm a")}`}
+            {`${format(jobDate, "h:mm a")}`}
           </Text>
         </View>
 

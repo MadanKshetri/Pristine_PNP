@@ -79,7 +79,7 @@ export default function ManagerHomeTab() {
           <View style={styles.heroActions}>
             <TouchableOpacity
               style={styles.heroPrimary}
-              onPress={() => router.push("/(app)/(manager-tabs)/jobs" as never)}
+              onPress={() => router.push("/(app)/(manager-tabs)/jobs")}
               activeOpacity={0.9}
             >
               <Ionicons name="briefcase" size={18} color="#3B82F6" />
@@ -87,7 +87,7 @@ export default function ManagerHomeTab() {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.heroSecondary}
-              onPress={() => router.push("/jobs/create" as never)}
+              onPress={() => router.push("/jobs/create")}
               activeOpacity={0.9}
             >
               <Ionicons name="add" size={18} color="#ffffff" />
@@ -100,7 +100,7 @@ export default function ManagerHomeTab() {
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Recent jobs</Text>
         <TouchableOpacity
-          onPress={() => router.push("/(app)/(manager-tabs)/jobs" as never)}
+          onPress={() => router.push("/(app)/(manager-tabs)/jobs")}
         >
           <Text style={styles.sectionAction}>View all</Text>
         </TouchableOpacity>
@@ -124,7 +124,7 @@ export default function ManagerHomeTab() {
             <TouchableOpacity
               key={job.id}
               style={styles.jobCard}
-              onPress={() => router.push(`/job/${job.id}` as never)}
+              onPress={() => router.push(`/job/${job.id}`)}
               activeOpacity={0.9}
             >
               <View style={styles.jobHeaderRow}>
@@ -150,7 +150,7 @@ export default function ManagerHomeTab() {
       <View style={styles.quickGrid}>
         <TouchableOpacity
           style={styles.quickCard}
-          onPress={() => router.push("/(app)/(manager-tabs)/sites" as never)}
+          onPress={() => router.push("/(app)/(manager-tabs)/sites")}
         >
           <Ionicons name="location-outline" size={20} color="#3B82F6" />
           <Text style={styles.quickTitle}>Sites</Text>
@@ -158,9 +158,7 @@ export default function ManagerHomeTab() {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.quickCard}
-          onPress={() =>
-            router.push("/(app)/(manager-tabs)/customers" as never)
-          }
+          onPress={() => router.push("/(app)/(manager-tabs)/customers")}
         >
           <Ionicons name="people-outline" size={20} color="#3B82F6" />
           <Text style={styles.quickTitle}>Customers</Text>

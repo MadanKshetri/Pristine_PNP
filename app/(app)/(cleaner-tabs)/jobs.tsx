@@ -2,6 +2,7 @@ import { FilterBar } from "@/components/ui/filter/filter-bar";
 import { Tabs } from "@/components/ui/tab-link";
 import { fetchStaffControllerGetSites } from "@/fetchers/queriesComponents";
 import { ScreenHeader } from "@/src/components/ui";
+import { StaffIncidentListView } from "@/src/features/incidents/components/StaffIncidentListView";
 import { JobsCalendarView } from "@/src/features/jobs/components/JobsCalendarView";
 import { JobsListView } from "@/src/features/jobs/components/JobsListView";
 import { useActivityFilters } from "@/src/hooks/useActivityFilters";
@@ -15,14 +16,14 @@ import { StyleSheet, Text, View } from "react-native";
 export default function JobsScreen() {
   const user = useAuthStore((state) => state.user);
 
-  const { tab } = useLocalSearchParams<{ tab?: "calendar" | "list" }>();
+  const { tab } = useLocalSearchParams<{ tab?: "calendar" | "list" | "incidents" }>();
 
   const { filters, setFilter, resetAll, activeCount } = useActivityFilters();
 
   const [showFilters, setShowFilters] = useState(activeCount > 0);
 
-  const [activeTab, setActiveTab] = useState<"calendar" | "list">(
-    tab === "list" ? "list" : "calendar",
+  const [activeTab, setActiveTab] = useState<"calendar" | "list" | "incidents">(
+    tab === "list" ? "list" : tab === "incidents" ? "incidents" : "calendar",
   );
   const tabs = useMemo(
     () => [
@@ -33,8 +34,13 @@ export default function JobsScreen() {
       },
       {
         key: "list",
-        title: "List",
+        title: "Jobs",
         render: () => <JobsListView />,
+      },
+      {
+        key: "incidents",
+        title: "Incidents",
+        render: () => <StaffIncidentListView />,
       },
     ],
     [],
@@ -91,7 +97,7 @@ export default function JobsScreen() {
       <Tabs
         tabs={tabs}
         activeKey={activeTab}
-        onChange={(key) => setActiveTab(key as "calendar" | "list")}
+        onChange={(key) => setActiveTab(key as "calendar" | "list" | "incidents")}
       />
     </View>
   );

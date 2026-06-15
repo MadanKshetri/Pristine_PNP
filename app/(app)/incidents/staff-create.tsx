@@ -79,6 +79,34 @@ export default function StaffCreateIncidentScreen() {
 
         <ScrollView className="px-6 py-6" showsVerticalScrollIndicator={false}>
           <FormInput
+            name="type"
+            control={form.control}
+            label="Type"
+            render={({ field }) => {
+              return (
+                <StaticSelect
+                  placeholder="Select type"
+                  withSearch={false}
+                  className={{
+                    trigger: INPUT_CLASSNAME,
+                    triggerActive: "bg-white border-gray-300",
+                  }}
+                  options={[
+                    { label: "Issue", value: "Issue" },
+                    { label: "Request", value: "Request" },
+                    {
+                      label: "Seeking Information",
+                      value: "Seeking Information",
+                    },
+                  ]}
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              );
+            }}
+          />
+
+          <FormInput
             control={form.control}
             required
             name="title"
@@ -134,34 +162,6 @@ export default function StaffCreateIncidentScreen() {
                     { label: "Low", value: "Low" },
                     { label: "Medium", value: "Medium" },
                     { label: "High", value: "High" },
-                  ]}
-                  value={field.value}
-                  onChange={field.onChange}
-                />
-              );
-            }}
-          />
-
-          <FormInput
-            name="type"
-            control={form.control}
-            label="Type"
-            render={({ field }) => {
-              return (
-                <StaticSelect
-                  placeholder="Select type"
-                  withSearch={false}
-                  className={{
-                    trigger: INPUT_CLASSNAME,
-                    triggerActive: "bg-white border-gray-300",
-                  }}
-                  options={[
-                    { label: "Issue", value: "Issue" },
-                    { label: "Request", value: "Request" },
-                    {
-                      label: "Seeking Information",
-                      value: "Seeking Information",
-                    },
                   ]}
                   value={field.value}
                   onChange={field.onChange}

@@ -5,6 +5,7 @@ import {
   fetchAdminSiteControllerSites,
 } from "@/fetchers/queriesComponents";
 import { ScreenHeader } from "@/src/components/ui";
+import { ManagerIncidentListView } from "@/src/features/incidents/components/ManagerIncidentListView";
 import { JobsCalendarView } from "@/src/features/jobs/components/JobsCalendarView";
 import { JobsListView } from "@/src/features/jobs/components/JobsListView";
 import { useActivityFilters } from "@/src/hooks/useActivityFilters";
@@ -19,11 +20,11 @@ export default function ManagerJobsTab() {
   const user = useAuthStore((state) => state.user);
   const { filters, setFilter, resetAll, activeCount } = useActivityFilters();
 
-  const { tab } = useLocalSearchParams<{ tab?: "calendar" | "list" }>();
+  const { tab } = useLocalSearchParams<{ tab?: "calendar" | "list" | "incidents" }>();
   const [showFilters, setShowFilters] = useState(activeCount > 0);
 
-  const [activeTab, setActiveTab] = useState<"calendar" | "list">(
-    tab === "list" ? "list" : "calendar",
+  const [activeTab, setActiveTab] = useState<"calendar" | "list" | "incidents">(
+    tab === "list" ? "list" : tab === "incidents" ? "incidents" : "calendar",
   );
   const tabs = useMemo(
     () => [
@@ -34,8 +35,13 @@ export default function ManagerJobsTab() {
       },
       {
         key: "list",
-        title: "List",
+        title: "Jobs",
         render: () => <JobsListView />,
+      },
+      {
+        key: "incidents",
+        title: "Incidents",
+        render: () => <ManagerIncidentListView />,
       },
     ],
     [],
@@ -107,7 +113,7 @@ export default function ManagerJobsTab() {
       <Tabs
         tabs={tabs}
         activeKey={activeTab}
-        onChange={(key) => setActiveTab(key as "calendar" | "list")}
+        onChange={(key) => setActiveTab(key as "calendar" | "list" | "incidents")}
       />
     </View>
   );
