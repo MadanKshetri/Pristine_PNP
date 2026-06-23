@@ -19,6 +19,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { SiteLoginStatusButton } from "./SiteLoginStatusButton";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export const HomeScreen = ({
   summary,
@@ -38,6 +40,7 @@ export const HomeScreen = ({
   refreshing?: boolean;
 }) => {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   const handleJobPress = (jobId: string) => {
     router.push(`/job/${jobId}`);
@@ -95,7 +98,7 @@ export const HomeScreen = ({
         />
       }
     >
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
         <View style={styles.headerContent}>
           <View>
             <Text style={styles.headerSubtitle}>Welcome back,</Text>
@@ -103,11 +106,7 @@ export const HomeScreen = ({
               {user?.fullName?.split(" ")[0] || "User"}
             </Text>
           </View>
-          <View style={styles.profileButton}>
-            <Text style={styles.profileInitials}>
-              {(user?.fullName?.[0] || user?.email?.[0] || "U").toUpperCase()}
-            </Text>
-          </View>
+          <SiteLoginStatusButton />
         </View>
       </View>
 
@@ -244,7 +243,6 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === "android" ? 20 : 40,
     paddingBottom: 20,
     backgroundColor: "#ffffff",
     borderBottomWidth: 1,
@@ -266,21 +264,6 @@ const styles = StyleSheet.create({
     color: "#64748b",
     fontWeight: "500",
     marginBottom: 4,
-  },
-  profileButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#eff6ff",
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "#dbeafe",
-  },
-  profileInitials: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#3b82f6",
   },
   analyticsContainer: {
     flexDirection: "row",

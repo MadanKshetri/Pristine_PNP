@@ -1245,6 +1245,157 @@ export const useAdminDashboardControllerGetCountSummary = <
   });
 };
 
+export type AdminAttendanceControllerAttendancesQueryParams = {
+  /**
+   * @minimum 0
+   */
+  take?: number;
+  /**
+   * @minimum 0
+   */
+  page?: number;
+  /**
+   * @format uuid
+   */
+  siteId?: string;
+  /**
+   * @format uuid
+   */
+  cleanerId?: string;
+  isOnline?: boolean;
+};
+
+export type AdminAttendanceControllerAttendancesError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AdminAttendanceControllerAttendancesVariables = {
+  queryParams?: AdminAttendanceControllerAttendancesQueryParams;
+} & QueriesContext["fetcherOptions"];
+
+/**
+ * Required Permission: manager or admin
+ */
+export const fetchAdminAttendanceControllerAttendances = (
+  variables: AdminAttendanceControllerAttendancesVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.ListAdminStaffAttendanceResponseDto,
+    AdminAttendanceControllerAttendancesError,
+    undefined,
+    {},
+    AdminAttendanceControllerAttendancesQueryParams,
+    {}
+  >({ url: "/admin/attendance", method: "get", ...variables, signal });
+
+/**
+ * Required Permission: manager or admin
+ */
+export function adminAttendanceControllerAttendancesQuery(
+  variables: AdminAttendanceControllerAttendancesVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (
+    options: QueryFnOptions,
+  ) => Promise<Schemas.ListAdminStaffAttendanceResponseDto>;
+};
+
+export function adminAttendanceControllerAttendancesQuery(
+  variables:
+    | AdminAttendanceControllerAttendancesVariables
+    | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((
+        options: QueryFnOptions,
+      ) => Promise<Schemas.ListAdminStaffAttendanceResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function adminAttendanceControllerAttendancesQuery(
+  variables:
+    | AdminAttendanceControllerAttendancesVariables
+    | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/admin/attendance",
+      operationId: "adminAttendanceControllerAttendances",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchAdminAttendanceControllerAttendances(variables, signal),
+  };
+}
+
+/**
+ * Required Permission: manager or admin
+ */
+export const useSuspenseAdminAttendanceControllerAttendances = <
+  TData = Schemas.ListAdminStaffAttendanceResponseDto,
+>(
+  variables: AdminAttendanceControllerAttendancesVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListAdminStaffAttendanceResponseDto,
+      AdminAttendanceControllerAttendancesError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.ListAdminStaffAttendanceResponseDto,
+    AdminAttendanceControllerAttendancesError,
+    TData
+  >({
+    ...adminAttendanceControllerAttendancesQuery(
+      deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+/**
+ * Required Permission: manager or admin
+ */
+export const useAdminAttendanceControllerAttendances = <
+  TData = Schemas.ListAdminStaffAttendanceResponseDto,
+>(
+  variables:
+    | AdminAttendanceControllerAttendancesVariables
+    | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListAdminStaffAttendanceResponseDto,
+      AdminAttendanceControllerAttendancesError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.ListAdminStaffAttendanceResponseDto,
+    AdminAttendanceControllerAttendancesError,
+    TData
+  >({
+    ...adminAttendanceControllerAttendancesQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
 export type AdminUserControllerGetManagersQueryParams = {
   /**
    * @minimum 0
@@ -3885,6 +4036,312 @@ export const useAdminSiteControllerSiteCleaners = <
   });
 };
 
+export type AdminSiteControllerSiteManagersPathParams = {
+  /**
+   * @format uuid
+   */
+  siteId: string;
+};
+
+export type AdminSiteControllerSiteManagersQueryParams = {
+  /**
+   * @minimum 0
+   */
+  take?: number;
+  /**
+   * @minimum 0
+   */
+  page?: number;
+  search?: string;
+};
+
+export type AdminSiteControllerSiteManagersError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AdminSiteControllerSiteManagersVariables = {
+  pathParams: AdminSiteControllerSiteManagersPathParams;
+  queryParams?: AdminSiteControllerSiteManagersQueryParams;
+} & QueriesContext["fetcherOptions"];
+
+/**
+ * Required Permission: admin
+ */
+export const fetchAdminSiteControllerSiteManagers = (
+  variables: AdminSiteControllerSiteManagersVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.ListSiteManagersResponseDto,
+    AdminSiteControllerSiteManagersError,
+    undefined,
+    {},
+    AdminSiteControllerSiteManagersQueryParams,
+    AdminSiteControllerSiteManagersPathParams
+  >({
+    url: "/admin/site/managers/{siteId}",
+    method: "get",
+    ...variables,
+    signal,
+  });
+
+/**
+ * Required Permission: admin
+ */
+export function adminSiteControllerSiteManagersQuery(
+  variables: AdminSiteControllerSiteManagersVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (
+    options: QueryFnOptions,
+  ) => Promise<Schemas.ListSiteManagersResponseDto>;
+};
+
+export function adminSiteControllerSiteManagersQuery(
+  variables: AdminSiteControllerSiteManagersVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((
+        options: QueryFnOptions,
+      ) => Promise<Schemas.ListSiteManagersResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function adminSiteControllerSiteManagersQuery(
+  variables: AdminSiteControllerSiteManagersVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/admin/site/managers/{siteId}",
+      operationId: "adminSiteControllerSiteManagers",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchAdminSiteControllerSiteManagers(variables, signal),
+  };
+}
+
+/**
+ * Required Permission: admin
+ */
+export const useSuspenseAdminSiteControllerSiteManagers = <
+  TData = Schemas.ListSiteManagersResponseDto,
+>(
+  variables: AdminSiteControllerSiteManagersVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListSiteManagersResponseDto,
+      AdminSiteControllerSiteManagersError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.ListSiteManagersResponseDto,
+    AdminSiteControllerSiteManagersError,
+    TData
+  >({
+    ...adminSiteControllerSiteManagersQuery(
+      deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+/**
+ * Required Permission: admin
+ */
+export const useAdminSiteControllerSiteManagers = <
+  TData = Schemas.ListSiteManagersResponseDto,
+>(
+  variables: AdminSiteControllerSiteManagersVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListSiteManagersResponseDto,
+      AdminSiteControllerSiteManagersError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.ListSiteManagersResponseDto,
+    AdminSiteControllerSiteManagersError,
+    TData
+  >({
+    ...adminSiteControllerSiteManagersQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type AdminSiteControllerSiteCustomerUsersPathParams = {
+  /**
+   * @format uuid
+   */
+  siteId: string;
+};
+
+export type AdminSiteControllerSiteCustomerUsersQueryParams = {
+  /**
+   * @minimum 0
+   */
+  take?: number;
+  /**
+   * @minimum 0
+   */
+  page?: number;
+  search?: string;
+};
+
+export type AdminSiteControllerSiteCustomerUsersError =
+  Fetcher.ErrorWrapper<undefined>;
+
+export type AdminSiteControllerSiteCustomerUsersVariables = {
+  pathParams: AdminSiteControllerSiteCustomerUsersPathParams;
+  queryParams?: AdminSiteControllerSiteCustomerUsersQueryParams;
+} & QueriesContext["fetcherOptions"];
+
+/**
+ * Required Permission: admin or manager
+ */
+export const fetchAdminSiteControllerSiteCustomerUsers = (
+  variables: AdminSiteControllerSiteCustomerUsersVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.ListSiteExternalManagersResponseDto,
+    AdminSiteControllerSiteCustomerUsersError,
+    undefined,
+    {},
+    AdminSiteControllerSiteCustomerUsersQueryParams,
+    AdminSiteControllerSiteCustomerUsersPathParams
+  >({
+    url: "/admin/site/customerUsers/{siteId}",
+    method: "get",
+    ...variables,
+    signal,
+  });
+
+/**
+ * Required Permission: admin or manager
+ */
+export function adminSiteControllerSiteCustomerUsersQuery(
+  variables: AdminSiteControllerSiteCustomerUsersVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (
+    options: QueryFnOptions,
+  ) => Promise<Schemas.ListSiteExternalManagersResponseDto>;
+};
+
+export function adminSiteControllerSiteCustomerUsersQuery(
+  variables:
+    | AdminSiteControllerSiteCustomerUsersVariables
+    | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((
+        options: QueryFnOptions,
+      ) => Promise<Schemas.ListSiteExternalManagersResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function adminSiteControllerSiteCustomerUsersQuery(
+  variables:
+    | AdminSiteControllerSiteCustomerUsersVariables
+    | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/admin/site/customerUsers/{siteId}",
+      operationId: "adminSiteControllerSiteCustomerUsers",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchAdminSiteControllerSiteCustomerUsers(variables, signal),
+  };
+}
+
+/**
+ * Required Permission: admin or manager
+ */
+export const useSuspenseAdminSiteControllerSiteCustomerUsers = <
+  TData = Schemas.ListSiteExternalManagersResponseDto,
+>(
+  variables: AdminSiteControllerSiteCustomerUsersVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListSiteExternalManagersResponseDto,
+      AdminSiteControllerSiteCustomerUsersError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.ListSiteExternalManagersResponseDto,
+    AdminSiteControllerSiteCustomerUsersError,
+    TData
+  >({
+    ...adminSiteControllerSiteCustomerUsersQuery(
+      deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+/**
+ * Required Permission: admin or manager
+ */
+export const useAdminSiteControllerSiteCustomerUsers = <
+  TData = Schemas.ListSiteExternalManagersResponseDto,
+>(
+  variables:
+    | AdminSiteControllerSiteCustomerUsersVariables
+    | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ListSiteExternalManagersResponseDto,
+      AdminSiteControllerSiteCustomerUsersError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.ListSiteExternalManagersResponseDto,
+    AdminSiteControllerSiteCustomerUsersError,
+    TData
+  >({
+    ...adminSiteControllerSiteCustomerUsersQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
 export type AdminSiteControllerSitePathParams = {
   /**
    * @format uuid
@@ -4549,7 +5006,7 @@ export type AdminJobControllerUpdateChecklistSowError =
   Fetcher.ErrorWrapper<undefined>;
 
 export type AdminJobControllerUpdateChecklistSowVariables = {
-  body: Schemas.UpdateChecklistSowRequestDto;
+  body?: Schemas.UpdateChecklistSowRequestDto;
   pathParams: AdminJobControllerUpdateChecklistSowPathParams;
 } & QueriesContext["fetcherOptions"];
 
@@ -5475,7 +5932,7 @@ export type AdminIncidentConrollerIncidentVariables = {
 } & QueriesContext["fetcherOptions"];
 
 /**
- * Required Permission: admin
+ * Required Permission: admin or manager
  */
 export const fetchAdminIncidentConrollerIncident = (
   variables: AdminIncidentConrollerIncidentVariables,
@@ -5491,7 +5948,7 @@ export const fetchAdminIncidentConrollerIncident = (
   >({ url: "/admin/incident/{id}", method: "get", ...variables, signal });
 
 /**
- * Required Permission: admin
+ * Required Permission: admin or manager
  */
 export function adminIncidentConrollerIncidentQuery(
   variables: AdminIncidentConrollerIncidentVariables,
@@ -5527,7 +5984,7 @@ export function adminIncidentConrollerIncidentQuery(
 }
 
 /**
- * Required Permission: admin
+ * Required Permission: admin or manager
  */
 export const useSuspenseAdminIncidentConrollerIncident = <
   TData = Schemas.GetIncidentResponseDto,
@@ -5557,7 +6014,7 @@ export const useSuspenseAdminIncidentConrollerIncident = <
 };
 
 /**
- * Required Permission: admin
+ * Required Permission: admin or manager
  */
 export const useAdminIncidentConrollerIncident = <
   TData = Schemas.GetIncidentResponseDto,
@@ -5632,7 +6089,7 @@ export type AdminIncidentConrollerUpdateIncidentVariables = {
 } & QueriesContext["fetcherOptions"];
 
 /**
- * Required Permission: admin
+ * Required Permission: admin or manager
  */
 export const fetchAdminIncidentConrollerUpdateIncident = (
   variables: AdminIncidentConrollerUpdateIncidentVariables,
@@ -5648,7 +6105,7 @@ export const fetchAdminIncidentConrollerUpdateIncident = (
   >({ url: "/admin/incident/{id}", method: "patch", ...variables, signal });
 
 /**
- * Required Permission: admin
+ * Required Permission: admin or manager
  */
 export const useAdminIncidentConrollerUpdateIncident = (
   options?: Omit<
@@ -6413,7 +6870,7 @@ export const useManagerControllerGetSummary = <
   });
 };
 
-export type ManagerControllerGetSiteSummaryQueryParams = {
+export type ManagerControllerGetSitesQueryParams = {
   /**
    * @minimum 0
    */
@@ -6425,7 +6882,7 @@ export type ManagerControllerGetSiteSummaryQueryParams = {
   search?: string;
 };
 
-export type ManagerControllerGetSiteSummaryError = Fetcher.ErrorWrapper<{
+export type ManagerControllerGetSitesError = Fetcher.ErrorWrapper<{
   status: 401;
   payload: {
     /**
@@ -6440,31 +6897,31 @@ export type ManagerControllerGetSiteSummaryError = Fetcher.ErrorWrapper<{
   };
 }>;
 
-export type ManagerControllerGetSiteSummaryVariables = {
-  queryParams?: ManagerControllerGetSiteSummaryQueryParams;
+export type ManagerControllerGetSitesVariables = {
+  queryParams?: ManagerControllerGetSitesQueryParams;
 } & QueriesContext["fetcherOptions"];
 
 /**
  * Required Permission: customer
  */
-export const fetchManagerControllerGetSiteSummary = (
-  variables: ManagerControllerGetSiteSummaryVariables,
+export const fetchManagerControllerGetSites = (
+  variables: ManagerControllerGetSitesVariables,
   signal?: AbortSignal,
 ) =>
   queriesFetch<
     Schemas.ManagerListSiteResponseDto,
-    ManagerControllerGetSiteSummaryError,
+    ManagerControllerGetSitesError,
     undefined,
     {},
-    ManagerControllerGetSiteSummaryQueryParams,
+    ManagerControllerGetSitesQueryParams,
     {}
   >({ url: "/manager/site", method: "get", ...variables, signal });
 
 /**
  * Required Permission: customer
  */
-export function managerControllerGetSiteSummaryQuery(
-  variables: ManagerControllerGetSiteSummaryVariables,
+export function managerControllerGetSitesQuery(
+  variables: ManagerControllerGetSitesVariables,
 ): {
   queryKey: reactQuery.QueryKey;
   queryFn: (
@@ -6472,8 +6929,8 @@ export function managerControllerGetSiteSummaryQuery(
   ) => Promise<Schemas.ManagerListSiteResponseDto>;
 };
 
-export function managerControllerGetSiteSummaryQuery(
-  variables: ManagerControllerGetSiteSummaryVariables | reactQuery.SkipToken,
+export function managerControllerGetSitesQuery(
+  variables: ManagerControllerGetSitesVariables | reactQuery.SkipToken,
 ): {
   queryKey: reactQuery.QueryKey;
   queryFn:
@@ -6481,34 +6938,34 @@ export function managerControllerGetSiteSummaryQuery(
     | reactQuery.SkipToken;
 };
 
-export function managerControllerGetSiteSummaryQuery(
-  variables: ManagerControllerGetSiteSummaryVariables | reactQuery.SkipToken,
+export function managerControllerGetSitesQuery(
+  variables: ManagerControllerGetSitesVariables | reactQuery.SkipToken,
 ) {
   return {
     queryKey: queryKeyFn({
       path: "/manager/site",
-      operationId: "managerControllerGetSiteSummary",
+      operationId: "managerControllerGetSites",
       variables,
     }),
     queryFn:
       variables === reactQuery.skipToken
         ? reactQuery.skipToken
         : ({ signal }: QueryFnOptions) =>
-            fetchManagerControllerGetSiteSummary(variables, signal),
+            fetchManagerControllerGetSites(variables, signal),
   };
 }
 
 /**
  * Required Permission: customer
  */
-export const useSuspenseManagerControllerGetSiteSummary = <
+export const useSuspenseManagerControllerGetSites = <
   TData = Schemas.ManagerListSiteResponseDto,
 >(
-  variables: ManagerControllerGetSiteSummaryVariables,
+  variables: ManagerControllerGetSitesVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
       Schemas.ManagerListSiteResponseDto,
-      ManagerControllerGetSiteSummaryError,
+      ManagerControllerGetSitesError,
       TData
     >,
     "queryKey" | "queryFn" | "initialData"
@@ -6517,12 +6974,10 @@ export const useSuspenseManagerControllerGetSiteSummary = <
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useSuspenseQuery<
     Schemas.ManagerListSiteResponseDto,
-    ManagerControllerGetSiteSummaryError,
+    ManagerControllerGetSitesError,
     TData
   >({
-    ...managerControllerGetSiteSummaryQuery(
-      deepMerge(fetcherOptions, variables),
-    ),
+    ...managerControllerGetSitesQuery(deepMerge(fetcherOptions, variables)),
     ...options,
     ...queryOptions,
   });
@@ -6531,14 +6986,14 @@ export const useSuspenseManagerControllerGetSiteSummary = <
 /**
  * Required Permission: customer
  */
-export const useManagerControllerGetSiteSummary = <
+export const useManagerControllerGetSites = <
   TData = Schemas.ManagerListSiteResponseDto,
 >(
-  variables: ManagerControllerGetSiteSummaryVariables | reactQuery.SkipToken,
+  variables: ManagerControllerGetSitesVariables | reactQuery.SkipToken,
   options?: Omit<
     reactQuery.UseQueryOptions<
       Schemas.ManagerListSiteResponseDto,
-      ManagerControllerGetSiteSummaryError,
+      ManagerControllerGetSitesError,
       TData
     >,
     "queryKey" | "queryFn" | "initialData"
@@ -6547,10 +7002,10 @@ export const useManagerControllerGetSiteSummary = <
   const { queryOptions, fetcherOptions } = useQueriesContext(options);
   return reactQuery.useQuery<
     Schemas.ManagerListSiteResponseDto,
-    ManagerControllerGetSiteSummaryError,
+    ManagerControllerGetSitesError,
     TData
   >({
-    ...managerControllerGetSiteSummaryQuery(
+    ...managerControllerGetSitesQuery(
       variables === reactQuery.skipToken
         ? variables
         : deepMerge(fetcherOptions, variables),
@@ -7087,6 +7542,97 @@ export const useManagerIncidentConrollerIncident = <
   });
 };
 
+export type ManagerIncidentConrollerUpdateIncidentPathParams = {
+  /**
+   * @format uuid
+   */
+  incidentId: string;
+};
+
+export type ManagerIncidentConrollerUpdateIncidentError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: {
+        /**
+         * @example 401
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 401
+         */
+        error: 401;
+      };
+    }
+  | {
+      status: 406;
+      payload: {
+        /**
+         * @example 406
+         */
+        statusCode: number;
+        message: string;
+        /**
+         * @example 406
+         */
+        error: 406;
+      };
+    }
+>;
+
+export type ManagerIncidentConrollerUpdateIncidentVariables = {
+  body?: Schemas.ManagerUpdateIncidentDto;
+  pathParams: ManagerIncidentConrollerUpdateIncidentPathParams;
+} & QueriesContext["fetcherOptions"];
+
+/**
+ * Required Permission: customer
+ */
+export const fetchManagerIncidentConrollerUpdateIncident = (
+  variables: ManagerIncidentConrollerUpdateIncidentVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.MessageResponseWithIdDataDto,
+    ManagerIncidentConrollerUpdateIncidentError,
+    Schemas.ManagerUpdateIncidentDto,
+    {},
+    {},
+    ManagerIncidentConrollerUpdateIncidentPathParams
+  >({
+    url: "/manager/incident/{indcidentId}",
+    method: "patch",
+    ...variables,
+    signal,
+  });
+
+/**
+ * Required Permission: customer
+ */
+export const useManagerIncidentConrollerUpdateIncident = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.MessageResponseWithIdDataDto,
+      ManagerIncidentConrollerUpdateIncidentError,
+      ManagerIncidentConrollerUpdateIncidentVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.MessageResponseWithIdDataDto,
+    ManagerIncidentConrollerUpdateIncidentError,
+    ManagerIncidentConrollerUpdateIncidentVariables
+  >({
+    mutationFn: (variables: ManagerIncidentConrollerUpdateIncidentVariables) =>
+      fetchManagerIncidentConrollerUpdateIncident(
+        deepMerge(fetcherOptions, variables),
+      ),
+    ...options,
+  });
+};
+
 export type StaffControllerGetSummaryError = Fetcher.ErrorWrapper<{
   status: 401;
   payload: {
@@ -7366,6 +7912,66 @@ export const useStaffControllerGetSites = <
   });
 };
 
+export type StaffControllerLogOutOfSiteError = Fetcher.ErrorWrapper<{
+  status: 401;
+  payload: {
+    /**
+     * @example 401
+     */
+    statusCode: number;
+    message: string;
+    /**
+     * @example 401
+     */
+    error: 401;
+  };
+}>;
+
+export type StaffControllerLogOutOfSiteVariables = {
+  body: Schemas.StaffSiteLogoutRequestDto;
+} & QueriesContext["fetcherOptions"];
+
+/**
+ * Required Permission: cleaner
+ */
+export const fetchStaffControllerLogOutOfSite = (
+  variables: StaffControllerLogOutOfSiteVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.MessageResponseWithIdDataDto,
+    StaffControllerLogOutOfSiteError,
+    Schemas.StaffSiteLogoutRequestDto,
+    {},
+    {},
+    {}
+  >({ url: "/staff/site", method: "post", ...variables, signal });
+
+/**
+ * Required Permission: cleaner
+ */
+export const useStaffControllerLogOutOfSite = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.MessageResponseWithIdDataDto,
+      StaffControllerLogOutOfSiteError,
+      StaffControllerLogOutOfSiteVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.MessageResponseWithIdDataDto,
+    StaffControllerLogOutOfSiteError,
+    StaffControllerLogOutOfSiteVariables
+  >({
+    mutationFn: (variables: StaffControllerLogOutOfSiteVariables) =>
+      fetchStaffControllerLogOutOfSite(deepMerge(fetcherOptions, variables)),
+    ...options,
+  });
+};
+
 export type StaffControllerGetSitePathParams = {
   /**
    * @format uuid
@@ -7503,6 +8109,200 @@ export const useStaffControllerGetSite = <
     ),
     ...options,
     ...queryOptions,
+  });
+};
+
+export type StaffControllerGetSiteLoginStatusError = Fetcher.ErrorWrapper<{
+  status: 401;
+  payload: {
+    /**
+     * @example 401
+     */
+    statusCode: number;
+    message: string;
+    /**
+     * @example 401
+     */
+    error: 401;
+  };
+}>;
+
+export type StaffControllerGetSiteLoginStatusVariables =
+  QueriesContext["fetcherOptions"];
+
+/**
+ * Required Permission: cleaner
+ */
+export const fetchStaffControllerGetSiteLoginStatus = (
+  variables: StaffControllerGetSiteLoginStatusVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.StaffSiteLoginResponseDto,
+    StaffControllerGetSiteLoginStatusError,
+    undefined,
+    {},
+    {},
+    {}
+  >({ url: "/staff/site/login/status", method: "get", ...variables, signal });
+
+/**
+ * Required Permission: cleaner
+ */
+export function staffControllerGetSiteLoginStatusQuery(
+  variables: StaffControllerGetSiteLoginStatusVariables,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn: (
+    options: QueryFnOptions,
+  ) => Promise<Schemas.StaffSiteLoginResponseDto>;
+};
+
+export function staffControllerGetSiteLoginStatusQuery(
+  variables: StaffControllerGetSiteLoginStatusVariables | reactQuery.SkipToken,
+): {
+  queryKey: reactQuery.QueryKey;
+  queryFn:
+    | ((options: QueryFnOptions) => Promise<Schemas.StaffSiteLoginResponseDto>)
+    | reactQuery.SkipToken;
+};
+
+export function staffControllerGetSiteLoginStatusQuery(
+  variables: StaffControllerGetSiteLoginStatusVariables | reactQuery.SkipToken,
+) {
+  return {
+    queryKey: queryKeyFn({
+      path: "/staff/site/login/status",
+      operationId: "staffControllerGetSiteLoginStatus",
+      variables,
+    }),
+    queryFn:
+      variables === reactQuery.skipToken
+        ? reactQuery.skipToken
+        : ({ signal }: QueryFnOptions) =>
+            fetchStaffControllerGetSiteLoginStatus(variables, signal),
+  };
+}
+
+/**
+ * Required Permission: cleaner
+ */
+export const useSuspenseStaffControllerGetSiteLoginStatus = <
+  TData = Schemas.StaffSiteLoginResponseDto,
+>(
+  variables: StaffControllerGetSiteLoginStatusVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.StaffSiteLoginResponseDto,
+      StaffControllerGetSiteLoginStatusError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useSuspenseQuery<
+    Schemas.StaffSiteLoginResponseDto,
+    StaffControllerGetSiteLoginStatusError,
+    TData
+  >({
+    ...staffControllerGetSiteLoginStatusQuery(
+      deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+/**
+ * Required Permission: cleaner
+ */
+export const useStaffControllerGetSiteLoginStatus = <
+  TData = Schemas.StaffSiteLoginResponseDto,
+>(
+  variables: StaffControllerGetSiteLoginStatusVariables | reactQuery.SkipToken,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.StaffSiteLoginResponseDto,
+      StaffControllerGetSiteLoginStatusError,
+      TData
+    >,
+    "queryKey" | "queryFn" | "initialData"
+  >,
+) => {
+  const { queryOptions, fetcherOptions } = useQueriesContext(options);
+  return reactQuery.useQuery<
+    Schemas.StaffSiteLoginResponseDto,
+    StaffControllerGetSiteLoginStatusError,
+    TData
+  >({
+    ...staffControllerGetSiteLoginStatusQuery(
+      variables === reactQuery.skipToken
+        ? variables
+        : deepMerge(fetcherOptions, variables),
+    ),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type StaffControllerLogInTOSiteError = Fetcher.ErrorWrapper<{
+  status: 401;
+  payload: {
+    /**
+     * @example 401
+     */
+    statusCode: number;
+    message: string;
+    /**
+     * @example 401
+     */
+    error: 401;
+  };
+}>;
+
+export type StaffControllerLogInTOSiteVariables = {
+  body: Schemas.StaffSiteLoginRequestDto;
+} & QueriesContext["fetcherOptions"];
+
+/**
+ * Required Permission: cleaner
+ */
+export const fetchStaffControllerLogInTOSite = (
+  variables: StaffControllerLogInTOSiteVariables,
+  signal?: AbortSignal,
+) =>
+  queriesFetch<
+    Schemas.MessageResponseWithIdDataDto,
+    StaffControllerLogInTOSiteError,
+    Schemas.StaffSiteLoginRequestDto,
+    {},
+    {},
+    {}
+  >({ url: "/staff/site/login", method: "post", ...variables, signal });
+
+/**
+ * Required Permission: cleaner
+ */
+export const useStaffControllerLogInTOSite = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.MessageResponseWithIdDataDto,
+      StaffControllerLogInTOSiteError,
+      StaffControllerLogInTOSiteVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useQueriesContext();
+  return reactQuery.useMutation<
+    Schemas.MessageResponseWithIdDataDto,
+    StaffControllerLogInTOSiteError,
+    StaffControllerLogInTOSiteVariables
+  >({
+    mutationFn: (variables: StaffControllerLogInTOSiteVariables) =>
+      fetchStaffControllerLogInTOSite(deepMerge(fetcherOptions, variables)),
+    ...options,
   });
 };
 
@@ -8117,6 +8917,10 @@ export type StaffJobControllerJobsQueryParams = {
    * @format uuid
    */
   customerId?: string;
+  /**
+   * @format uuid
+   */
+  siteId?: string;
   status?: "Scheduled" | "In Progress" | "Completed" | "Cancelled";
 };
 
@@ -8247,7 +9051,7 @@ export type StaffJobControllerUpdateChecklistSowError =
   Fetcher.ErrorWrapper<undefined>;
 
 export type StaffJobControllerUpdateChecklistSowVariables = {
-  body: Schemas.UpdateChecklistSowRequestDto;
+  body?: Schemas.UpdateChecklistSowRequestDto;
   pathParams: StaffJobControllerUpdateChecklistSowPathParams;
 } & QueriesContext["fetcherOptions"];
 
@@ -8573,6 +9377,13 @@ export type QueryOperation =
         | reactQuery.SkipToken;
     }
   | {
+      path: "/admin/attendance";
+      operationId: "adminAttendanceControllerAttendances";
+      variables:
+        | AdminAttendanceControllerAttendancesVariables
+        | reactQuery.SkipToken;
+    }
+  | {
       path: "/admin/user/managers";
       operationId: "adminUserControllerGetManagers";
       variables: AdminUserControllerGetManagersVariables | reactQuery.SkipToken;
@@ -8643,6 +9454,20 @@ export type QueryOperation =
       operationId: "adminSiteControllerSiteCleaners";
       variables:
         | AdminSiteControllerSiteCleanersVariables
+        | reactQuery.SkipToken;
+    }
+  | {
+      path: "/admin/site/managers/{siteId}";
+      operationId: "adminSiteControllerSiteManagers";
+      variables:
+        | AdminSiteControllerSiteManagersVariables
+        | reactQuery.SkipToken;
+    }
+  | {
+      path: "/admin/site/customerUsers/{siteId}";
+      operationId: "adminSiteControllerSiteCustomerUsers";
+      variables:
+        | AdminSiteControllerSiteCustomerUsersVariables
         | reactQuery.SkipToken;
     }
   | {
@@ -8717,10 +9542,8 @@ export type QueryOperation =
     }
   | {
       path: "/manager/site";
-      operationId: "managerControllerGetSiteSummary";
-      variables:
-        | ManagerControllerGetSiteSummaryVariables
-        | reactQuery.SkipToken;
+      operationId: "managerControllerGetSites";
+      variables: ManagerControllerGetSitesVariables | reactQuery.SkipToken;
     }
   | {
       path: "/manager/job-request";
@@ -8757,6 +9580,13 @@ export type QueryOperation =
       path: "/staff/site/{siteId}";
       operationId: "staffControllerGetSite";
       variables: StaffControllerGetSiteVariables | reactQuery.SkipToken;
+    }
+  | {
+      path: "/staff/site/login/status";
+      operationId: "staffControllerGetSiteLoginStatus";
+      variables:
+        | StaffControllerGetSiteLoginStatusVariables
+        | reactQuery.SkipToken;
     }
   | {
       path: "/staff/incident";

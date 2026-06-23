@@ -28,6 +28,7 @@ import { Calendar } from "react-native-calendars";
 import { z } from "zod";
 import AsyncSelect from "@/components/ui/async-select";
 import { INPUT_CLASSNAME } from "@/src/utils/constants";
+import { parseToFormData } from "@/src/utils/form.util";
 
 export const CreateJobForm: React.FC = () => {
   const router = useRouter();
@@ -57,18 +58,32 @@ export const CreateJobForm: React.FC = () => {
   const selectedSiteId = form.watch("siteId");
 
   const handleCreate = handleSubmit(async (data) => {
+    console.log(
+      parseToFormData({
+        siteId: data.siteId,
+        customerId: data.customerId,
+        description: data.description,
+        assets: [],
+        assignedCleanerId: data.assignedCleanerId,
+        title: data.title,
+        startAt: date.toISOString(),
+        checklists: [],
+      }),
+    );
+
     try {
       await createJobMutation.mutateAsync(
         {
-          body: {
+          body: parseToFormData({
             siteId: data.siteId,
             customerId: data.customerId,
             description: data.description,
+            assets: [],
             assignedCleanerId: data.assignedCleanerId,
             title: data.title,
             startAt: date.toISOString(),
             checklists: [],
-          },
+          }),
         },
         {
           onSuccess: () => {
@@ -81,7 +96,13 @@ export const CreateJobForm: React.FC = () => {
         { text: "OK", onPress: () => router.back() },
       ]);
     } catch (error: any) {
-      Alert.alert("Error", error?.message || "Failed to create job");
+      const rawMessage = error?.message ?? error?.payload;
+      const message = Array.isArray(rawMessage)
+        ? rawMessage.join("\n")
+        : typeof rawMessage === "string"
+          ? rawMessage
+          : "Failed to create job";
+      Alert.alert("Error", message);
     }
   });
 

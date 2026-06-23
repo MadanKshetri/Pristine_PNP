@@ -1,5 +1,26 @@
 import { FieldNamesMarkedBoolean } from "react-hook-form";
 
+/**
+ * Detects a "file" value across environments.
+ *
+ * React Native has no DOM, so the `File`/`Blob` globals may not exist and file
+ * pickers return plain objects shaped like `{ uri, name, type }`. We therefore
+ * duck-type by the `uri` property first, and only fall back to `instanceof`
+ * checks when those globals actually exist (web / jsdom) — guarded so they
+ * never throw a ReferenceError in React Native.
+ */
+const isFileLike = (value: unknown): boolean => {
+  if (value === null || typeof value !== "object") return false;
+  // React Native (and web file-ish objects): identify by shape.
+  if ("uri" in value && typeof (value as { uri?: unknown }).uri === "string") {
+    return true;
+  }
+  // Web / jsdom: real File or Blob instances.
+  if (typeof File !== "undefined" && value instanceof File) return true;
+  if (typeof Blob !== "undefined" && value instanceof Blob) return true;
+  return false;
+};
+
 export const parseToFormData = <T extends object>(
   data: Partial<T>,
   imgKey?: string[],
@@ -9,34 +30,25 @@ export const parseToFormData = <T extends object>(
   const filterData = filterDirtyData(data, dirtyFields);
 
   Object.entries(filterData).forEach(([key, value]) => {
+    // File fields: append each file part directly (never JSON-stringify them).
     if (imgKey?.includes(key) && value) {
-      if (Array.isArray(value)) {
-        value.forEach((v) => {
-          if (v instanceof File || ("uri" in v && v.uri)) {
-            formData.append(key, v);
-          }
-        });
-      }
-      if (
-        value instanceof File ||
-        (typeof value === "object" && "uri" in value && value.uri)
-      ) {
-        formData.append(key, value as any);
-      }
+      const files = Array.isArray(value) ? value : [value];
+      files.forEach((file) => {
+        if (isFileLike(file)) {
+          formData.append(key, file as any);
+        }
+      });
       return;
     }
-    if (Array.isArray(value)) {
-      return formData.append(key, JSON.stringify(value));
-    } else if (value instanceof FileList) {
-      for (let i = 0; i < value.length; i++) {
-        if (value[i]) formData.append(key, value[i] as Blob);
-      }
-    } else if (typeof value === "object" && value !== null) {
+
+    if (value === undefined || value === null) return;
+
+    // Arrays and objects must be JSON-stringified — multipart/form-data only
+    // carries strings, so the backend will JSON.parse these fields.
+    if (typeof value === "object") {
       formData.append(key, JSON.stringify(value));
     } else {
-      if ((String(value) && typeof value !== "undefined") || value === "") {
-        formData.append(key, String(value));
-      }
+      formData.append(key, String(value));
     }
   });
 

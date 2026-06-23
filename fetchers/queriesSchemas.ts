@@ -211,6 +211,30 @@ export type AdminDashboardCountSummaryResponseDto = {
   data: AdminDashboardCountSummaryDto;
 };
 
+export type ListAdminStaffAttendanceDto = {
+  /**
+   * @format date-time
+   */
+  clockOut?: string | null;
+  /**
+   * @format uuid
+   */
+  id: string;
+  site: IdNameDto;
+  cleaner: IdNameDto;
+  isOnline: boolean;
+  /**
+   * @format date-time
+   */
+  clockIn: string;
+};
+
+export type ListAdminStaffAttendanceResponseDto = {
+  message: string;
+  data: ListAdminStaffAttendanceDto[];
+  pagination: PaginationResponseDto;
+};
+
 export type ListManagerUserDto = {
   id: string;
   email: string;
@@ -401,7 +425,6 @@ export type UpdateManagerDto = {
    */
   startDate?: string;
   gender?: "Male" | "Female" | "Not disclosed";
-  emergencyContact?: EmergencyContactDto;
   employmentStatus?: "Full-time" | "Part-time" | "Casual" | "Contract";
   yearOfExperience?: number;
   customerIds?: string[];
@@ -409,6 +432,7 @@ export type UpdateManagerDto = {
    * @format binary
    */
   photo?: Blob;
+  emergencyContact?: EmergencyContactDto;
 };
 
 export type CreateCleanerDto = {
@@ -449,7 +473,6 @@ export type UpdateCleanerDto = {
    */
   startDate?: string;
   gender?: "Male" | "Female" | "Not disclosed";
-  emergencyContact?: EmergencyContactDto;
   employmentStatus?: "Full-time" | "Part-time" | "Casual" | "Contract";
   yearOfExperience?: number;
   email?: string;
@@ -457,15 +480,18 @@ export type UpdateCleanerDto = {
    * @format binary
    */
   photo?: Blob;
+  emergencyContact?: EmergencyContactDto;
 };
 
 export type CreateCustomerUserRequestDto = {
   email: string;
+  salutation?: string;
   /**
    * @format binary
    */
   photo?: Blob;
   fullName: string;
+  phone: string;
   customerId: string;
 };
 
@@ -596,12 +622,41 @@ export type ListSiteCleanersResponseDto = {
   pagination: PaginationResponseDto;
 };
 
+export type ListSiteManagersDto = {
+  id: string;
+  name: string;
+  /**
+   * @format uuid
+   */
+  userId: string;
+};
+
+export type ListSiteManagersResponseDto = {
+  message: string;
+  data: ListSiteManagersDto[];
+  pagination: PaginationResponseDto;
+};
+
+export type ListSiteExternalManagersDto = {
+  id: string;
+  name: string;
+  /**
+   * @format uuid
+   */
+  userId: string;
+};
+
+export type ListSiteExternalManagersResponseDto = {
+  message: string;
+  data: ListSiteExternalManagersDto[];
+  pagination: PaginationResponseDto;
+};
+
 export type GetSiteDto = {
   id: string;
   title: string;
   description: string | null;
   location: LocationDto;
-  siteCleaners: IdNameDto[];
   customer: IdNameDto;
   createdBy: IdNameDto | null;
 };
@@ -647,6 +702,21 @@ export type GenerateQrTokenResponseDto = {
   data: GenerateQrTokenDto;
 };
 
+export type UpdateSiteCleanersDto = {
+  removed?: string[];
+  added?: string[];
+};
+
+export type UpdateSiteManagersDto = {
+  removed?: string[];
+  added?: string[];
+};
+
+export type UpdateSiteCustomerUsersDto = {
+  removed?: string[];
+  added?: string[];
+};
+
 export type UpdateSiteLocationDto = {
   postcode?: string;
   placeId?: string;
@@ -659,9 +729,9 @@ export type UpdateSiteLocationDto = {
 export type UpdateSiteRequestDto = {
   title?: string;
   description?: string;
-  cleanerIds?: string[];
-  managerIds?: string[];
-  customerUserIds?: string[];
+  cleaner?: UpdateSiteCleanersDto;
+  manager?: UpdateSiteManagersDto;
+  customerUser?: UpdateSiteCustomerUsersDto;
   location?: UpdateSiteLocationDto;
 };
 
@@ -748,8 +818,9 @@ export type GetJobDto = {
   startAt: string | null;
   createdAt: string;
   assignedStaff: IdNameDto | null;
-  site?: GetJobSiteDto | null;
+  site: GetJobSiteDto | null;
   checklists: GetJobChecklistDto[];
+  assets: AssetDto[];
 };
 
 export type GetJobResponseDto = {
@@ -775,6 +846,7 @@ export type CreateJobRequestDto = {
    * @format uuid
    */
   jobRequestId?: string;
+  assets: Blob[];
   title: string;
   siteId: string;
   /**
@@ -871,7 +943,8 @@ export type AdminGetIncidentSiteDto = {
   address: string;
 };
 
-export type AdminGetIncidentDto = {
+export type AdminListIncidentDto = {
+  description?: string | null;
   type: "Issue" | "Request" | "Seeking Information";
   priority: "Low" | "Medium" | "High";
   status: "Open" | "In Progress" | "Resolved" | "Closed" | "Rejected";
@@ -880,7 +953,6 @@ export type AdminGetIncidentDto = {
    */
   id: string;
   title: string;
-  description: string | null;
   site: AdminGetIncidentSiteDto;
   reportedBy: IdNameDto | null;
   /**
@@ -891,8 +963,27 @@ export type AdminGetIncidentDto = {
 
 export type AdminListIncidentResponseDto = {
   message: string;
-  data: AdminGetIncidentDto[];
+  data: AdminListIncidentDto[];
   pagination: PaginationResponseDto;
+};
+
+export type AdminGetIncidentDto = {
+  description?: string | null;
+  type: "Issue" | "Request" | "Seeking Information";
+  priority: "Low" | "Medium" | "High";
+  status: "Open" | "In Progress" | "Resolved" | "Closed" | "Rejected";
+  /**
+   * @format uuid
+   */
+  id: string;
+  title: string;
+  site: AdminGetIncidentSiteDto;
+  reportedBy: IdNameDto | null;
+  assets: AssetDto[];
+  /**
+   * @format date-time
+   */
+  createdAt: string;
 };
 
 export type GetIncidentResponseDto = {
@@ -1018,6 +1109,10 @@ export type ManagerListIncidentResponseDto = {
   pagination: PaginationResponseDto;
 };
 
+export type ManagerUpdateIncidentDto = {
+  status?: "Open" | "In Progress" | "Resolved" | "Closed" | "Rejected";
+};
+
 export type StaffListSiteDto = {
   id: string;
   title: string;
@@ -1045,6 +1140,47 @@ export type StaffGetSiteResponseDto = {
   data: StaffGetSiteDto;
 };
 
+export type StaffSiteLoginSiteDto = {
+  id: string;
+  title: string;
+  location: LocationDto;
+};
+
+export type StaffSiteLoginAttendanceDto = {
+  /**
+   * @format date-time
+   */
+  clockOut?: string | null;
+  id: string;
+  /**
+   * @format date-time
+   */
+  clockIn: string;
+};
+
+export type StaffSiteLoginDto = {
+  isLoggedIn: boolean;
+  site: StaffSiteLoginSiteDto | null;
+  attendance: StaffSiteLoginAttendanceDto | null;
+};
+
+export type StaffSiteLoginResponseDto = {
+  message: string;
+  data: StaffSiteLoginDto;
+};
+
+export type StaffSiteLoginRequestDto = {
+  token: string;
+  latitude: number;
+  longitude: number;
+};
+
+export type StaffSiteLogoutRequestDto = {
+  token: string;
+  latitude: number;
+  longitude: number;
+};
+
 export type StaffGetIncidentSiteDto = {
   /**
    * @format uuid
@@ -1058,12 +1194,12 @@ export type StaffGetIncidentDto = {
   type: "Issue" | "Request" | "Seeking Information";
   priority: "Low" | "Medium" | "High";
   status: "Open" | "In Progress" | "Resolved" | "Closed" | "Rejected";
+  description?: string | null;
   /**
    * @format uuid
    */
   id: string;
   title: string;
-  description: string | null;
   reportedBy: IdNameDto | null;
   site: StaffGetIncidentSiteDto;
   /**

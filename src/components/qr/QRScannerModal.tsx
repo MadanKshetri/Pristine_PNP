@@ -15,12 +15,16 @@ interface QRScannerModalProps {
   visible: boolean;
   onClose: () => void;
   onScanned: (data: string) => Promise<void> | void;
+  title?: string;
+  subtitle?: string;
 }
 
 export const QRScannerModal: React.FC<QRScannerModalProps> = ({
   visible,
   onClose,
   onScanned,
+  title,
+  subtitle,
 }) => {
   const [scanned, setScanned] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
@@ -151,9 +155,9 @@ export const QRScannerModal: React.FC<QRScannerModalProps> = ({
           </View>
 
           <View style={styles.headerTextWrap}>
-            <Text style={styles.headerText}>Scan QR Code</Text>
+            <Text style={styles.headerText}>{title ?? "Scan QR Code"}</Text>
             <Text style={styles.instructionText}>
-              Align the QR within the frame to start the job
+              {subtitle ?? "Align the QR within the frame"}
             </Text>
           </View>
 
