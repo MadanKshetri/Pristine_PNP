@@ -846,7 +846,7 @@ export type CreateJobRequestDto = {
    * @format uuid
    */
   jobRequestId?: string;
-  assets: Blob[];
+  assets?: Blob[];
   title: string;
   siteId: string;
   /**

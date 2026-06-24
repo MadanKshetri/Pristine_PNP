@@ -16,7 +16,9 @@ import {
 
 export function StaffIncidentListView() {
   const router = useRouter();
-  const { data, isLoading, refetch } = useStaffIncidentConrollerIncidents({});
+  const { data, isLoading, refetch } = useStaffIncidentConrollerIncidents({
+    queryParams: { status: "Open" },
+  });
 
   const incidents = data?.data || [];
 
@@ -26,45 +28,36 @@ export function StaffIncidentListView() {
 
   const renderItem = ({ item }: { item: StaffGetIncidentDto }) => (
     <Card variant="elevated" className="mb-4 mx-4" padding="md">
-      <View className="flex-row items-center mb-4">
+      <View className="flex-row items-center">
         <View className="bg-red-50 p-2.5 rounded-full mr-3.5">
           <AlertTriangle size={22} color="#EF4444" />
         </View>
-        <Text className="text-lg font-bold text-gray-900 flex-1 leading-6">
+        <Text className="text-base font-bold text-gray-900 flex-1 leading-6">
           {item.title}
         </Text>
       </View>
 
-      {item.description && (
-        <Text className="text-gray-600 text-sm mb-4 leading-relaxed">
-          {item.description}
-        </Text>
-      )}
-
-      {/* Site Details */}
-      {(item.site as any)?.title && (
-        <View className="flex-row items-start mb-4 bg-gray-50 p-3 rounded-xl border border-gray-100">
-          <MapPin size={18} color="#4B5563" className="mr-2.5 mt-0.5" />
-          <View className="flex-1">
-            <Text className="text-sm font-semibold text-gray-900 mb-0.5">
+      <View className="flex-row justify-between items-center pt-3.5 mt-3.5 border-t border-gray-100">
+        {(item.site as any)?.title && (
+          <View className="flex-row items-center flex-1 mr-3">
+            <MapPin size={15} color="#6B7280" className="mr-1.5" />
+            <Text
+              className="text-xs text-gray-500 font-medium flex-1"
+              numberOfLines={1}
+            >
               {(item.site as any).title}
             </Text>
-            {(item.site as any)?.address && (
-              <Text className="text-xs text-gray-500 leading-4">
-                {(item.site as any).address}
-              </Text>
-            )}
           </View>
-        </View>
-      )}
+        )}
 
-      <View className="flex-row items-center pt-3.5 border-t border-gray-100">
-        <Calendar size={15} color="#6B7280" className="mr-1.5" />
-        <Text className="text-xs text-gray-500 font-medium">
-          {item.createdAt
-            ? format(new Date(item.createdAt), "MMM d, yyyy • h:mm a")
-            : "-"}
-        </Text>
+        <View className="flex-row items-center">
+          <Calendar size={15} color="#6B7280" className="mr-1.5" />
+          <Text className="text-xs text-gray-500 font-medium">
+            {item.createdAt
+              ? format(new Date(item.createdAt), "MMM d, yyyy")
+              : "-"}
+          </Text>
+        </View>
       </View>
     </Card>
   );
@@ -86,17 +79,17 @@ export function StaffIncidentListView() {
                 <AlertTriangle size={32} color="#9CA3AF" />
               </View>
               <Text className="text-lg font-semibold text-gray-900 mb-2">
-                No Incidents Reported
+                Nothing Here Yet
               </Text>
               <Text className="text-sm text-gray-500 text-center mb-6">
-                You haven't reported any incidents yet.
+                You haven't submitted any feedback or requests yet.
               </Text>
               <TouchableOpacity
                 onPress={handleAddPress}
                 className="bg-blue-600 px-6 py-3 rounded-full flex-row items-center"
               >
                 <Plus size={20} color="#FFF" className="mr-2" />
-                <Text className="text-white font-bold">Report Incident</Text>
+                <Text className="text-white font-bold">New Request</Text>
               </TouchableOpacity>
             </View>
           ) : null

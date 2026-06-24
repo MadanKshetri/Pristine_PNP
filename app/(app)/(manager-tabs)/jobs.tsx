@@ -40,7 +40,7 @@ export default function ManagerJobsTab() {
       },
       {
         key: "incidents",
-        title: "Incidents",
+        title: "Feedback & Requests",
         render: () => <ManagerIncidentListView />,
       },
     ],

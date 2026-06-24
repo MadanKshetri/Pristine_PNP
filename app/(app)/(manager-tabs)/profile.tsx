@@ -87,7 +87,7 @@ export default function ProfileScreen() {
             </View>
             <View className="flex-1">
               <Text className="text-base font-medium text-gray-900">
-                Incident Reports
+                Feedback and Requests
               </Text>
               <Text className="text-xs text-gray-500">
                 {user?.role === "manager" || user?.role === "customer manager"

@@ -1,16 +1,18 @@
 import { useAdminIncidentConrollerIncidents } from "@/fetchers/queriesComponents";
-import type { ManagerGetIncidentDto } from "@/fetchers/queriesSchemas";
+import type { AdminListIncidentDto } from "@/fetchers/queriesSchemas";
 import { IncidentCard } from "./IncidentCard";
 import { AlertTriangle } from "lucide-react-native";
 import React from "react";
 import { FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
 
 export function ManagerIncidentListView() {
-  const { data, isLoading, refetch } = useAdminIncidentConrollerIncidents({});
+  const { data, isLoading, refetch } = useAdminIncidentConrollerIncidents({
+    queryParams: { status: "Open" },
+  });
 
   const incidents = data?.data || [];
 
-  const renderItem = ({ item }: { item: ManagerGetIncidentDto }) => (
+  const renderItem = ({ item }: { item: AdminListIncidentDto }) => (
     <IncidentCard incident={item} />
   );
 
@@ -30,10 +32,10 @@ export function ManagerIncidentListView() {
               <AlertTriangle size={32} color="#9CA3AF" />
             </View>
             <Text className="text-lg font-semibold text-gray-900 mb-2">
-              No Incidents Reported
+              Nothing Here Yet
             </Text>
             <Text className="text-sm text-gray-500 text-center">
-              There are currently no active incident reports to display.
+              There are currently no open feedback or requests to display.
             </Text>
           </View>
         ) : null

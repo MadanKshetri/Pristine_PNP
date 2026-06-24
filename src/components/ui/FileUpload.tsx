@@ -92,9 +92,14 @@ const FileUpload = ({
   return (
     <View style={[styles.container, containerStyle]}>
       <TouchableOpacity
-        style={[styles.button, buttonStyle]}
+        style={[
+          styles.button,
+          selectedFiles.length >= maxFiles && styles.buttonDisabled,
+          buttonStyle,
+        ]}
         onPress={handleFilePick}
         disabled={selectedFiles.length >= maxFiles}
+        activeOpacity={0.7}
       >
         <Text style={[styles.buttonText, buttonTextStyle]}>{buttonText}</Text>
       </TouchableOpacity>
@@ -130,18 +135,26 @@ const FileUpload = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 10,
+    marginVertical: 4,
   },
   button: {
-    backgroundColor: "#007AFF",
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    borderRadius: 8,
+    backgroundColor: "#F9FAFB",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderStyle: "dashed",
+    borderColor: "#CBD5E1",
     alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+  },
+  buttonDisabled: {
+    opacity: 0.5,
   },
   buttonText: {
-    color: "#fff",
-    fontSize: 16,
+    color: "#2563EB",
+    fontSize: 14,
     fontWeight: "600",
   },
   fileList: {

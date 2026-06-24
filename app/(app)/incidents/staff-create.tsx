@@ -7,8 +7,10 @@ import {
   useStaffIncidentConrollerCreate,
 } from "@/fetchers/queriesComponents";
 import { Button, ScreenHeader } from "@/src/components/ui";
+import FileUpload from "@/src/components/ui/FileUpload";
 import { CreateIncidentSchema } from "@/src/schema";
 import { INPUT_CLASSNAME } from "@/src/utils/constants";
+import { parseToFormData } from "@/src/utils/form.util";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
 import React from "react";
@@ -34,6 +36,7 @@ export default function StaffCreateIncidentScreen() {
       siteId: "",
       title: "",
       type: "Issue",
+      attachments: [],
     },
   });
 
@@ -42,29 +45,30 @@ export default function StaffCreateIncidentScreen() {
   // Create Incident Mutation
   const createMutation = useStaffIncidentConrollerCreate({
     onSuccess: () => {
-      Alert.alert("Success", "Incident report submitted successfully", [
+      Alert.alert("Success", "Submitted successfully", [
         { text: "OK", onPress: () => router.back() },
       ]);
     },
     onError: (error: any) => {
-      console.error("Error creating incident report:", error);
+      console.error("Error submitting feedback/request:", error);
 
-      Alert.alert(
-        "Error",
-        error?.payload?.message || "Failed to submit incident report",
-      );
+      Alert.alert("Error", error?.payload?.message || "Failed to submit");
     },
   });
 
   const handleFormSubmit = handleSubmit(async (data) => {
     createMutation.mutate({
-      body: {
-        title: data.title.trim(),
-        description: data.description,
-        siteId: data.siteId,
-        priority: data.priority,
-        type: data.type,
-      },
+      body: parseToFormData(
+        {
+          title: data.title.trim(),
+          description: data.description,
+          siteId: data.siteId,
+          priority: data.priority,
+          type: data.type,
+          attachments: data.attachments,
+        },
+        ["attachments"],
+      ) as any,
     });
   });
 
@@ -75,7 +79,7 @@ export default function StaffCreateIncidentScreen() {
       keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
     >
       <View style={styles.container}>
-        <ScreenHeader title="Report Incident" />
+        <ScreenHeader title="Feedback and Requests" />
 
         <ScrollView className="px-6 py-6" showsVerticalScrollIndicator={false}>
           <FormInput
@@ -110,7 +114,7 @@ export default function StaffCreateIncidentScreen() {
             control={form.control}
             required
             name="title"
-            label="Incident Title"
+            label="Title"
           />
 
           <FormInput
@@ -179,9 +183,31 @@ export default function StaffCreateIncidentScreen() {
                 <TextareaInput
                   onChange={field.onChange}
                   value={field.value}
-                  placeholder="Describe the incident in detail"
+                  placeholder="Describe in detail"
                 />
               </Textarea>
+            )}
+          />
+
+          <FormInput
+            control={form.control}
+            name="attachments"
+            label="Attachments"
+            render={({ field }) => (
+              <FileUpload
+                buttonText="📎 Attach Documents"
+                maxFiles={5}
+                maxSizeInMB={10}
+                onFileSelect={(files) =>
+                  field.onChange(
+                    files.map((file) => ({
+                      uri: file.uri,
+                      name: file.name,
+                      type: file.mimeType ?? "application/octet-stream",
+                    })),
+                  )
+                }
+              />
             )}
           />
 

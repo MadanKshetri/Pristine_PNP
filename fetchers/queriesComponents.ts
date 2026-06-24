@@ -5734,6 +5734,7 @@ export type AdminIncidentConrollerIncidentsQueryParams = {
    * @format date-time
    */
   dateTo?: string;
+  status?: "Open" | "In Progress" | "Resolved" | "Closed" | "Rejected";
 };
 
 export type AdminIncidentConrollerIncidentsError = Fetcher.ErrorWrapper<
@@ -8316,6 +8317,7 @@ export type StaffIncidentConrollerIncidentsQueryParams = {
    * @minimum 0
    */
   page?: number;
+  status?: "Open" | "In Progress" | "Resolved" | "Closed" | "Rejected";
 };
 
 export type StaffIncidentConrollerIncidentsError = Fetcher.ErrorWrapper<

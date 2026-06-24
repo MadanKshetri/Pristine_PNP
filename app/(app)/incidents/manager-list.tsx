@@ -6,7 +6,7 @@ import { StyleSheet, View } from "react-native";
 export default function ManagerIncidentListScreen() {
   return (
     <View style={styles.container}>
-      <ScreenHeader title="Incident Reports" showBackButton />
+      <ScreenHeader title="Feedback and Requests" showBackButton />
       <ManagerIncidentListView />
     </View>
   );

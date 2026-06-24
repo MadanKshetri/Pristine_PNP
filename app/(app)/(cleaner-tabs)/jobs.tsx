@@ -39,7 +39,7 @@ export default function JobsScreen() {
       },
       {
         key: "incidents",
-        title: "Incidents",
+        title: "Feedback & Requests",
         render: () => <StaffIncidentListView />,
       },
     ],
