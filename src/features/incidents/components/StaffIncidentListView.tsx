@@ -13,9 +13,24 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-export function StaffIncidentListView() {
+interface StaffIncidentListViewProps {
+  /**
+   * Distance (px) to lift the floating "+" button off the bottom edge.
+   * When rendered inside a bottom-tab screen the content already sits above
+   * the tab bar, so a small gap is enough. When rendered as a standalone
+   * screen (e.g. from Profile) it falls back to the safe-area inset.
+   */
+  fabBottomOffset?: number;
+}
+
+export function StaffIncidentListView({
+  fabBottomOffset,
+}: StaffIncidentListViewProps = {}) {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
+  const bottomOffset = fabBottomOffset ?? insets.bottom + 16;
   const { data, isLoading, refetch } = useStaffIncidentConrollerIncidents({
     queryParams: { status: "Open" },
   });
@@ -68,7 +83,10 @@ export function StaffIncidentListView() {
         data={incidents}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={[
+          styles.listContent,
+          { paddingBottom: bottomOffset + 72 },
+        ]}
         refreshControl={
           <RefreshControl refreshing={isLoading} onRefresh={refetch} />
         }
@@ -97,7 +115,7 @@ export function StaffIncidentListView() {
       />
       <TouchableOpacity
         onPress={handleAddPress}
-        style={styles.addButton}
+        style={[styles.addButton, { bottom: bottomOffset }]}
         activeOpacity={0.7}
       >
         <Plus size={24} color="#FFFFFF" strokeWidth={3} />
@@ -113,7 +131,6 @@ const styles = StyleSheet.create({
   addButton: {
     position: "absolute",
     right: 20,
-    bottom: 24,
     backgroundColor: "#3B82F6",
     width: 44,
     height: 44,

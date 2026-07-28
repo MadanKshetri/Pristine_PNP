@@ -40,7 +40,7 @@ export default function JobsScreen() {
       {
         key: "incidents",
         title: "Feedback & Requests",
-        render: () => <StaffIncidentListView />,
+        render: () => <StaffIncidentListView fabBottomOffset={16} />,
       },
     ],
     [],

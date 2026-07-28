@@ -3,7 +3,7 @@ import {
   fetchAdminSiteControllerSites,
   useAdminJobControllerCreateJob,
 } from "@/fetchers/queriesComponents";
-import { Button, Input, ScreenHeader } from "@/src/components/ui";
+import { Button, FileUpload, Input, ScreenHeader } from "@/src/components/ui";
 import FormInput from "@/components/ui/form-input";
 import { CreateJobSchema } from "@/src/schema";
 import { Ionicons } from "@expo/vector-icons";
@@ -43,6 +43,7 @@ export const CreateJobForm: React.FC = () => {
       description: "",
       siteId: "",
       startAt: new Date(),
+      assets: [],
     },
   });
 
@@ -58,32 +59,22 @@ export const CreateJobForm: React.FC = () => {
   const selectedSiteId = form.watch("siteId");
 
   const handleCreate = handleSubmit(async (data) => {
-    console.log(
-      parseToFormData({
-        siteId: data.siteId,
-        customerId: data.customerId,
-        description: data.description,
-        assets: [],
-        assignedCleanerId: data.assignedCleanerId,
-        title: data.title,
-        startAt: date.toISOString(),
-        checklists: [],
-      }),
-    );
-
     try {
       await createJobMutation.mutateAsync(
         {
-          body: parseToFormData({
-            siteId: data.siteId,
-            customerId: data.customerId,
-            description: data.description,
-            assets: [],
-            assignedCleanerId: data.assignedCleanerId,
-            title: data.title,
-            startAt: date.toISOString(),
-            checklists: [],
-          }),
+          body: parseToFormData(
+            {
+              siteId: data.siteId,
+              customerId: data.customerId,
+              description: data.description,
+              assets: data.assets ?? [],
+              assignedCleanerId: data.assignedCleanerId,
+              title: data.title,
+              startAt: date.toISOString(),
+              checklists: [],
+            },
+            ["assets"],
+          ),
         },
         {
           onSuccess: () => {
@@ -219,6 +210,20 @@ export const CreateJobForm: React.FC = () => {
             )}
           />
         </View>
+
+        <FormInput
+          control={control}
+          name="assets"
+          label="Photos"
+          render={({ field }) => (
+            <FileUpload
+              mode="image"
+              maxFiles={5}
+              value={field.value}
+              onChange={field.onChange}
+            />
+          )}
+        />
 
         <Button
           onPress={handleCreate}

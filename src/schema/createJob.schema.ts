@@ -7,4 +7,5 @@ export const CreateJobSchema = z.object({
   customerId: z.string().min(1, "Customer ID is required"),
   assignedCleanerId: z.string().optional(),
   startAt: z.date({ message: "Start date is required" }),
+  assets: z.array(z.any()).optional(),
 });

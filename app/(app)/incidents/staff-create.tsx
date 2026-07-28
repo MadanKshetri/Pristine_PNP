@@ -195,18 +195,11 @@ export default function StaffCreateIncidentScreen() {
             label="Attachments"
             render={({ field }) => (
               <FileUpload
-                buttonText="📎 Attach Documents"
+                mode="all"
                 maxFiles={5}
                 maxSizeInMB={10}
-                onFileSelect={(files) =>
-                  field.onChange(
-                    files.map((file) => ({
-                      uri: file.uri,
-                      name: file.name,
-                      type: file.mimeType ?? "application/octet-stream",
-                    })),
-                  )
-                }
+                value={field.value}
+                onChange={field.onChange}
               />
             )}
           />
